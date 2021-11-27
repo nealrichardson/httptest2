@@ -13,7 +13,6 @@
 #' note that this is the opposite of `expect_warning` but is appropriate here
 #' because HTTP header names are case insensitive.
 #' @return `NULL`, according to `expect_warning`.
-#' @importFrom httr add_headers
 #' @importFrom testthat expect_warning
 #' @examples
 #' library(httr)
@@ -24,13 +23,43 @@
 #'   )
 #' })
 #' @export
-expect_header <- function(..., ignore.case = TRUE) {
-  tracer <- quote({
+expect_header <- function(expr, ..., ignore.case = TRUE) {
+  current_mocker <- getOption("httr2_mock")
+  warn_headers <- function(req) {
     heads <- req$headers
     msgs <- lapply(names(heads), function(h) paste(h, heads[h], sep = ": "))
     warning(msgs, call. = FALSE)
-  })
-  with_trace("request_prepare", exit = tracer, where = add_headers, expr = {
-    expect_warning(..., ignore.case = ignore.case)
-  })
+    NULL
+  }
+
+  # Slightly different behavior based on whether we already are mocking
+  header_mocker <- function(req) {
+    warn_headers(req)
+    # warn_headers() returns NULL, so if there is no other mocking,
+    # req_perform() will proceed normally
+    if (!is.null(current_mocker)) {
+      current_mocker(req)
+    }
+  }
+
+  # TODO: can we do something different than warn?
+  expect_warning(
+    httr2::with_mock(header_mocker, expr),
+    ...,
+    ignore.case = ignore.case
+  )
 }
+
+# HTTR2: report this to testthat
+# f <- function(expr, ...) {
+#   testthat::expect_warning(expr, ..., ignore.case = TRUE)
+# }
+# f("No warning", NA)
+
+# Warning message:
+# 1 components of `...` were not used.
+#
+# We detected these problematic arguments:
+# * `ignore.case`
+#
+# Did you misspecify an argument?

@@ -1,4 +1,4 @@
-Package: httptest
+Package: httptest2
 Type: Package
 Title: A Test Environment for HTTP Requests
 Description: Testing and documenting code that communicates with remote servers
@@ -13,14 +13,14 @@ Description: Testing and documenting code that communicates with remote servers
     test fixtures. The ability to save responses and load them offline also
     enables one to write vignettes and other dynamic documents that can be
     distributed without access to a live server.
-Version: 4.1.0.9000
+Version: 0.0.0.9000
 Authors@R: c(
         person("Neal", "Richardson", role=c("aut", "cre"), email="neal.p.richardson@gmail.com"),
         person("Jonathan", "Keane", role="ctb", email="jkeane@gmail.com"),
         person("Maëlle", "Salmon", role="ctb", email="maelle.salmon@yahoo.se", comment=c(ORCID="0000-0002-2815-0399"))
     )
-URL: https://enpiar.com/r/httptest/, https://github.com/nealrichardson/httptest
-BugReports: https://github.com/nealrichardson/httptest/issues
+URL: https://enpiar.com/httptest2/, https://github.com/nealrichardson/httptest2
+BugReports: https://github.com/nealrichardson/httptest2/issues
 License: MIT + file LICENSE
 Depends:
     R (>= 3.3.0),
@@ -28,7 +28,7 @@ Depends:
 Imports:
     curl,
     digest,
-    httr,
+    httr2,
     jsonlite,
     stats,
     utils
@@ -40,7 +40,7 @@ Suggests:
     spelling,
     xml2
 Language: en-US
-RoxygenNote: 7.1.1.9001
+RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 VignetteBuilder: knitr

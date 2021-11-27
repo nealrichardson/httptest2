@@ -16,8 +16,6 @@ chain_redactors <- function(funs) {
 redact_cookies <- function(response) {
   response <- redact_headers(response, "Set-Cookie")
   if (!is.null(response$cookies) && nrow(response$cookies)) {
-    # is.null check is for reading mocks.
-    # possible TODO: add $cookies to fake_response, then !is.null isn't needed
     response$cookies$value <- "REDACTED"
   }
   return(response)
@@ -52,9 +50,9 @@ happly <- function(header_list, headers, FUN, ...) {
 #' @rdname redact
 #' @export
 within_body_text <- function(response, FUN) {
-  old <- suppressMessages(content(response, "text"))
+  old <- resp_body_string(response)
   new <- FUN(old)
-  response$content <- charToRaw(new)
+  response$body <- charToRaw(new)
   return(response)
 }
 

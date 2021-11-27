@@ -59,7 +59,6 @@
 #' )
 #' stop_capturing()
 #' }
-#' @importFrom httr content
 #' @export
 #' @seealso [build_mock_url()] for how requests are translated to file paths.
 #' And see `vignette("redacting")` for details on how to prune sensitive
@@ -88,28 +87,30 @@ start_capturing <- function(path = NULL, simplify = TRUE) {
     {
       # Get the value returned from the function, and sanitize it
       redactor <- get_current_redactor()
-      .resp <- returnValue()
-      if (is.null(.resp)) {
-        # returnValue() defaults to NULL if the traced function exits with
-        # an error, so there's no response to record.
+      if (exists("mock_resp") && !is.null(mock_resp)) {
+        # We're mocking and returning early
+        resp <- mock_resp
+      }
+      if (!exists("resp") || inherits(resp, "error")) {
+        # req_perform() catches request errors as an "error" object
+        # See httr2:::is_error()
+        # Also possible that resp doesn't exist if the function errors eariler
         warning("Request errored; no captured response file saved",
           call. = FALSE
         )
       } else {
-        save_response(redactor(.resp), simplify = simplify)
+        save_response(redactor(resp), file = build_mock_url(req), simplify = simplify)
       }
     },
     list(simplify = simplify)
   )
-  for (verb in c("PUT", "POST", "PATCH", "DELETE", "VERB", "GET", "RETRY")) {
-    trace_httr(verb, exit = req_tracer)
-  }
+  trace_httr2("req_perform", exit = req_tracer)
   invisible(path)
 }
 
 #' Write out a captured response
 #'
-#' @param response An 'httr' `response` object
+#' @param response An 'httr2' `response` object
 #' @param simplify logical: if `TRUE` (default), JSON responses with status 200
 #' and a supported `Content-Type`
 #' will be written as just the text of the response body. In all other cases,
@@ -119,19 +120,17 @@ start_capturing <- function(path = NULL, simplify = TRUE) {
 #' @export
 #' @keywords internal
 #' @importFrom jsonlite prettify
-save_response <- function(response, simplify = TRUE) {
-  # Construct the mock file path
-  mock_file <- build_mock_url(response$request)
+#' @importFrom httr2 resp_content_type resp_status resp_body_string
+save_response <- function(response, file, simplify = TRUE) {
   # Track separately the actual full path we're going to write to
-  dst_file <- file.path(.mockPaths()[1], mock_file)
+  dst_file <- file.path(.mockPaths()[1], file)
   mkdir_p(dst_file)
 
   # Get the Content-Type
-  ct <- get_content_type(response)
-  status <- response$status_code
+  ct <- resp_content_type(response)
+  status <- resp_status(response)
   if (simplify && status == 200 && ct %in% names(CONTENT_TYPE_TO_EXT)) {
-    # Squelch the "No encoding supplied: defaulting to UTF-8."
-    cont <- suppressMessages(content(response, "text"))
+    cont <- resp_body_string(response)
     if (ct == "application/json") {
       # Prettify
       cont <- prettify(cont)
@@ -147,7 +146,7 @@ save_response <- function(response, simplify = TRUE) {
 
     # Change the file extension to .R
     dst_file <- paste0(dst_file, ".R")
-    mock_file <- paste0(mock_file, ".R")
+    file <- paste0(file, ".R")
 
     # If content is text, rawToChar it and dput it as charToRaw(that)
     # so that it loads correctly but is also readable
@@ -158,31 +157,22 @@ save_response <- function(response, simplify = TRUE) {
       "text/tab-separated-values", "text/xml"
     )
     if (ct %in% text_types) {
-      # Squelch the "No encoding supplied: defaulting to UTF-8."
-      cont <- suppressMessages(content(response, "text"))
-      # if (ct == "application/json") {
-      #     # TODO: "parse error: premature EOF"
-      #     cont <- jsonlite::prettify(cont)
-      # }
-      response$content <- substitute(charToRaw(cont))
+      cont <- resp_body_string(response)
+      response$body <- substitute(charToRaw(cont))
     } else if (inherits(response$request$output, "write_disk")) {
+      # HTTR2: figure out how the write_disk business works
       # Copy real file and substitute the response$content "path".
       # Note that if content is a text type, the above attempts to
-      # make the mock file readable call `content()`, which reads
+      # make the mock file readable by calling `resp_body_string()`, which reads
       # in the file that has been written to disk, so it effectively
       # negates the "download" behavior for the recorded response.
       downloaded_file <- paste0(dst_file, "-FILE")
       file.copy(response$content, downloaded_file)
-      mock_file <- paste0(mock_file, "-FILE")
-      response$content <- substitute(structure(find_mock_file(mock_file),
+      file <- paste0(file, "-FILE")
+      response$content <- substitute(structure(find_mock_file(file),
         class = "path"
       ))
     }
-
-    # Omit curl handle C pointer, which doesn't serialize meaningfully
-    response$handle <- NULL
-    # Drop request since httr:::request_perform will fill it in when loading
-    response$request <- NULL
 
     f <- file(dst_file, "wb", encoding = "UTF-8")
     on.exit(close(f))
@@ -197,10 +187,8 @@ save_response <- function(response, simplify = TRUE) {
 #' @rdname capture_requests
 #' @export
 stop_capturing <- function() {
-  for (verb in c("GET", "PUT", "POST", "PATCH", "DELETE", "VERB", "RETRY")) {
-    safe_untrace(verb, add_headers)
-    safe_untrace(verb)
-  }
+  safe_untrace("req_perform", request)
+  safe_untrace("req_perform")
 }
 
 mkdir_p <- function(filename) {

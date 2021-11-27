@@ -65,14 +65,14 @@ with_mock_api({
       r2 <- GET("http://example.com/get")
     })
     # The resulting mock content is what we injected into it from testpkg
-    expect_identical(content(r2), list(fake = TRUE))
+    expect_identical(resp_body_json(r2), list(fake = TRUE))
   })
 
   test_that("Request preprocessing via package inst/httptest/request.R", {
     # That function prunes a leading http://pythong.org/ from URLs
     expect_identical(
-      content(GET("http://pythong.org/api/object1/")),
-      content(GET("api/object1/"))
+      resp_body_json(GET("http://pythong.org/api/object1/")),
+      resp_body_json(GET("api/object1/"))
     )
   })
 
@@ -81,12 +81,13 @@ with_mock_api({
     # Great, but let's kill it when we're done
     on.exit(detach("package:testpkg", unload = TRUE))
     newmocks2 <- tempfile()
+    skip("HTTR2: adapt httr::response to httr2::httr2_response")
     with_redactor(
       NULL,
       capture_while_mocking(simplify = FALSE, path = newmocks2, {
-        a <- POST("http://example.com/login",
-          body = list(username = "password"), encode = "json"
-        )
+        a <- request("http://example.com/login") %>%
+          req_body_json(list(username = "password")) %>%
+          req_perform()
       })
     )
     # The auth token, which would have been removed (see test-redact.R),
@@ -113,7 +114,7 @@ with_mock_api({
       r2 <- GET("http://example.com/get")
     })
     # The resulting mock content is what we injected into it from testpkg
-    expect_identical(content(r2), list(fake = TRUE))
+    expect_identical(resp_body_json(r2), list(fake = TRUE))
   })
 })
 

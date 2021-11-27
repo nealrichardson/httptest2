@@ -26,11 +26,7 @@
 #'   )
 #' })
 #' @export
-without_internet <- function(expr) {
-  block_requests()
-  on.exit(stop_mocking())
-  eval.parent(expr)
-}
+without_internet <- function(expr) httr2::with_mock(stop_request, expr)
 
 #' Block HTTP requests
 #'
@@ -44,11 +40,11 @@ without_internet <- function(expr) {
 #' @return Nothing; called for its side effects.
 #' @seealso [without_internet()] [stop_mocking()] [use_mock_api()]
 #' @export
-block_requests <- function() mock_perform(stop_request)
+block_requests <- function() options(httr2_mock = stop_request)
 
-stop_request <- function(req, handle, refresh) {
-  out <- paste(req$method, req$url)
-  body <- request_body(req)
+stop_request <- function(req) {
+  out <- paste(get_request_method(req), req$url)
+  body <- get_string_request_body(req)
   if (!is.null(body)) {
     # Max print option for debugging large payloads
     body <- substr(body, 1, getOption("httptest.max.print", nchar(body)))
@@ -63,3 +59,22 @@ stop_request <- function(req, handle, refresh) {
   }
   stop(out, call. = FALSE)
 }
+
+get_string_request_body <- function(req) {
+  body_apply <- utils::getFromNamespace("req_body_apply", "httr2")
+  out <- body_apply(req)$options$postfields
+  if (is.raw(out)) {
+    # Assumes string body (check content type?)
+    out <- rawToChar(out)
+  }
+  out
+}
+
+get_request_method <- function(req) {
+  # At the time that we process the request, some defaults may not have been
+  # applied, and the request method may be NULL
+  # TODO(httr2): report upstream?
+  req$method %||% ifelse(is.null(req$body), "GET", "POST")
+}
+
+`%||%` <- function(a, b) if (is.null(a)) b else a

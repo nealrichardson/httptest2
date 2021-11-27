@@ -1,35 +1,37 @@
-# httptest: A Test Environment for HTTP Requests in R
+> This is a work-in-progress porting [`httptest`](https://enpiar.com/r/httptest/) to work with [`httr2`](https://httr2.r-lib.org/). Please see the Issues for known features remaining to be updated--we'd love your help in finishing this up so we can submit to CRAN.
 
-[![Build Status](https://github.com/nealrichardson/httptest/workflows/R-CMD-check/badge.svg)](https://github.com/nealrichardson/httptest/actions) [![codecov](https://codecov.io/gh/nealrichardson/httptest/branch/master/graph/badge.svg)](https://codecov.io/gh/nealrichardson/httptest)
-[![cran](https://www.r-pkg.org/badges/version-last-release/httptest)](https://cran.r-project.org/package=httptest) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/2136/badge)](https://bestpractices.coreinfrastructure.org/projects/2136)
+# httptest2: A Test Environment for HTTP Requests in R
 
-`httptest` makes it easy to write tests for code and packages that wrap web APIs.
-Testing code that communicates with remote servers can otherwise be painful: things like authentication, server state, and network flakiness can make testing seem too costly to bother with. The `httptest` package enables you to test all of the logic on the R sides of the API in your package without requiring access to the remote service.
+[![Build Status](https://github.com/nealrichardson/httptest2/workflows/R-CMD-check/badge.svg)](https://github.com/nealrichardson/httptest2/actions) [![codecov](https://codecov.io/gh/nealrichardson/httptest2/branch/master/graph/badge.svg)](https://codecov.io/gh/nealrichardson/httptes2t)
+[![cran](https://www.r-pkg.org/badges/version-last-release/httptest2)](https://cran.r-project.org/package=httptest2) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/2136/badge)](https://bestpractices.coreinfrastructure.org/projects/2136)
+
+`httptest2` makes it easy to write tests for code and packages that wrap web APIs.
+Testing code that communicates with remote servers can otherwise be painful: things like authentication, server state, and network flakiness can make testing seem too costly to bother with. The `httptest2` package enables you to test all of the logic on the R sides of the API in your package without requiring access to the remote service.
 
 Importantly, it provides multiple **contexts** that mock the network connection and tools for **recording** real requests for future offline use as fixtures, both in tests and in vignettes. The package also includes additional **expectations** to assert that HTTP requests were---or were not---made.
 
 Using these tools, you can test that code is making the intended requests and that it handles the expected responses correctly, all without depending on a connection to a remote API. The ability to save responses and load them offline also enables you to write package vignettes and other dynamic documents that can be distributed without access to a live server.
 
-This package bridges the gap between two others: (1) [testthat](https://testthat.r-lib.org/), which provides a useful ([and fun](https://github.com/r-lib/testthat/blob/master/R/test-that.R#L171)) framework for unit testing in R but doesn't come with tools for testing across web APIs; and (2) [httr](https://httr.r-lib.org/), which [makes working with HTTP in R easy](https://github.com/r-lib/httr/blob/master/R/httr.r#L1) but doesn't make it simple to test the code that uses it. `httptest` brings the fun and simplicity together.
+This package bridges the gap between two others: (1) [testthat](https://testthat.r-lib.org/), which provides a useful ([and fun](https://github.com/r-lib/testthat/blob/master/R/test-that.R#L171)) framework for unit testing in R but doesn't come with tools for testing across web APIs; and (2) [httr2](https://httr2.r-lib.org/), which [makes working with HTTP in R easy](https://github.com/r-lib/httr/blob/master/R/httr.r#L1) but doesn't make it simple to test the code that uses it. `httptest` brings the fun and simplicity together.
 
 ## Installing
 
-`httptest` can be installed from CRAN with
+`httptest2` can be installed from CRAN with
 
 ```r
-install.packages("httptest")
+install.packages("httptest2")
 ```
 
 The pre-release version of the package can be pulled from GitHub using the [remotes](https://github.com/r-lib/remotes) package:
 
 ```r
 # install.packages("remotes")
-remotes::install_github("nealrichardson/httptest")
+remotes::install_github("nealrichardson/httptest2")
 ```
 
 ## Using
 
-To start using `httptest` with your package, run `use_httptest()` in the root of your package directory. This will
+To start using `httptest2` with your package, run `use_httptest()` in the root of your package directory. This will
 
 * add `httptest` to "Suggests" in the DESCRIPTION file
 * add `library(httptest)` to `tests/testthat/setup.R`, which `testthat` loads before running tests
@@ -38,7 +40,7 @@ Then, you're ready to start using the tools that `httptest` provides. Here's an 
 
 ### In your test suite
 
-The package includes several contexts, which you wrap around test code that would otherwise make network requests through `httr`. They intercept the requests and prevent actual network traffic from occurring.  
+The package includes several contexts, which you wrap around test code that would otherwise make network requests through `httr`. They intercept the requests and prevent actual network traffic from occurring.
 
 **`with_mock_api()`** maps requests---URLs along with request bodies and query parameters---to file paths. If the file exists, its contents are returned as the response object, as if the API server had returned it. This allows you to test complex R code that makes requests and does something with the response, simulating how the API should respond to specific requests.
 
@@ -86,7 +88,7 @@ capture_requests({
 })
 ```
 
-would make the actual requests over the network and store the responses where `with_mock_api()` will find them.  
+would make the actual requests over the network and store the responses where `with_mock_api()` will find them.
 
 For convenience, you may find it easier in an interactive session to call `start_capturing()`, make requests, and then `stop_capturing()` when you're done, as in:
 

@@ -10,6 +10,6 @@ stop_mocking()
 Nothing; called for its side effects
 }
 \description{
-This function "untraces" the \code{httr} request functions so that normal, real
+This function unsets the \code{httr2_mock} option so that normal, real
 requesting behavior can be resumed.
 }

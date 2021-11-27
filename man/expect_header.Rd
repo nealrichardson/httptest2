@@ -4,7 +4,7 @@
 \alias{expect_header}
 \title{Test that an HTTP request is made with a header}
 \usage{
-expect_header(..., ignore.case = TRUE)
+expect_header(expr, ..., ignore.case = TRUE)
 }
 \arguments{
 \item{...}{Arguments passed to \code{expect_warning}}

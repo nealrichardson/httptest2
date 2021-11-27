@@ -19,11 +19,7 @@
 #' @return The result of `expr`
 #' @seealso [use_mock_api()] to enable mocking on its own (not in a context); [build_mock_url()]; [.mockPaths()]
 #' @export
-with_mock_api <- function(expr) {
-  use_mock_api()
-  on.exit(stop_mocking())
-  eval.parent(expr)
-}
+with_mock_api <- function(expr) httr2::with_mock(mock_request, expr)
 
 #' Turn on API mocking
 #'
@@ -37,9 +33,9 @@ with_mock_api <- function(expr) {
 #' @return Nothing; called for its side effects.
 #' @seealso [with_mock_api()] [stop_mocking()] [block_requests()]
 #' @export
-use_mock_api <- function() mock_perform(mock_request)
+use_mock_api <- function() options(httr2_mock = mock_request)
 
-mock_request <- function(req, handle, refresh) {
+mock_request <- function(req) {
   # If there's a query, then req$url has been through build_url(parse_url())
   # and if it's a file and not URL, it has grown a ":///" prefix. Prune that.
   req$url <- sub("^:///", "", req$url)
@@ -91,28 +87,19 @@ mock_request <- function(req, handle, refresh) {
 #' instead of trying to build the URL, you should run the test
 #' with `with_mock_api` as the error message will contain the mock file path.
 #'
-#' @param req A `request` object, or a character "URL" to convert
-#' @param method character HTTP method. If `req` is a 'request' object,
-#' its request method will override this argument
+#' @param req A `request` object
 #' @return A file path and name, without an extension. The file, or a file with
 #' some extension appended, may or may not
 #' exist: existence is not a concern of this function.
 #' @importFrom digest digest
 #' @seealso [with_mock_api()] [capture_requests()]
 #' @export
-build_mock_url <- function(req, method = "GET") {
-  if (is.character(req)) {
-    # A URL/file download
-    url <- req
-    body <- NULL
-  } else {
-    url <- req$url
-    method <- req$method
-    body <- request_body(req)
-  }
+build_mock_url <- function(req) {
+  method <- get_request_method(req)
+  body <- get_string_request_body(req)
 
   # Remove protocol
-  url <- sub("^.*?://", "", url)
+  url <- sub("^.*?://", "", req$url)
   # Handle query params
   parts <- unlist(strsplit(url, "?", fixed = TRUE))
   # Remove trailing slash
@@ -171,20 +158,27 @@ find_mock_file <- function(file) {
 }
 
 #' @importFrom utils tail
+#' @importFrom httr2 response
 load_response <- function(file, req) {
   ext <- tail(unlist(strsplit(file, ".", fixed = TRUE)), 1)
   if (ext == "R") {
     # It's a full "response". Source it.
-    return(source(file)$value)
+    source(file)$value
+    # HTTR2: adapt httr::response to httr2::httr2_response object
   } else if (ext %in% names(EXT_TO_CONTENT_TYPE)) {
-    return(fake_response(
-      req,
-      content = readBin(file, "raw", n = file.size(file)),
+    response(
+      url = req$url,
+      method = req$method,
+      headers = list(`Content-Type` = EXT_TO_CONTENT_TYPE[[ext]]),
       status_code = 200L,
-      headers = list(`Content-Type` = EXT_TO_CONTENT_TYPE[[ext]])
-    ))
+      body = readBin(file, "raw", n = file.size(file))
+    )
   } else if (ext == "204") {
-    return(fake_response(req, status_code = 204L))
+    response(
+      url = req$url,
+      method = req$method,
+      status_code = 204L
+    )
   } else {
     stop("Unsupported mock file extension: ", ext, call. = FALSE)
   }

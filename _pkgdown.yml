@@ -38,7 +38,6 @@ reference:
   - with_mock_dir
   - without_internet
   - block_requests
-  - with_fake_http
   - stop_mocking
 - title: Expectations
   contents:
@@ -56,7 +55,6 @@ reference:
   - .mockPaths
   - set_requester
   - build_mock_url
-  - fake_response
 - title: Vignettes
   contents:
   - start_vignette

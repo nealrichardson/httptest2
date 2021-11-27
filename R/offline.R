@@ -3,8 +3,7 @@
 #' Temporary connection trouble shouldn't fail your build.
 #'
 #' Note that if you call this from inside one of the mock contexts, it will
-#' follow the mock's behavior. That is, inside [with_fake_http()],
-#' the check will pass and the following tests will run, but inside
+#' follow the mock's behavior. That is, inside
 #' [without_internet()], the following tests will be skipped.
 #' @param message character message to be printed, passed to
 #' [testthat::skip()]
@@ -22,7 +21,6 @@ skip_if_disconnected <- function(message = paste("Offline: cannot reach", url),
   invisible(TRUE)
 }
 
-#' @importFrom httr GET PUT POST PATCH DELETE VERB RETRY
 currently_offline <- function(url = "http://httpbin.org/") {
-  inherits(try(httr::GET(url), silent = TRUE), "try-error")
+  inherits(try(req_perform(request(url)), silent = TRUE), "try-error")
 }

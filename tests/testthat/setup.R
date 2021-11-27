@@ -5,7 +5,38 @@ options(
   httptest.debug = FALSE
 )
 
-library(httr)
+library(httr2, warn.conflicts = FALSE)
+
+# HTTR2: some shims to help update the tests from httr to httr2
+GET <- function(url) {
+  request(url) %>%
+    req_error(is_error = ~FALSE) %>%
+    req_perform()
+}
+
+PUT <- function(url) {
+  request(url) %>%
+    req_method("PUT") %>%
+    req_perform()
+}
+
+POST <- function(url) {
+  request(url) %>%
+    req_method("POST") %>%
+    req_perform()
+}
+
+PATCH <- function(url) {
+  request(url) %>%
+    req_method("PATCH") %>%
+    req_perform()
+}
+
+DELETE <- function(url) {
+  request(url) %>%
+    req_method("DELETE") %>%
+    req_perform()
+}
 
 capture_while_mocking <- function(..., path) {
   with_mock_path(path, {

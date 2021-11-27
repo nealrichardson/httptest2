@@ -12,10 +12,6 @@
 #' provided, allowing you to assert that a function call would make a
 #' correctly-formed HTTP request or assert that a function does not make a
 #' request (because if it did, it would raise an error in this context).
-#' [with_fake_http()] raises a "message" instead of an "error", and HTTP
-#' requests return a "response"-class object. Like `without_internet`, it allows
-#' you to assert that the correct requests were (or were not) made, but it
-#' doesn't cause the code to exit with an error.
 #'
 #' `httptest` offers additional **expectations** to assert that HTTP requests
 #' were---or were not---made. [expect_GET()], [expect_PUT()], [expect_PATCH()],

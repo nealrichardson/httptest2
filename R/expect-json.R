@@ -27,6 +27,16 @@ expect_json_equivalent <- function(object,
   ), info = info)
   invisible(object)
 }
+# HTTR2: report testthat issue that expect_mapequal should/could be recursive
+# testthat::expect_mapequal(
+#   list(n = 5, q = list(r = 55, p = 9)),
+#   list(q = list(p = 9, r = 55), n = 5)
+# )
+#
+# Error: act$val[exp_nms] (`actual`) not equal to exp$val (`expected`).
+#
+# `names(actual$q)`:   "r" "p"
+# `names(expected$q)`: "p" "r"
 
 #' @importFrom testthat compare
 json_compare <- function(object, expected, check.attributes = FALSE) {

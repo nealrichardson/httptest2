@@ -7,7 +7,7 @@
 save_response(response, simplify = TRUE)
 }
 \arguments{
-\item{response}{An 'httr' \code{response} object}
+\item{response}{An 'httr2' \code{response} object}
 
 \item{simplify}{logical: if \code{TRUE} (default), JSON responses with status 200
 and a supported \code{Content-Type}

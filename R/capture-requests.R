@@ -156,7 +156,7 @@ save_response <- function(response, file, simplify = TRUE) {
       "text/csv", "text/html", "text/plain",
       "text/tab-separated-values", "text/xml"
     )
-    if (ct %in% text_types) {
+    if (ct %in% text_types && length(response$body)) {
       cont <- resp_body_string(response)
       response$body <- substitute(charToRaw(cont))
     } else if (inherits(response$request$output, "write_disk")) {

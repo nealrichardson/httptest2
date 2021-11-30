@@ -18,8 +18,7 @@ test_that("We can record a series of requests (a few ways)", {
   # HTTR2: implement write_disk (see also commented code below)
   # r6 <<- GET("http://httpbin.org/anything", config = write_disk(dl_file))
   # r7 <<- GET("http://httpbin.org/image/webp", config = write_disk(webp_file))
-  # HTTR2: handle 202 capturing ("Error: Can not retrieve empty body" in save_resposne) (see also commented code below)
-  # r8 <<- GET("http://httpbin.org/status/202")
+  r8 <<- GET("http://httpbin.org/status/202")
   stop_capturing()
   .mockPaths(NULL) # because start_capturing with path modifies global state
   expect_identical(
@@ -32,7 +31,7 @@ test_that("We can record a series of requests (a few ways)", {
       # "httpbin.org/image/webp.R-FILE", # The `write_disk` location
       "httpbin.org/put-PUT.json", # Not a GET, but returns 200
       "httpbin.org/response-headers-ac4928.json",
-      # "httpbin.org/status/202.R", # Not 200 response, so .R
+      "httpbin.org/status/202.R", # Not 200 response, so .R
       "httpbin.org/status/418.R" # Not 200 response, so .R
     )
   )
@@ -72,7 +71,7 @@ test_that("We can then load the mocks it stores", {
         req_perform()
       # m6 <- GET("http://httpbin.org/anything", config = write_disk(mock_dl_file))
       # m7 <- GET("http://httpbin.org/image/webp", config = write_disk(mock_webp_file))
-      # m8 <- GET("http://httpbin.org/status/202")
+      m8 <- GET("http://httpbin.org/status/202")
     })
   })
   expect_identical(resp_body_json(m1), resp_body_json(r1))
@@ -89,7 +88,7 @@ test_that("We can then load the mocks it stores", {
   expect_identical(resp_body_json(m5), resp_body_json(r5))
   # expect_identical(resp_body_string(m6), content_r6)
   # expect_identical(resp_body_string(m7), content_r7)
-  # expect_equal(resp_status(m8), 202)
+  expect_equal(resp_status(m8), 202)
 })
 
 test_that("write_disk mocks can be reloaded even if the mock directory moves", {

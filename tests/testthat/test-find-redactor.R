@@ -81,7 +81,6 @@ with_mock_api({
     # Great, but let's kill it when we're done
     on.exit(detach("package:testpkg", unload = TRUE))
     newmocks2 <- tempfile()
-    skip("HTTR2: adapt httr::response to httr2::httr2_response")
     with_redactor(
       NULL,
       capture_while_mocking(simplify = FALSE, path = newmocks2, {

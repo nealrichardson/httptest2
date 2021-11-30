@@ -123,7 +123,6 @@ with_mock_api({
   })
 
   test_that("Mock GET with non-JSON", {
-    skip("HTTR2: adapt httr::response to httr2::httr2_response")
     dick <- GET("http://example.com/html")
     expect_true(grepl("Melville", resp_body_string(dick)))
   })
@@ -263,7 +262,6 @@ test_that("mock_request code paths are covered (outside of trace)", {
     mock_request(list(method = "GET", url = "api/")),
     "httr2_response"
   )
-  skip("HTTR2: adapt httr::response to httr2::httr2_response")
   expect_s3_class(
     mock_request(list(method = "GET", url = "http://example.com/html")),
     "httr2_response"

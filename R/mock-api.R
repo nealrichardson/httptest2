@@ -163,8 +163,7 @@ load_response <- function(file, req) {
   ext <- tail(unlist(strsplit(file, ".", fixed = TRUE)), 1)
   if (ext == "R") {
     # It's a full "response". Source it.
-    source(file)$value
-    # HTTR2: adapt httr::response to httr2::httr2_response object
+    adapt_httr_response(source(file)$value)
   } else if (ext %in% names(EXT_TO_CONTENT_TYPE)) {
     response(
       url = req$url,
@@ -177,11 +176,27 @@ load_response <- function(file, req) {
     response(
       url = req$url,
       method = req$method,
-      status_code = 204L
+      status_code = 204L,
+      # HTTR2: report upstream: default for response() is body = NULL
+      # but all real requests seem to have body = raw(n)
+      body = raw(0L)
     )
   } else {
     stop("Unsupported mock file extension: ", ext, call. = FALSE)
   }
+}
+
+adapt_httr_response <- function(resp) {
+  if (inherits(resp, "httr2_response")) {
+    return(resp)
+  }
+  stopifnot(inherits(resp, "response"))
+
+  class(resp) <- "httr2_response"
+  class(resp$headers) <- "httr2_headers"
+  resp$body <- resp$content
+  resp$content <- NULL
+  resp
 }
 
 request_body <- function(req) {

@@ -5,7 +5,6 @@ test_that("with_mock_dir works when the directory with mock files exists", {
   # Put mocks in it
   file.copy(testthat::test_path("httpbin.org"), temporary_dir, recursive = TRUE)
 
-  skip("HTTR2: adapt httr::response to httr2::httr2_response")
   current_mock_paths <- .mockPaths()
   with_mock_dir(temporary_dir, {
     # There's nothing on the mock paths other than our mock dir

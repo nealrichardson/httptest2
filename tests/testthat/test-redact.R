@@ -38,116 +38,114 @@ with_mock_api({
   #   expect_equal(content(cooksb), content(cooks))
   # })
 
-  # HTTR2: adapt httr::response to httr2::httr2_response
-  # # redact_cookies from response
-  # c2_req <- request("http://httpbin.org/cookies/set") %>%
-  #   req_url_query(token = 12345)
-  # test_that("redact_cookies: the response has the set-cookie in the response", {
-  #   capture_while_mocking(simplify = FALSE, path = d, {
-  #     c2 <- req_perform(c2_req)
-  #   })
-  #   # Note the "all_headers": the request did a 302 redirect
-  #   expect_identical(
-  #     c2$all_headers[[1]]$headers[["set-cookie"]],
-  #     "token=12345; Path=/"
-  #   )
-  #   expect_identical(c2$cookies$value, "12345")
-  # })
-  # test_that("redact_cookies removes set-cookies from response in the mock file", {
-  #   # Note that "token=12345" appears in the request URL because of how
-  #   # httpbin works. But normally your cookie wouldn't be in the URL.
-  #   # Of course, if you wanted to sanitize URLs too, you could write your
-  #   # own custom redacting function.
-  #   expect_false(any(grepl(
-  #     '"token=12345',
-  #     readLines(file.path(d, "httpbin.org", "cookies", "set-5b2631.R"))
-  #   )))
-  #   expect_length(
-  #     grep(
-  #       "REDACTED",
-  #       readLines(file.path(d, "httpbin.org", "cookies", "set-5b2631.R"))
-  #     ),
-  #     2
-  #   )
-  # })
-  # test_that("And when loading that .R mock, the redacted value doesn't appear", {
-  #   with_mock_path(d, {
-  #     c2b <- req_perform(c2_req)
-  #   })
-  #   expect_identical(
-  #     c2b$all_headers[[1]]$headers[["set-cookie"]],
-  #     "REDACTED"
-  #   )
-  #   expect_identical(c2b$cookies$value, "REDACTED")
-  # })
+  # redact_cookies from response
+  c2_req <- request("http://httpbin.org/cookies/set") %>%
+    req_url_query(token = 12345)
+  test_that("redact_cookies: the response has the set-cookie in the response", {
+    capture_while_mocking(simplify = FALSE, path = d, {
+      c2 <- req_perform(c2_req)
+    })
+    # Note the "all_headers": the request did a 302 redirect
+    expect_identical(
+      c2$all_headers[[1]]$headers[["set-cookie"]],
+      "token=12345; Path=/"
+    )
+    expect_identical(c2$cookies$value, "12345")
+  })
+  test_that("redact_cookies removes set-cookies from response in the mock file", {
+    # Note that "token=12345" appears in the request URL because of how
+    # httpbin works. But normally your cookie wouldn't be in the URL.
+    # Of course, if you wanted to sanitize URLs too, you could write your
+    # own custom redacting function.
+    expect_false(any(grepl(
+      '"token=12345',
+      readLines(file.path(d, "httpbin.org", "cookies", "set-5b2631.R"))
+    )))
+    expect_length(
+      grep(
+        "REDACTED",
+        readLines(file.path(d, "httpbin.org", "cookies", "set-5b2631.R"))
+      ),
+      2
+    )
+  })
+  test_that("And when loading that .R mock, the redacted value doesn't appear", {
+    with_mock_path(d, {
+      c2b <- req_perform(c2_req)
+    })
+    expect_identical(
+      c2b$all_headers[[1]]$headers[["set-cookie"]],
+      "REDACTED"
+    )
+    expect_identical(c2b$cookies$value, "REDACTED")
+  })
 
-  # HTTR2: adapt httr::response to httr2::httr2_response
-  # # another redact_cookies with POST example.com/login
-  # login_req <- request("http://example.com/login") %>%
-  #   req_body_json(list(username = "password"))
-  # test_that("redact_cookies: the response has the set-cookie in the response", {
-  #   capture_while_mocking(simplify = FALSE, path = d, {
-  #     login <- req_perform(login_req)
-  #   })
-  #   # Note the "all_headers": the request did a 302 redirect
-  #   expect_true(grepl(
-  #     "token=12345",
-  #     login$all_headers[[1]]$headers[["set-cookie"]]
-  #   ))
-  #   expect_true(grepl(
-  #     "token=12345",
-  #     login$headers[["set-cookie"]]
-  #   ))
-  #   expect_identical(login$cookies$value, "12345")
-  # })
-  # test_that("redact_cookies removes set-cookies from response in the mock file", {
-  #   # Unlike other example, token=12345 isn't in the URL
-  #   expect_false(any(grepl(
-  #     "12345",
-  #     readLines(file.path(d, "example.com", "login-712027-POST.R"))
-  #   )))
-  #   expect_length(
-  #     grep(
-  #       "REDACTED",
-  #       readLines(file.path(d, "example.com", "login-712027-POST.R"))
-  #     ),
-  #     3
-  #   )
-  # })
-  # test_that("And when loading that .R mock, the redacted value doesn't appear", {
-  #   with_mock_path(d, {
-  #     loginb <- req_perform(login_req)
-  #   })
-  #   expect_identical(
-  #     loginb$all_headers[[1]]$headers[["set-cookie"]],
-  #     "REDACTED"
-  #   )
-  #   expect_identical(loginb$headers[["set-cookie"]], "REDACTED")
-  #   expect_identical(loginb$cookies$value, "REDACTED")
-  # })
+  # another redact_cookies with POST example.com/login
+  login_req <- request("http://example.com/login") %>%
+    req_body_json(list(username = "password"))
+  test_that("redact_cookies: the response has the set-cookie in the response", {
+    capture_while_mocking(simplify = FALSE, path = d, {
+      login <- req_perform(login_req)
+    })
+    # Note the "all_headers": the request did a 302 redirect
+    expect_true(grepl(
+      "token=12345",
+      login$all_headers[[1]]$headers[["set-cookie"]]
+    ))
+    expect_true(grepl(
+      "token=12345",
+      login$headers[["set-cookie"]]
+    ))
+    expect_identical(login$cookies$value, "12345")
+  })
+  test_that("redact_cookies removes set-cookies from response in the mock file", {
+    # Unlike other example, token=12345 isn't in the URL
+    expect_false(any(grepl(
+      "12345",
+      readLines(file.path(d, "example.com", "login-712027-POST.R"))
+    )))
+    expect_length(
+      grep(
+        "REDACTED",
+        readLines(file.path(d, "example.com", "login-712027-POST.R"))
+      ),
+      3
+    )
+  })
+  test_that("And when loading that .R mock, the redacted value doesn't appear", {
+    with_mock_path(d, {
+      loginb <- req_perform(login_req)
+    })
+    expect_identical(
+      loginb$all_headers[[1]]$headers[["set-cookie"]],
+      "REDACTED"
+    )
+    expect_identical(loginb$headers[["set-cookie"]], "REDACTED")
+    expect_identical(loginb$cookies$value, "REDACTED")
+  })
 
-  # HTTR2: adapt httr::response to httr2::httr2_response
-  # # HTTP auth credentials aren't recorded
-  # auth_req <- request("http://httpbin.org/basic-auth/user/passwd") %>%
-  #   req_auth_basic("user", "passwd")
-  # test_that("redact_http_auth: the request has the user:pw set", {
-  #   capture_while_mocking(simplify = FALSE, path = d, {
-  #     pwauth <- req_perform(auth_req)
-  #   })
-  #   expect_identical(pwauth$request$options$userpwd, "user:passwd")
-  # })
-  # test_that("redact_http_auth removes user:pw from request in the mock file", {
-  #   expect_false(any(grepl(
-  #     "user:passwd",
-  #     readLines(file.path(d, "httpbin.org", "basic-auth", "user", "passwd.R"))
-  #   )))
-  # })
-  # test_that("And the redacted .R mock can be loaded", {
-  #   with_mock_path(d, {
-  #     pwauthb <- req_perform(auth_req)
-  #   })
-  #   expect_equal(resp_body_json(pwauthb), resp_body_json(pwauth))
-  # })
+  # HTTP auth credentials aren't recorded
+  auth_req <- request("http://httpbin.org/basic-auth/user/passwd") %>%
+    # Slight hack: the mock was recorded with user:passwd to get a 200 response
+    # but then the grepl would fail because the password is in the URL
+    # (a feature of httpbin)
+    req_auth_basic("user", "SeCrEtPaSsWoRd!") %>%
+    req_error(is_error = ~FALSE)
+  capture_while_mocking(simplify = FALSE, path = d, {
+    pwauth <- req_perform(auth_req)
+  })
+  test_that("there is no password in the mock", {
+    expect_false(any(grepl(
+      "SeCrEtPaSsWoRd!",
+      readLines(file.path(d, "httpbin.org", "basic-auth", "user", "passwd.R"))
+    )))
+  })
+  test_that("And the redacted .R mock can be loaded", {
+    with_mock_path(d, {
+      pwauthb <- req_perform(auth_req)
+    })
+    expect_equal(resp_body_json(pwauthb), resp_body_json(pwauth))
+  })
 
   # HTTR2: update for httr2 oauth
   # # OAuth credentials aren't recorded
@@ -223,7 +221,6 @@ with_mock_api({
     expect_identical(resp_body_json(a2), list(value = "OTHER/object1/"))
   })
 
-  skip("HTTR2: adapt httr::response to httr2::httr2_response")
   loc <- request("http://httpbin.org/response-headers") %>%
     req_url_query(Location = "http://httpbin.org/status/201") %>%
     req_perform()
@@ -233,7 +230,7 @@ with_mock_api({
   )
   test_that("gsub_response touches Location header", {
     expect_identical(
-      loc_sub$headers$location,
+      resp_header(loc_sub, "location"),
       "http://httpbin.org/status/404"
     )
     expect_identical(

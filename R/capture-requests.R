@@ -189,6 +189,7 @@ save_response <- function(response, file, simplify = TRUE) {
 stop_capturing <- function() {
   safe_untrace("req_perform", request)
   safe_untrace("req_perform")
+  invisible()
 }
 
 mkdir_p <- function(filename) {

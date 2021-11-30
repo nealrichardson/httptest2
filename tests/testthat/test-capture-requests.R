@@ -118,12 +118,11 @@ with_mock_api({
     capture_while_mocking(path = d2, {
       GET("http://example.com/get/")
       GET("api/object1/")
-      # HTTR2: adapt httr::response to httr2::httr2_response
-      # GET("http://httpbin.org/status/204/")
+      GET("http://httpbin.org/status/204/")
     })
     expect_setequal(
       dir(d2, recursive = TRUE),
-      c("example.com/get.json", "api/object1.json") # , "httpbin.org/status/204.204")
+      c("example.com/get.json", "api/object1.json", "httpbin.org/status/204.204")
     )
     expect_identical(
       readLines(file.path(d2, "example.com/get.json")),
@@ -132,9 +131,8 @@ with_mock_api({
   })
 
   test_that("Loading 204 response status recorded with simplify=TRUE", {
-    skip("HTTR2: adapt httr::response to httr2::httr2_response")
     original <- GET("http://httpbin.org/status/204/")
-    expect_null(content(original))
+    expect_length(original$body, 0)
     expect_length(
       readLines(file.path(d2, "httpbin.org/status/204.204")),
       0
@@ -142,7 +140,7 @@ with_mock_api({
     with_mock_path(d2,
       {
         mocked <- GET("http://httpbin.org/status/204/")
-        expect_null(content(mocked))
+        expect_length(mocked$body, 0)
       },
       replace = TRUE
     )
@@ -154,13 +152,12 @@ with_mock_api({
       capture_while_mocking(simplify = FALSE, {
         GET("http://example.com/get/")
         GET("api/object1/")
-        # HTTR2: adapt httr::response to httr2::httr2_response
-        # GET("http://httpbin.org/status/204/")
+        GET("http://httpbin.org/status/204/")
       })
     })
     expect_setequal(
       dir(d3, recursive = TRUE),
-      c("example.com/get.R", "api/object1.R") # , "httpbin.org/status/204.R")
+      c("example.com/get.R", "api/object1.R", "httpbin.org/status/204.R")
     )
     response <- source(file.path(d3, "example.com/get.R"))$value
     expect_s3_class(response, "httr2_response")

@@ -21,11 +21,10 @@
 #' written out, using the appropriate extension. `204 No Content` status
 #' responses will be stored as an empty file with extension `.204`. Otherwise,
 #' the response will be written as a `.R` file containing syntax that, when
-#' executed, recreates the
-#' `httr` "response" object.
+#' executed, recreates the `httr2_response` object.
 #'
 #' If you have trouble when recording responses, or are unsure where the files
-#' are being written, set `options(httptest.verbose=TRUE)` to print a message
+#' are being written, set `options(httptest.verbose = TRUE)` to print a message
 #' for every file that is written containing the absolute path of the file.
 #'
 #' @param expr Code to run inside the context
@@ -43,20 +42,19 @@
 #' it is called for its side effects.
 #' @examples
 #' \dontrun{
+#' library(httr2)
 #' capture_requests({
-#'   GET("http://httpbin.org/get")
-#'   GET("http://httpbin.org")
-#'   GET("http://httpbin.org/response-headers",
-#'     query = list(`Content-Type` = "application/json")
-#'   )
+#'   request("http://httpbin.org/get") %>% req_perform()
+#'   request("http://httpbin.org/response-headers") %>%
+#'     req_headers(`Content-Type` = "application/json") %>%
+#'     req_perform()
 #' })
 #' # Or:
 #' start_capturing()
-#' GET("http://httpbin.org/get")
-#' GET("http://httpbin.org")
-#' GET("http://httpbin.org/response-headers",
-#'   query = list(`Content-Type` = "application/json")
-#' )
+#' request("http://httpbin.org/get") %>% req_perform()
+#' request("http://httpbin.org/response-headers") %>%
+#'   req_headers(`Content-Type` = "application/json") %>%
+#'   req_perform()
 #' stop_capturing()
 #' }
 #' @export
@@ -110,11 +108,11 @@ start_capturing <- function(path = NULL, simplify = TRUE) {
 
 #' Write out a captured response
 #'
-#' @param response An 'httr2' `response` object
+#' @param response An `httr2_response` object
 #' @param simplify logical: if `TRUE` (default), JSON responses with status 200
 #' and a supported `Content-Type`
 #' will be written as just the text of the response body. In all other cases,
-#' and when `simplify` is `FALSE`, the "response" object will be written out to
+#' and when `simplify` is `FALSE`, the `httr2_response` object will be written out to
 #' a .R file using [base::dput()].
 #' @return The character file name that was written out
 #' @export

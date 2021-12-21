@@ -54,4 +54,5 @@
 #'
 #' @name httptest
 #' @docType package
+#' @importFrom httr2 req_perform request
 NULL

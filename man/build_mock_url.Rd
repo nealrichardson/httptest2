@@ -4,13 +4,10 @@
 \alias{build_mock_url}
 \title{Convert a request to a mock file path}
 \usage{
-build_mock_url(req, method = "GET")
+build_mock_url(req)
 }
 \arguments{
-\item{req}{A \code{request} object, or a character "URL" to convert}
-
-\item{method}{character HTTP method. If \code{req} is a 'request' object,
-its request method will override this argument}
+\item{req}{A \code{request} object}
 }
 \value{
 A file path and name, without an extension. The file, or a file with
@@ -34,15 +31,15 @@ Mock file paths also have a file extension appended, based on the
 with the request, does not add the extension. In an
 HTTP API, a "directory" itself is a resource,
 so the extension allows distinguishing directories and files in the file
-system. That is, a mocked \code{GET("http://example.com/api/")} may read a
+system. That is, a mocked \verb{GET http://example.com/api/} may read a
 "example.com/api.json" file, while
-\code{GET("http://example.com/api/object1/")} reads "example.com/api/object1.json".
+\verb{GET http://example.com/api/object1/} reads "example.com/api/object1.json".
 
 Other examples:
 \itemize{
-\item \code{GET("http://example.com/api/object1/?a=1")} may read
+\item \verb{GET http://example.com/api/object1/?a=1} may read
 "example.com/api/object1-b64371.xml".
-\item \code{POST("http://example.com/api/object1/?a=1")} may read
+\item \verb{POST http://example.com/api/object1/?a=1} may read
 "example.com/api/object1-b64371-POST.json".
 }
 

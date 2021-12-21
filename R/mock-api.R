@@ -23,7 +23,7 @@ with_mock_api <- function(expr) httr2::with_mock(mock_request, expr)
 
 #' Turn on API mocking
 #'
-#' This function intercepts HTTP requests made through `httr` and serves mock
+#' This function intercepts HTTP requests made through `httr2` and serves mock
 #' file responses instead. It is what [with_mock_api()] does, minus the
 #' automatic disabling of mocking when the context finishes.
 #'
@@ -68,14 +68,14 @@ mock_request <- function(req) {
 #' with the request, does not add the extension. In an
 #' HTTP API, a "directory" itself is a resource,
 #' so the extension allows distinguishing directories and files in the file
-#' system. That is, a mocked `GET("http://example.com/api/")` may read a
+#' system. That is, a mocked `GET http://example.com/api/` may read a
 #' "example.com/api.json" file, while
-#' `GET("http://example.com/api/object1/")` reads "example.com/api/object1.json".
+#' `GET http://example.com/api/object1/` reads "example.com/api/object1.json".
 #'
 #' Other examples:
-#' * `GET("http://example.com/api/object1/?a=1")` may read
+#' * `GET http://example.com/api/object1/?a=1` may read
 #' "example.com/api/object1-b64371.xml".
-#' * `POST("http://example.com/api/object1/?a=1")` may read
+#' * `POST http://example.com/api/object1/?a=1` may read
 #' "example.com/api/object1-b64371-POST.json".
 #'
 #' This function is exported so that other packages can construct similar mock

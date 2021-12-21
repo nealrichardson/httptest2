@@ -4,7 +4,7 @@
 #' out in the [capture_requests()] context, allowing you to remove sensitive
 #' values, such as authentication tokens,
 #' as well as any other modification or truncation of the response body. By
-#' default, the [redact_auth()] function will be used to purge standard
+#' default, the [redact_cookies()] function will be used to purge standard
 #' auth methods, but `set_redactor()` allows you to provide a different one.
 #'
 #' Alternatively, you can put a redacting function in `inst/httptest/redact.R`
@@ -14,17 +14,17 @@
 #'
 #' For further details on how to redact responses, see `vignette("redacting")`.
 #'
-#' @param FUN A function or expression that modifies `response` objects.
+#' @param FUN A function or expression that modifies `httr2_response` objects.
 #' Specifically, a valid input is one of:
-#' * A function taking a single argument, the `response`, and returning a valid
-#' `response` object.
+#' * A function taking a single argument, the `httr2_response`,
+#' and returning a valid `httr2_response` object.
 #' * A formula as shorthand for an anonymous function with `.` as the
 #' "response" argument, as in the `purrr` package. That is, instead of
 #' `function (response) redact_headers(response, "X-Custom-Header")`, you can
 #' use `~ redact_headers(., "X-Custom-Header")`
 #' * A list of redacting functions/formulas, which will be executed
 #' in sequence on the response
-#' * `NULL`, to override the default `redact_auth()`.
+#' * `NULL`, to override the default `redact_cookies()`.
 #' @return Invisibly, the redacting function, validated and perhaps modified.
 #' Formulas and function lists are turned into proper functions. `NULL` as input
 #' returns the `force()` function.
@@ -55,7 +55,7 @@ redactor_from_packages <- function(packages) {
     out <- prepare_redactor(funcs)
   } else {
     # Default
-    out <- redact_auth
+    out <- redact_cookies
   }
   return(out)
 }

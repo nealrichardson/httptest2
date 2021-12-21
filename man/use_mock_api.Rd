@@ -10,7 +10,7 @@ use_mock_api()
 Nothing; called for its side effects.
 }
 \description{
-This function intercepts HTTP requests made through \code{httr} and serves mock
+This function intercepts HTTP requests made through \code{httr2} and serves mock
 file responses instead. It is what \code{\link[=with_mock_api]{with_mock_api()}} does, minus the
 automatic disabling of mocking when the context finishes.
 }

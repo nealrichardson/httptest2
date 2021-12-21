@@ -9,7 +9,8 @@
 #' [testthat::skip()]
 #' @param url character URL to ping to check for a working connection
 #' @return If offline, a test skip; else invisibly returns TRUE.
-#' @seealso [testthat::skip()]
+#' @seealso [testthat::skip_if_offline()], which works at a lower level so it
+#' can't be mocked by `without_internet()`.
 #' @importFrom testthat skip skip_on_cran
 #' @export
 skip_if_disconnected <- function(message = paste("Offline: cannot reach", url),

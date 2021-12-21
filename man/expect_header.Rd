@@ -7,7 +7,9 @@
 expect_header(expr, ..., ignore.case = TRUE)
 }
 \arguments{
-\item{...}{Arguments passed to \code{expect_warning}}
+\item{expr}{Code to evaluate}
+
+\item{...}{Arguments passed to \code{expect_warning()}}
 
 \item{ignore.case}{logical: if \code{FALSE}, the pattern matching is \emph{case
 sensitive} and if \code{TRUE}, case is ignored during matching. Default is \code{TRUE};
@@ -27,11 +29,14 @@ raising warnings that are caught by \code{\link[testthat:expect_error]{testthat:
 requests.
 }
 \examples{
-library(httr)
-with_fake_http({
-  expect_header(
-    GET("http://example.com", config = add_headers(Accept = "image/png")),
-    "Accept: image/png"
-  )
-})
+\dontshow{if (!httptest2:::currently_offline()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+
+library(httr2)
+expect_header(
+  request("http://httpbin.org") \%>\%
+    req_headers(Accept = "image/png") \%>\%
+    req_perform(),
+  "Accept: image/png"
+)
+\dontshow{\}) # examplesIf}
 }

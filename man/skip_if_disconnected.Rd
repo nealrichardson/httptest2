@@ -27,5 +27,6 @@ follow the mock's behavior. That is, inside
 \code{\link[=without_internet]{without_internet()}}, the following tests will be skipped.
 }
 \seealso{
-\code{\link[testthat:skip]{testthat::skip()}}
+\code{\link[testthat:skip]{testthat::skip_if_offline()}}, which works at a lower level so it
+can't be mocked by \code{without_internet()}.
 }

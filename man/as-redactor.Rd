@@ -13,7 +13,7 @@ as.redactor(fmla)
 A \code{function}.
 }
 \description{
-Redactors take a \code{response} as their first argument, and some take additional
+Redactors take a \code{httr2_response} as their first argument, and some take additional
 arguments: \code{redact_headers()}, for example, requires that you specify
 \code{headers}. This function allows you to take a simplified expression via a
 formula, similar to what \code{purrr} does, so that you can provide the function

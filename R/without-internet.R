@@ -13,16 +13,19 @@
 #' @return The result of `expr`
 #' @seealso [block_requests()] to enable mocking on its own (not in a context)
 #' @examples
+#' library(httr2)
 #' without_internet({
 #'   expect_error(
-#'     httr::GET("http://httpbin.org/get"),
+#'     request("http://httpbin.org/get") %>% req_perform(),
 #'     "GET http://httpbin.org/get"
 #'   )
-#'   expect_error(httr::PUT("http://httpbin.org/put",
-#'     body = '{"a":1}'
-#'   ),
-#'   'PUT http://httpbin.org/put {"a":1}',
-#'   fixed = TRUE
+#'   expect_error(
+#'     request("http://httpbin.org/put") %>%
+#'       req_method("PUT") %>%
+#'       req_body_json(list(a = 1)) %>%
+#'       req_perform(),
+#'     'PUT http://httpbin.org/put {"a":1}',
+#'     fixed = TRUE
 #'   )
 #' })
 #' @export

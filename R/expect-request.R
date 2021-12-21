@@ -1,6 +1,6 @@
 #' Expectations for mocked HTTP requests
 #'
-#' The mock contexts in `httptest` can raise errors or messages when requests
+#' The mock contexts in `httptest2` can raise errors or messages when requests
 #' are made, and those (error) messages have three
 #' elements, separated by space: (1) the request
 #' method (e.g. "GET"); (2) the request URL; and
@@ -26,22 +26,32 @@
 #' character-by-character? Default: `FALSE`
 #' @return A `testthat` 'expectation'.
 #' @examples
-#' library(httr)
+#' library(httr2)
 #' without_internet({
 #'   expect_GET(
-#'     GET("http://httpbin.org/get"),
+#'     request("http://httpbin.org/get") %>% req_perform(),
 #'     "http://httpbin.org/get"
 #'   )
-#'   expect_GET(GET("http://httpbin.org/get"),
+#'   expect_GET(
+#'     request("http://httpbin.org/get") %>% req_perform(),
 #'     "http://httpbin.org/[a-z]+",
-#'     fixed = FALSE
-#'   ) # For regular expression matching
+#'     fixed = FALSE # For regular expression matching
+#'   )
 #'   expect_PUT(
-#'     PUT("http://httpbin.org/put", body = '{"a":1}'),
+#'     request("http://httpbin.org/put") %>%
+#'       req_method("PUT") %>%
+#'       req_body_json(list(a = 1)) %>%
+#'       req_perform(),
 #'     "http://httpbin.org/put",
 #'     '{"a":1}'
 #'   )
-#'   expect_PUT(PUT("http://httpbin.org/put", body = '{"a":1}'))
+#'   # Don't need to assert the request body, or even the URL
+#'   expect_PUT(
+#'     request("http://httpbin.org/put") %>%
+#'       req_method("PUT") %>%
+#'       req_body_json(list(a = 1)) %>%
+#'       req_perform()
+#'   )
 #'   expect_no_request(rnorm(5))
 #' })
 #' @name expect_verb

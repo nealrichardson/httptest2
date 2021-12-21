@@ -7,18 +7,18 @@
 set_redactor(FUN)
 }
 \arguments{
-\item{FUN}{A function or expression that modifies \code{response} objects.
+\item{FUN}{A function or expression that modifies \code{httr2_response} objects.
 Specifically, a valid input is one of:
 \itemize{
-\item A function taking a single argument, the \code{response}, and returning a valid
-\code{response} object.
+\item A function taking a single argument, the \code{httr2_response},
+and returning a valid \code{httr2_response} object.
 \item A formula as shorthand for an anonymous function with \code{.} as the
 "response" argument, as in the \code{purrr} package. That is, instead of
 \code{function (response) redact_headers(response, "X-Custom-Header")}, you can
 use \code{~ redact_headers(., "X-Custom-Header")}
 \item A list of redacting functions/formulas, which will be executed
 in sequence on the response
-\item \code{NULL}, to override the default \code{redact_auth()}.
+\item \code{NULL}, to override the default \code{redact_cookies()}.
 }}
 }
 \value{
@@ -31,7 +31,7 @@ A redactor is a function that alters the response content being written
 out in the \code{\link[=capture_requests]{capture_requests()}} context, allowing you to remove sensitive
 values, such as authentication tokens,
 as well as any other modification or truncation of the response body. By
-default, the \code{\link[=redact_auth]{redact_auth()}} function will be used to purge standard
+default, the \code{\link[=redact_cookies]{redact_cookies()}} function will be used to purge standard
 auth methods, but \code{set_redactor()} allows you to provide a different one.
 }
 \details{

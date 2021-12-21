@@ -16,7 +16,7 @@ Specifically, a valid input is one of:
 "request" argument, as in the \code{purrr} package.
 \item A list of functions/formulas, which will be executed
 in sequence on the request.
-\item \code{NULL}, to override the default \code{redact_auth()}.
+\item \code{NULL}, to override the default \code{redact_cookies()}.
 }}
 }
 \value{

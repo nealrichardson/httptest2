@@ -55,29 +55,27 @@ maps to a supported file extension---currently \code{.json},
 written out, using the appropriate extension. \verb{204 No Content} status
 responses will be stored as an empty file with extension \code{.204}. Otherwise,
 the response will be written as a \code{.R} file containing syntax that, when
-executed, recreates the
-\code{httr} "response" object.
+executed, recreates the \code{httr2_response} object.
 
 If you have trouble when recording responses, or are unsure where the files
-are being written, set \code{options(httptest.verbose=TRUE)} to print a message
+are being written, set \code{options(httptest.verbose = TRUE)} to print a message
 for every file that is written containing the absolute path of the file.
 }
 \examples{
 \dontrun{
+library(httr2)
 capture_requests({
-  GET("http://httpbin.org/get")
-  GET("http://httpbin.org")
-  GET("http://httpbin.org/response-headers",
-    query = list(`Content-Type` = "application/json")
-  )
+  request("http://httpbin.org/get") \%>\% req_perform()
+  request("http://httpbin.org/response-headers") \%>\%
+    req_headers(`Content-Type` = "application/json") \%>\%
+    req_perform()
 })
 # Or:
 start_capturing()
-GET("http://httpbin.org/get")
-GET("http://httpbin.org")
-GET("http://httpbin.org/response-headers",
-  query = list(`Content-Type` = "application/json")
-)
+request("http://httpbin.org/get") \%>\% req_perform()
+request("http://httpbin.org/response-headers") \%>\%
+  req_headers(`Content-Type` = "application/json") \%>\%
+  req_perform()
 stop_capturing()
 }
 }

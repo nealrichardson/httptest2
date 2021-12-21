@@ -207,6 +207,7 @@ with_mock_api({
   })
 
   test_that("Request preprocessing via set_requester: change the request URL", {
+    skip("HTTR2: remove set_requester, use redactor on request URL")
     g1 <- GET("http://example.com/get")
     old <- getOption("httptest.requester")
     on.exit(options(httptest.requester = old))

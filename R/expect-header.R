@@ -7,21 +7,23 @@
 #' `expect_header` works both in the mock HTTP contexts and on "live" HTTP
 #' requests.
 #'
-#' @param ... Arguments passed to `expect_warning`
+#' @param expr Code to evaluate
+#' @param ... Arguments passed to `expect_warning()`
 #' @param ignore.case logical: if `FALSE`, the pattern matching is _case
 #' sensitive_ and if `TRUE`, case is ignored during matching. Default is `TRUE`;
 #' note that this is the opposite of `expect_warning` but is appropriate here
 #' because HTTP header names are case insensitive.
 #' @return `NULL`, according to `expect_warning`.
 #' @importFrom testthat expect_warning
-#' @examples
-#' library(httr)
-#' with_fake_http({
-#'   expect_header(
-#'     GET("http://example.com", config = add_headers(Accept = "image/png")),
-#'     "Accept: image/png"
-#'   )
-#' })
+#' @examplesIf !httptest2:::currently_offline()
+#'
+#' library(httr2)
+#' expect_header(
+#'   request("http://httpbin.org") %>%
+#'     req_headers(Accept = "image/png") %>%
+#'     req_perform(),
+#'   "Accept: image/png"
+#' )
 #' @export
 expect_header <- function(expr, ..., ignore.case = TRUE) {
   current_mocker <- getOption("httr2_mock")

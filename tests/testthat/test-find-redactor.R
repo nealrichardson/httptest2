@@ -25,9 +25,9 @@ test_that("prepare_redactor: garbage", {
 
 test_that("get_current_redactor edge cases", {
   options(httptest.redactor = NULL)
-  expect_identical(get_current_redactor(), redact_auth)
+  expect_identical(get_current_redactor(), redact_cookies)
   options(httptest.redactor.packages = "NOTAPACKAGE")
-  expect_identical(get_current_redactor(), redact_auth)
+  expect_identical(get_current_redactor(), redact_cookies)
 })
 
 with_mock_api({
@@ -47,18 +47,15 @@ with_mock_api({
         paste0("Using redact.R from ", dQuote("testpkg"))
       ),
       expect_message(
-        expect_message(
-          capture_while_mocking(path = newmocks, {
-            # Install the "testpkg" to a temp lib.loc _after_ we've
-            # already started recording
-            lib <- install_testpkg("testpkg")
-            library(testpkg, lib.loc = lib)
-            expect_true("testpkg" %in% names(sessionInfo()$otherPkgs))
-            r <- GET("http://example.com/get")
-          }),
-          paste0("Using redact.R from ", dQuote("testpkg"))
-        ),
-        paste0("Using request.R from ", dQuote("testpkg"))
+        capture_while_mocking(path = newmocks, {
+          # Install the "testpkg" to a temp lib.loc _after_ we've
+          # already started recording
+          lib <- install_testpkg("testpkg")
+          library(testpkg, lib.loc = lib)
+          expect_true("testpkg" %in% names(sessionInfo()$otherPkgs))
+          r <- GET("http://example.com/get")
+        }),
+        paste0("Using redact.R from ", dQuote("testpkg"))
       )
     )
     with_mock_path(newmocks, {
@@ -69,6 +66,7 @@ with_mock_api({
   })
 
   test_that("Request preprocessing via package inst/httptest/request.R", {
+    skip("HTTR2: remove request preprocessing")
     # That function prunes a leading http://pythong.org/ from URLs
     expect_identical(
       resp_body_json(GET("http://pythong.org/api/object1/")),

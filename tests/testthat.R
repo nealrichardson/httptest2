@@ -1,2 +1,2 @@
 library(testthat)
-test_check("httptest")
+test_check("httptest2")

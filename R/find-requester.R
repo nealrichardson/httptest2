@@ -1,3 +1,5 @@
+# HTTR2: remove all of this, use redactor on request URL
+
 #' Set a request preprocessor
 #'
 #' @param FUN A function or expression that modifies `request` objects.
@@ -8,7 +10,7 @@
 #' "request" argument, as in the `purrr` package.
 #' * A list of functions/formulas, which will be executed
 #' in sequence on the request.
-#' * `NULL`, to override the default `redact_auth()`.
+#' * `NULL`, to override the default `redact_cookies()`.
 #' @return Invisibly, `FUN`, validated and perhaps modified.
 #' @export
 #' @seealso [set_redactor()]

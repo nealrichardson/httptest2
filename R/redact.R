@@ -1,24 +1,33 @@
-chain_redactors <- function(funs) {
-  # Given a list of functions, return a function that execs them in sequence
-  return(function(response) {
-    for (f in funs) {
-      if (inherits(f, "formula")) {
-        f <- as.redactor(f)
-      }
-      response <- f(response)
-    }
-    return(response)
-  })
-}
-
-#' @rdname redact
+#' Remove sensitive content from HTTP responses
+#'
+#' When recording requests for use as test fixtures, you don't want to include
+#' secrets like authentication tokens and personal ids. These functions provide
+#' a means for redacting this kind of content, or anything you want, from
+#' responses that [capture_requests()] saves.
+#'
+#' `redact_cookies()` removes cookies from `httr2_response` objects
+#' and is the default redactor in `capture_requests()`.
+#' `redact_headers()` lets you target selected request and response headers for
+#' redaction.
+#'
+#' `within_body_text()` lets you manipulate the text of the response body
+#' and manages the parsing of the raw (binary) data in the 'response' object.
+#'
+#' @param response An `httr2_response` object to sanitize.
+#' @param headers For `redact_headers()`, a character vector of header names to
+#' sanitize. Note that `redact_headers()` itself does not do redacting but
+#' returns a function that when called does the redacting.
+#' @param FUN For `within_body_text()`, a function that takes as its argument a
+#' character vector and returns a modified version of that. This function will
+#' be applied to the text of the response's "content".
+#' @return All redacting functions return a well-formed `httr2_response`
+#' object.
+#' @name redact
+#' @aliases redact_cookies redact_headers within_body_text
+#' @seealso `vignette("redacting", package = "httptest")` for a detailed discussion of what these functions do and how to customize them. [gsub_response()] is another redactor.
 #' @export
 redact_cookies <- function(response) {
-  response <- redact_headers(response, "Set-Cookie")
-  if (!is.null(response$cookies) && nrow(response$cookies)) {
-    response$cookies$value <- "REDACTED"
-  }
-  return(response)
+  redact_headers(response, "Set-Cookie")
 }
 
 #' @rdname redact
@@ -31,6 +40,7 @@ header_apply <- function(response, headers, FUN, ...) {
   # Apply some function over a set of named headers, anywhere they may
   # appear in a response or request object
   response$headers <- happly(response$headers, headers, FUN, ...)
+  # HTTR2: responses don't have all_headers, delete this? (report isssue and ask)
   if (!is.null(response$all_headers)) {
     response$all_headers <- lapply(response$all_headers, function(h) {
       h$headers <- happly(h$headers, headers, FUN, ...)
@@ -56,21 +66,17 @@ within_body_text <- function(response, FUN) {
   return(response)
 }
 
-#' Find and replace within a 'response' or 'request'
+#' Find and replace within a 'httr2_response'
 #'
-#' These functions pass their arguments to [base::gsub()] in order to find and
-#' replace string patterns (regular expressions) within `request` or `response`
-#' objects. `gsub_request()` replaces in the request URL and any request body
-#' fields; `gsub_response()` replaces in the response URL, the response body,
-#' and it calls `gsub_request()` on the `request` object found within the
-#' `response`.
+#' This function passes its arguments to [base::gsub()] in order to find and
+#' replace string patterns (regular expressions) within
+#' the URL and the response body of `httr2_response` objects.
 #'
-#' Note that, unlike `gsub()`, the first argument of the function is `request`
-#' or `response`,
+#' Note that, unlike `gsub()`, the first argument of the function is `response`,
 #' not `pattern`, while the equivalent argument in `gsub()`, "`x`", is placed
 #' third. This difference is to maintain consistency with the other redactor
 #' functions in `httptest`, which all take `response` as the first argument.
-#' @param response An 'httr' `response` object to sanitize.
+#' @param response An `httr2_response` object to sanitize.
 #' @param pattern From [base::gsub()]: "character string containing a regular
 #' expression (or character string for `fixed = TRUE`) to be matched in the
 #' given character vector." Passed to `gsub()`. See the docs for `gsub()` for
@@ -80,7 +86,7 @@ within_body_text <- function(response, FUN) {
 #' `gsub()` for further details.
 #' @param ... Additional logical arguments passed to `gsub()`: `ignore.case`,
 #' `perl`, `fixed`, and `useBytes` are the possible options.
-#' @return A `request` or `response` object, same as was passed in, with the
+#' @return An `httr2_response` object, same as was passed in, with the
 #' pattern replaced in the URLs and bodies.
 #' @export
 gsub_response <- function(response, pattern, replacement, ...) {
@@ -88,25 +94,7 @@ gsub_response <- function(response, pattern, replacement, ...) {
   response$url <- replacer(response$url)
   response <- header_apply(response, "location", replacer)
   response <- within_body_text(response, replacer)
-  # Modify the request too because this affects where we write the mock file to
-  response$request <- gsub_request(response$request, pattern, replacement, ...)
   return(response)
-}
-
-#' @param request An 'httr' `request` object to sanitize.
-#' @rdname gsub_response
-#' @export
-gsub_request <- function(request, pattern, replacement, ...) {
-  replacer <- function(x) gsub(pattern, replacement, x, ...)
-  request$url <- replacer(request$url)
-  # Body (as in JSON)
-  bod <- request_postfields(request)
-  if (!is.null(bod)) {
-    request$options[["postfields"]] <- charToRaw(replacer(bod))
-  }
-  # Multipart post fields
-  request$fields <- replace_in_fields(request$fields, replacer)
-  return(request)
 }
 
 replace_in_fields <- function(x, FUN) {
@@ -123,7 +111,7 @@ replace_in_fields <- function(x, FUN) {
 
 #' Wrap a redacting expression as a proper function
 #'
-#' Redactors take a `response` as their first argument, and some take additional
+#' Redactors take a `httr2_response` as their first argument, and some take additional
 #' arguments: `redact_headers()`, for example, requires that you specify
 #' `headers`. This function allows you to take a simplified expression via a
 #' formula, similar to what `purrr` does, so that you can provide the function
@@ -146,32 +134,15 @@ as.redactor <- function(fmla) {
   return(eval(call("function", as.pairlist(alist(. = )), expr), env, env))
 }
 
-#' Remove sensitive content from HTTP responses
-#'
-#' When recording requests for use as test fixtures, you don't want to include
-#' secrets like authentication tokens and personal ids. These functions provide
-#' a means for redacting this kind of content, or anything you want, from
-#' responses that [capture_requests()] saves.
-#'
-#' `redact_cookies()` removes cookies from 'httr' `response` objects.
-#' `redact_headers()` lets you target selected request and response headers for
-#' redaction. `redact_auth()` is a convenience wrapper around
-#' them for a useful default redactor in `capture_requests()`.
-#'
-#' `within_body_text()` lets you manipulate the text of the response body
-#' and manages the parsing of the raw (binary) data in the 'response' object.
-#'
-#' @param response An 'httr' `response` object to sanitize.
-#' @param headers For `redact_headers()`, a character vector of header names to
-#' sanitize. Note that `redact_headers()` itself does not do redacting but
-#' returns a function that when called does the redacting.
-#' @param FUN For `within_body_text()`, a function that takes as its argument a
-#' character vector and returns a modified version of that. This function will
-#' be applied to the text of the response's "content".
-#' @return All redacting functions return a well-formed 'httr' `response`
-#' object.
-#' @name redact
-#' @aliases redact_auth redact_cookies redact_headers within_body_text
-#' @seealso `vignette("redacting", package="httptest")` for a detailed discussion of what these functions do and how to customize them. [gsub_response()] is another redactor.
-#' @export
-redact_auth <- redact_cookies
+chain_redactors <- function(funs) {
+  # Given a list of functions, return a function that execs them in sequence
+  return(function(response) {
+    for (f in funs) {
+      if (inherits(f, "formula")) {
+        f <- as.redactor(f)
+      }
+      response <- f(response)
+    }
+    return(response)
+  })
+}

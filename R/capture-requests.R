@@ -93,11 +93,16 @@ start_capturing <- function(path = NULL, simplify = TRUE) {
         # req_perform() catches request errors as an "error" object
         # See httr2:::is_error()
         # Also possible that resp doesn't exist if the function errors eariler
-        warning("Request errored; no captured response file saved",
+        warning(
+          "Request errored; no captured response file saved",
           call. = FALSE
         )
       } else {
-        save_response(redactor(resp), file = build_mock_url(req), simplify = simplify)
+        save_response(
+          redactor(resp),
+          file = build_mock_url(redactor(req)),
+          simplify = simplify
+        )
       }
     },
     list(simplify = simplify)

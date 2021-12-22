@@ -11,7 +11,7 @@
 #' redaction.
 #'
 #' `within_body_text()` lets you manipulate the text of the response body
-#' and manages the parsing of the raw (binary) data in the 'response' object.
+#' and manages the parsing of the raw (binary) data in the 'httr_response' object.
 #'
 #' @param response An `httr2_response` object to sanitize.
 #' @param headers For `redact_headers()`, a character vector of header names to
@@ -60,9 +60,13 @@ happly <- function(header_list, headers, FUN, ...) {
 #' @rdname redact
 #' @export
 within_body_text <- function(response, FUN) {
-  old <- resp_body_string(response)
-  new <- FUN(old)
-  response$body <- charToRaw(new)
+  # This could be applied to a httr2_request object;
+  # only do work on a httr2_response
+  if (inherits(response, "httr2_response")) {
+    old <- resp_body_string(response)
+    new <- FUN(old)
+    response$body <- charToRaw(new)
+  }
   return(response)
 }
 

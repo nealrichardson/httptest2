@@ -102,39 +102,38 @@ with_mock_api({
   #   expect_equal(resp_body_json(oauthb), resp_body_json(oauth))
   # })
 
-  # HTTR2: redacting can't alter the mock file path because request isn't contained in the response (file path is constructed outside)
-  # # Custom redacting function
-  # my_redactor <- function(response) {
-  #   # Proof that you can alter other parts of the response/mock
-  #   response$url <- response$request$url <- "http://example.com/fakeurl"
-  #   # Proof that you can alter the response body
-  #   cleaner <- function(x) gsub("loaded", "changed", x)
-  #   response <- within_body_text(response, cleaner)
-  #   return(response)
-  # }
-  # with_redactor(
-  #   my_redactor,
-  #   capture_while_mocking(simplify = FALSE, path = d, {
-  #     r <- GET("http://example.com/get")
-  #   })
-  # )
-  # test_that("The real request is not affected by the redactor", {
-  #   expect_identical(r$url, "http://example.com/get")
-  #   expect_identical(resp_body_json(r), list(loaded = TRUE))
-  # })
-  # test_that("But the mock file gets written to the modified path with altered content", {
-  #   # Use replace=TRUE to make sure that "." isn't in the search path.
-  #   # We're checking that the original request doesn't have a mock,
-  #   # but of course we made it from a mock in the working directory
-  #   with_mock_path(d, replace = TRUE, {
-  #     expect_GET(
-  #       GET("http://example.com/get"),
-  #       "http://example.com/get"
-  #     )
-  #     expect_error(alt <- GET("http://example.com/fakeurl"), NA)
-  #     expect_identical(resp_body_json(alt), list(changed = TRUE))
-  #   })
-  # })
+  # Custom redacting function
+  my_redactor <- function(response) {
+    # Proof that you can alter other parts of the response/mock
+    response$url <- "http://example.com/fakeurl"
+    # Proof that you can alter the response body
+    cleaner <- function(x) gsub("loaded", "changed", x)
+    response <- within_body_text(response, cleaner)
+    return(response)
+  }
+  with_redactor(
+    my_redactor,
+    capture_while_mocking(simplify = FALSE, path = d, {
+      r <- GET("http://example.com/get")
+    })
+  )
+  test_that("The real request is not affected by the redactor", {
+    expect_identical(r$url, "http://example.com/get")
+    expect_identical(resp_body_json(r), list(loaded = TRUE))
+  })
+  test_that("But the mock file gets written to the modified path with altered content", {
+    # Use replace=TRUE to make sure that "." isn't in the search path.
+    # We're checking that the original request doesn't have a mock,
+    # but of course we made it from a mock in the working directory
+    with_mock_path(d, replace = TRUE, {
+      expect_GET(
+        GET("http://example.com/get"),
+        "http://example.com/get"
+      )
+      expect_error(alt <- GET("http://example.com/fakeurl"), NA)
+      expect_identical(resp_body_json(alt), list(changed = TRUE))
+    })
+  })
 
   a <- request("api/") %>%
     req_headers(`Authorization` = "Bearer token") %>%

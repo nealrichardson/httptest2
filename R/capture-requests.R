@@ -114,11 +114,12 @@ start_capturing <- function(path = NULL, simplify = TRUE) {
 #' Write out a captured response
 #'
 #' @param response An `httr2_response` object
+#' @param file String file path to write to
 #' @param simplify logical: if `TRUE` (default), JSON responses with status 200
 #' and a supported `Content-Type`
 #' will be written as just the text of the response body. In all other cases,
-#' and when `simplify` is `FALSE`, the `httr2_response` object will be written out to
-#' a .R file using [base::dput()].
+#' and when `simplify` is `FALSE`, the `httr2_response` object will be written
+#' out to a .R file using [base::dput()].
 #' @return The character file name that was written out
 #' @export
 #' @keywords internal

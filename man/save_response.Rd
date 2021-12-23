@@ -9,11 +9,13 @@ save_response(response, file, simplify = TRUE)
 \arguments{
 \item{response}{An \code{httr2_response} object}
 
+\item{file}{String file path to write to}
+
 \item{simplify}{logical: if \code{TRUE} (default), JSON responses with status 200
 and a supported \code{Content-Type}
 will be written as just the text of the response body. In all other cases,
-and when \code{simplify} is \code{FALSE}, the \code{httr2_response} object will be written out to
-a .R file using \code{\link[base:dput]{base::dput()}}.}
+and when \code{simplify} is \code{FALSE}, the \code{httr2_response} object will be written
+out to a .R file using \code{\link[base:dput]{base::dput()}}.}
 }
 \value{
 The character file name that was written out

@@ -205,20 +205,6 @@ with_mock_api({
       fixed = FALSE
     )
   })
-
-  test_that("Request preprocessing via set_requester: change the request URL", {
-    skip("HTTR2: remove set_requester, use redactor on request URL")
-    g1 <- GET("http://example.com/get")
-    old <- getOption("httptest.requester")
-    on.exit(options(httptest.requester = old))
-    set_requester(function(request) {
-      gsub_request(request, "pythong.org", "example.com")
-    })
-    expect_identical(
-      resp_body_json(GET("http://pythong.org/get")),
-      resp_body_json(g1)
-    )
-  })
 })
 
 test_that("build_mock_url file path construction with character URL", {

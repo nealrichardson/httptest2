@@ -1,6 +1,4 @@
-rp <- httr2:::req_perform
-# If we're tracing, they aren't equal
-we_are_recording <- function() !identical(rp, httr2:::req_perform)
+we_are_recording <- function() inherits(httr2:::req_perform, "functionWithTrace")
 we_are_mocking <- function() !is.null(getOption("httr2_mock"))
 path <- tempfile()
 

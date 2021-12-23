@@ -41,7 +41,7 @@ and is the default redactor in \code{capture_requests()}.
 redaction.
 
 \code{within_body_text()} lets you manipulate the text of the response body
-and manages the parsing of the raw (binary) data in the 'response' object.
+and manages the parsing of the raw (binary) data in the 'httr_response' object.
 }
 \seealso{
 \code{vignette("redacting", package = "httptest")} for a detailed discussion of what these functions do and how to customize them. \code{\link[=gsub_response]{gsub_response()}} is another redactor.

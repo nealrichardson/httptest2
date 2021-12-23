@@ -29,7 +29,6 @@
 #' Formulas and function lists are turned into proper functions. `NULL` as input
 #' returns the `force()` function.
 #' @export
-#' @seealso [set_requester()]
 set_redactor <- function(FUN) {
   FUN <- prepare_redactor(FUN)
   options(

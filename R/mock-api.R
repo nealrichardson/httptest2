@@ -39,7 +39,7 @@ mock_request <- function(req) {
   # If there's a query, then req$url has been through build_url(parse_url())
   # and if it's a file and not URL, it has grown a ":///" prefix. Prune that.
   req$url <- sub("^:///", "", req$url)
-  f <- build_mock_url(get_current_requester()(req))
+  f <- build_mock_url(get_current_redactor()(req))
   mockfile <- find_mock_file(f)
   if (!is.null(mockfile)) {
     return(load_response(mockfile, req))

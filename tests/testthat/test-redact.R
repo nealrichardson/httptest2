@@ -31,6 +31,10 @@ with_mock_api({
       # modified the mock to have the Set-Cookie header, just so we can test
       # redacting it.
       c2 <- req_perform(c2_req)
+      expect_equal(
+        resp_header(c2, "set-cookie"),
+        "token=12345; Domain=example.com; Max-Age=31536000; Path=/"
+      )
     })
   })
   test_that("redact_cookies removes set-cookies from response in the mock file", {
@@ -44,12 +48,11 @@ with_mock_api({
   })
   test_that("And when loading that .R mock, the redacted value doesn't appear", {
     with_mock_path(d, {
-      c2b <- req_perform(c2_req)
+      expect_identical(
+        req_perform(c2_req) %>% resp_header("set-cookie"),
+        "REDACTED"
+      )
     })
-    expect_identical(
-      resp_header(c2b, "set-cookie"),
-      "REDACTED"
-    )
   })
 
   # HTTP auth credentials aren't recorded
@@ -104,8 +107,13 @@ with_mock_api({
 
   # Custom redacting function
   my_redactor <- function(response) {
-    # Proof that you can alter other parts of the response/mock
-    response$url <- "http://example.com/fakeurl"
+    # Proof that you can alter other parts of the response/mock when recording
+    # Slight finesse: because requests get preprocessed with the redactor too,
+    # it's tricky when we're mocking and recording, so in this test we're not
+    # to change the URL when determining the mock file to load
+    if (!grepl("get_current_redactor()(req)", unlist(tail(sys.calls(), 1)), fixed = TRUE)) {
+      response$url <- "http://example.com/fakeurl"
+    }
     # Proof that you can alter the response body
     cleaner <- function(x) gsub("loaded", "changed", x)
     response <- within_body_text(response, cleaner)
@@ -133,6 +141,23 @@ with_mock_api({
       expect_error(alt <- GET("http://example.com/fakeurl"), NA)
       expect_identical(resp_body_json(alt), list(changed = TRUE))
     })
+  })
+
+  # New in httptest2: redactor is used as request preprocessor/URL shortener
+  test_that("Redactors are applied when making requests to alter the mock file path we're reading", {
+    with_redactor(
+      function(resp) gsub_response(resp, "long/url.*$", "get"),
+      with_mock_api({
+        r <- request("http://example.com/long/url/with/lots/of/segments") %>%
+          req_perform()
+      })
+    )
+    # The URL of the mock response in this case is actually the full request URL
+    # because it is a JSON mock so the httr2_response object is generated
+    # based on the request
+    expect_identical(r$url, "http://example.com/long/url/with/lots/of/segments")
+    # But this is the response body of the mock corresponding to example.com/get
+    expect_identical(resp_body_json(r), list(loaded = TRUE))
   })
 
   a <- request("api/") %>%

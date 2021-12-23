@@ -65,15 +65,6 @@ with_mock_api({
     expect_identical(resp_body_json(r2), list(fake = TRUE))
   })
 
-  test_that("Request preprocessing via package inst/httptest/request.R", {
-    skip("HTTR2: remove request preprocessing")
-    # That function prunes a leading http://pythong.org/ from URLs
-    expect_identical(
-      resp_body_json(GET("http://pythong.org/api/object1/")),
-      resp_body_json(GET("api/object1/"))
-    )
-  })
-
   test_that("set_redactor(NULL) to override default (and loaded packages)", {
     expect_true("testpkg" %in% names(sessionInfo()$otherPkgs))
     # Great, but let's kill it when we're done
@@ -100,16 +91,23 @@ with_mock_api({
     expect_false("testpkg" %in% names(sessionInfo()$otherPkgs))
     on.exit(pkgload::unload("testpkg"))
     expect_message(
-      capture_while_mocking(path = newmocks3, {
-        pkgload::load_all("testpkg", quiet = TRUE)
-        expect_true("testpkg" %in% names(sessionInfo()$otherPkgs))
-        r <- GET("http://example.com/get")
+      expect_message(
+        capture_while_mocking(path = newmocks3, {
+          pkgload::load_all("testpkg", quiet = TRUE)
+          expect_true("testpkg" %in% names(sessionInfo()$otherPkgs))
+          r <- GET("http://example.com/get")
+        }),
+        paste0("Using redact.R from ", dQuote("testpkg"))
+      ),
+      # This fires twice: once on the mocked request, once on the response saving
+      paste0("Using redact.R from ", dQuote("testpkg"))
+    )
+    expect_message(
+      with_mock_path(newmocks3, {
+        r2 <- GET("http://example.com/get")
       }),
       paste0("Using redact.R from ", dQuote("testpkg"))
     )
-    with_mock_path(newmocks3, {
-      r2 <- GET("http://example.com/get")
-    })
     # The resulting mock content is what we injected into it from testpkg
     expect_identical(resp_body_json(r2), list(fake = TRUE))
   })

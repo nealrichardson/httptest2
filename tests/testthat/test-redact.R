@@ -78,33 +78,6 @@ with_mock_api({
     expect_equal(resp_body_json(pwauthb), resp_body_json(pwauth))
   })
 
-  # HTTR2: update for httr2 oauth
-  # # OAuth credentials aren't recorded
-  # # Example token copied from a test in httr
-  # token <- Token2.0$new(
-  #   app = oauth_app("x", "y", "z"),
-  #   endpoint = oauth_endpoints("google"),
-  #   credentials = list(access_token = "ofNoArms")
-  # )
-  # token$params$as_header <- TRUE
-  # capture_while_mocking(simplify = FALSE, path = d, {
-  #   oauth <- GET("api/object1/", config(token = token))
-  # })
-  # test_that("The response has the 'auth_token' object'", {
-  #   expect_s3_class(oauth$request$auth_token, "Token2.0")
-  # })
-
-  # test_that("But the mock doesn't have the auth_token", {
-  #   oauthfile <- readLines(file.path(d, "api", "object1.R"))
-  #   expect_false(any(grepl("auth_token", oauthfile)))
-  # })
-  # test_that("And the .R mock can be loaded", {
-  #   with_mock_path(d, {
-  #     oauthb <- GET("api/object1/", config(token = token))
-  #   })
-  #   expect_equal(resp_body_json(oauthb), resp_body_json(oauth))
-  # })
-
   # Custom redacting function
   my_redactor <- function(response) {
     # Proof that you can alter other parts of the response/mock when recording

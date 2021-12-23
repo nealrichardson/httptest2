@@ -42,6 +42,3 @@ vignettes), the function will be used automatically.
 
 For further details on how to redact responses, see \code{vignette("redacting")}.
 }
-\seealso{
-\code{\link[=set_requester]{set_requester()}}
-}

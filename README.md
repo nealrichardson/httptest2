@@ -2,8 +2,8 @@
 
 # httptest2: A Test Environment for HTTP Requests in R
 
-[![Build Status](https://github.com/nealrichardson/httptest2/workflows/R-CMD-check/badge.svg)](https://github.com/nealrichardson/httptest2/actions) [![codecov](https://codecov.io/gh/nealrichardson/httptest2/branch/master/graph/badge.svg)](https://codecov.io/gh/nealrichardson/httptes2t)
-[![cran](https://www.r-pkg.org/badges/version-last-release/httptest2)](https://cran.r-project.org/package=httptest2) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/2136/badge)](https://bestpractices.coreinfrastructure.org/projects/2136)
+[![Build Status](https://github.com/nealrichardson/httptest2/workflows/R-CMD-check/badge.svg)](https://github.com/nealrichardson/httptest2/actions) [![codecov](https://codecov.io/gh/nealrichardson/httptest2/branch/master/graph/badge.svg)](https://codecov.io/gh/nealrichardson/httptest2)
+[![cran](https://www.r-pkg.org/badges/version-last-release/httptest2)](https://cran.r-project.org/package=httptest2)
 
 `httptest2` makes it easy to write tests for code and packages that wrap web APIs.
 Testing code that communicates with remote servers can otherwise be painful: things like authentication, server state, and network flakiness can make testing seem too costly to bother with. The `httptest2` package enables you to test all of the logic on the R sides of the API in your package without requiring access to the remote service.

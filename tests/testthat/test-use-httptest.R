@@ -68,12 +68,9 @@ expect_added_to_setup <- function(str, msg = "Adding library\\(httptest\\)") {
 test_that("add to setup creates file if doesn't exist", {
   f <- tempfile()
   expect_false(file.exists(f))
-  testthat_transition(
+  expect_message(
     expect_message(add_httptest_to_setup(f), "Creating"),
-    expect_message(
-      expect_message(add_httptest_to_setup(f), "Creating"),
-      "Adding library\\(httptest\\) to"
-    )
+    "Adding library\\(httptest\\) to"
   )
   expect_identical(readLines(f), "library(httptest)")
 })
@@ -95,18 +92,15 @@ test_that("use_httptest integration test", {
   desc <- file.path(testpkg, "DESCRIPTION")
   cat("Title: Foo\n", file = desc)
   setup <- file.path(testpkg, "tests", "testthat", "setup.R")
-  testthat_transition(
-    expect_message(use_httptest(testpkg), "Adding 'httptest' to Suggests"),
+  expect_message(
     expect_message(
       expect_message(
-        expect_message(
-          use_httptest(testpkg),
-          "Adding 'httptest' to Suggests"
-        ),
-        "Creating "
+        use_httptest(testpkg),
+        "Adding 'httptest' to Suggests"
       ),
-      "Adding library\\(httptest\\) to "
-    )
+      "Creating "
+    ),
+    "Adding library\\(httptest\\) to "
   )
   expect_identical(readLines(desc), c("Title: Foo", "Suggests: httptest"))
   expect_identical(readLines(setup), "library(httptest)")

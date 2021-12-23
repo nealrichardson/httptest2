@@ -41,7 +41,7 @@ set_redactor <- function(FUN) {
 }
 
 default_redactor <- function(packages = get_attached_packages()) {
-  # Look for package-defined requesters
+  # Look for package-defined redactors
   func <- redactor_from_packages(packages)
   # Record what packages we considered here
   options(httptest.redactor.packages = packages)
@@ -113,7 +113,7 @@ get_current_redactor <- function() {
     # See if default is based on packages and needs refreshing
     pkgs <- getOption("httptest.redactor.packages")
     if (!is.null(pkgs)) {
-      # We're using the result of default_requester(). Let's see if any
+      # We're using the result of default_redactor(). Let's see if any
       # new packages have been loaded
       current_packages <- get_attached_packages()
       # Also, always reevaluate the default redactor if pkgload is involved

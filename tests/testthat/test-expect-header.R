@@ -21,17 +21,18 @@ with_mock_api({
         req_perform(),
       "Accept: image/jpeg"
     ))
-    skip_if(third_edition)
-    expect_failure(expect_header(
-      expect_POST(
-        request("api/object1/") %>%
-          req_headers(Accept = "image/png") %>%
-          req_method("POST") %>%
-          req_perform(),
-        silent = TRUE
-      ),
-      "Accept: image/jpeg"
-    ))
+    suppressWarnings(
+      expect_failure(expect_header(
+        expect_POST(
+          request("api/object1/") %>%
+            req_headers(Accept = "image/png") %>%
+            req_method("POST") %>%
+            req_perform(),
+          silent = TRUE
+        ),
+        "Accept: image/jpeg"
+      ))
+    )
   })
   test_that("expect_header ignore.case", {
     expect_success(expect_header(

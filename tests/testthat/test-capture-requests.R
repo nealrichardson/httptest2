@@ -6,10 +6,12 @@ test_that("We can record a series of requests (a few ways)", {
   skip_if_disconnected()
   capture_requests(path = d, {
     # <<- assign these so that they're available in the next test_that too
-    r1 <<- GET("http://httpbin.org/get")
-    r2 <<- GET("http://httpbin.org")
-    r3 <<- GET("http://httpbin.org/status/418")
-    r4 <<- PUT("http://httpbin.org/put")
+    r1 <<- request("http://httpbin.org/get") %>% req_perform()
+    r2 <<- request("http://httpbin.org") %>% req_perform()
+    r3 <<- request("http://httpbin.org/status/418") %>% req_perform()
+    r4 <<- request("http://httpbin.org/put") %>%
+      req_method("PUT") %>%
+      req_perform()
   })
   start_capturing(path = d)
   r5 <<- request("http://httpbin.org/response-headers") %>%
@@ -18,7 +20,7 @@ test_that("We can record a series of requests (a few ways)", {
   # HTTR2: implement write_disk (see also commented code below)
   # r6 <<- GET("http://httpbin.org/anything", config = write_disk(dl_file))
   # r7 <<- GET("http://httpbin.org/image/webp", config = write_disk(webp_file))
-  r8 <<- GET("http://httpbin.org/status/202")
+  r8 <<- request("http://httpbin.org/status/202") %>% req_perform()
   stop_capturing()
   .mockPaths(NULL) # because start_capturing with path modifies global state
   expect_identical(
@@ -62,16 +64,18 @@ test_that("We can then load the mocks it stores", {
     mock_dl_file <- tempfile()
     mock_webp_file <- tempfile()
     with_mock_api({
-      m1 <- GET("http://httpbin.org/get")
-      m2 <- GET("http://httpbin.org")
-      m3 <- GET("http://httpbin.org/status/418")
-      m4 <- PUT("http://httpbin.org/put")
+      m1 <- request("http://httpbin.org/get") %>% req_perform()
+      m2 <- request("http://httpbin.org") %>% req_perform()
+      m3 <- request("http://httpbin.org/status/418") %>% req_perform()
+      m4 <- request("http://httpbin.org/put") %>%
+        req_method("PUT") %>%
+        req_perform()
       m5 <- request("http://httpbin.org/response-headers") %>%
         req_url_query(`Content-Type` = "application/json") %>%
         req_perform()
       # m6 <- GET("http://httpbin.org/anything", config = write_disk(mock_dl_file))
       # m7 <- GET("http://httpbin.org/image/webp", config = write_disk(mock_webp_file))
-      m8 <- GET("http://httpbin.org/status/202")
+      m8 <- request("http://httpbin.org/status/202") %>% req_perform()
     })
   })
   expect_identical(resp_body_json(m1), resp_body_json(r1))
@@ -116,9 +120,9 @@ with_mock_api({
   d2 <- tempfile()
   test_that("Recording requests even with the mock API", {
     capture_while_mocking(path = d2, {
-      GET("http://example.com/get/")
-      GET("api/object1/")
-      GET("http://httpbin.org/status/204/")
+      request("http://example.com/get/") %>% req_perform()
+      request("api/object1/") %>% req_perform()
+      request("http://httpbin.org/status/204/") %>% req_perform()
     })
     expect_setequal(
       dir(d2, recursive = TRUE),
@@ -131,7 +135,7 @@ with_mock_api({
   })
 
   test_that("Loading 204 response status recorded with simplify=TRUE", {
-    original <- GET("http://httpbin.org/status/204/")
+    original <- request("http://httpbin.org/status/204/") %>% req_perform()
     expect_length(original$body, 0)
     expect_length(
       readLines(file.path(d2, "httpbin.org/status/204.204")),
@@ -139,7 +143,7 @@ with_mock_api({
     )
     with_mock_path(d2,
       {
-        mocked <- GET("http://httpbin.org/status/204/")
+        mocked <- request("http://httpbin.org/status/204/") %>% req_perform()
         expect_length(mocked$body, 0)
       },
       replace = TRUE
@@ -150,9 +154,9 @@ with_mock_api({
   test_that("Using simplify=FALSE (and setting .mockPaths)", {
     with_mock_path(d3, {
       capture_while_mocking(simplify = FALSE, {
-        GET("http://example.com/get/")
-        GET("api/object1/")
-        GET("http://httpbin.org/status/204/")
+        request("http://example.com/get/") %>% req_perform()
+        request("api/object1/") %>% req_perform()
+        request("http://httpbin.org/status/204/") %>% req_perform()
       })
     })
     expect_setequal(
@@ -163,7 +167,7 @@ with_mock_api({
     expect_s3_class(response, "httr2_response")
     expect_identical(
       resp_body_json(response),
-      resp_body_json(GET("http://example.com/get/"))
+      resp_body_json(request("http://example.com/get/") %>% req_perform())
     )
   })
 
@@ -183,7 +187,7 @@ with_mock_api({
     with_mock_path(d4, {
       capture_while_mocking(
         expect_message(
-          GET("http://example.com/get/"),
+          request("http://example.com/get/") %>% req_perform(),
           "Writing .*example.com.get.json"
         )
       )
@@ -199,12 +203,16 @@ with_mock_api({
   })
 })
 
-test_that("If the httr request function exits with an error, capture_requests warns", {
-  skip_on_R_older_than("3.5.0") # IDK why but it fails on travis
+test_that("If the httr2 request function exits with an error, capture_requests warns", {
   capture_requests({
-    expect_warning(
-      expect_error(GET(stop("Error!"))),
-      "Request errored; no captured response file saved"
+    httr2::with_mock(
+      function(req) stop("Error!"),
+      expect_warning(
+        expect_error(
+          request("http://httpbin.org/get") %>% req_perform()
+        ),
+        "Request errored; no captured response file saved"
+      )
     )
   })
 })

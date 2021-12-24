@@ -1,15 +1,15 @@
 test_that("Outside of without_internet, requests work", {
   skip_if_disconnected()
-  expect_error(GET("http://httpbin.org/get"), NA)
+  expect_error(request("http://httpbin.org/get") %>% req_perform(), NA)
 })
 test_that("without_internet throws errors on GET", {
   without_internet({
     expect_error(
-      GET("http://httpbin.org/get"),
+      request("http://httpbin.org/get") %>% req_perform(),
       "GET http://httpbin.org/get"
     )
     expect_GET(
-      GET("http://httpbin.org/get"),
+      request("http://httpbin.org/get") %>% req_perform(),
       "http://httpbin.org/get"
     )
   })
@@ -18,19 +18,19 @@ test_that("without_internet throws errors on GET", {
 without_internet({
   test_that("without_internet throws error on other verbs", {
     expect_PUT(
-      PUT("http://httpbin.org/get"),
+      request("http://httpbin.org/get") %>% req_method("PUT") %>% req_perform(),
       "http://httpbin.org/get"
     )
     expect_POST(
-      POST("http://httpbin.org/get"),
+      request("http://httpbin.org/get") %>% req_method("POST") %>% req_perform(),
       "http://httpbin.org/get"
     )
     expect_PATCH(
-      PATCH("http://httpbin.org/get"),
+      request("http://httpbin.org/get") %>% req_method("PATCH") %>% req_perform(),
       "http://httpbin.org/get"
     )
     expect_DELETE(
-      DELETE("http://httpbin.org/get"),
+      request("http://httpbin.org/get") %>% req_method("DELETE") %>% req_perform(),
       "http://httpbin.org/get"
     )
   })
@@ -95,6 +95,6 @@ without_internet({
 
   test_that("expect_no_request", {
     expect_no_request(rnorm(5))
-    expect_failure(expect_no_request(GET("http://httpbin.org/get")))
+    expect_failure(expect_no_request(request("http://httpbin.org/get") %>% req_perform()))
   })
 })

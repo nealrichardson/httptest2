@@ -95,7 +95,7 @@ with_mock_api({
   with_redactor(
     my_redactor,
     capture_while_mocking(simplify = FALSE, path = d, {
-      r <- GET("http://example.com/get")
+      r <- request("http://example.com/get") %>% req_perform()
     })
   )
   test_that("The real request is not affected by the redactor", {
@@ -108,10 +108,10 @@ with_mock_api({
     # but of course we made it from a mock in the working directory
     with_mock_path(d, replace = TRUE, {
       expect_GET(
-        GET("http://example.com/get"),
+        request("http://example.com/get") %>% req_perform(),
         "http://example.com/get"
       )
-      expect_error(alt <- GET("http://example.com/fakeurl"), NA)
+      expect_error(alt <- request("http://example.com/fakeurl") %>% req_perform(), NA)
       expect_identical(resp_body_json(alt), list(changed = TRUE))
     })
   })

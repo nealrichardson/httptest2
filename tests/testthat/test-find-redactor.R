@@ -40,12 +40,12 @@ with_mock_api({
         lib <- install_testpkg("testpkg")
         library(testpkg, lib.loc = lib)
         expect_true("testpkg" %in% names(sessionInfo()$otherPkgs))
-        r <- GET("http://example.com/get")
+        r <- request("http://example.com/get") %>% req_perform()
       }),
       paste0("Using redact.R from ", dQuote("testpkg"))
     )
     with_mock_path(newmocks, {
-      r2 <- GET("http://example.com/get")
+      r2 <- request("http://example.com/get") %>% req_perform()
     })
     # The resulting mock content is what we injected into it from testpkg
     expect_identical(resp_body_json(r2), list(fake = TRUE))
@@ -81,7 +81,7 @@ with_mock_api({
         capture_while_mocking(path = newmocks3, {
           pkgload::load_all("testpkg", quiet = TRUE)
           expect_true("testpkg" %in% names(sessionInfo()$otherPkgs))
-          r <- GET("http://example.com/get")
+          r <- request("http://example.com/get") %>% req_perform()
         }),
         paste0("Using redact.R from ", dQuote("testpkg"))
       ),
@@ -90,7 +90,7 @@ with_mock_api({
     )
     expect_message(
       with_mock_path(newmocks3, {
-        r2 <- GET("http://example.com/get")
+        r2 <- request("http://example.com/get") %>% req_perform()
       }),
       paste0("Using redact.R from ", dQuote("testpkg"))
     )

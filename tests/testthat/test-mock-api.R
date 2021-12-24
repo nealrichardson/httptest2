@@ -1,8 +1,8 @@
 with_mock_api({
   test_that("Can load an object and file extension is added", {
-    a <- GET("api/")
+    a <- request("api/") %>% req_perform()
     expect_identical(resp_body_json(a), list(value = "api/object1/"))
-    b <- GET(resp_body_json(a)$value)
+    b <- request(resp_body_json(a)$value) %>% req_perform()
     expect_identical(resp_body_json(b), list(object = TRUE))
   })
   test_that("GET with query", {
@@ -15,11 +15,11 @@ with_mock_api({
     )
   })
   test_that("GET with special characters", {
-    a <- GET("api/x(y='1',z='2')")
+    a <- request("api/x(y='1',z='2')") %>% req_perform()
     expect_identical(resp_body_json(a), list(object = TRUE))
   })
   test_that("GET files that don't exist errors", {
-    expect_GET(GET("api/NOTAFILE/"), "api/NOTAFILE/")
+    expect_GET(request("api/NOTAFILE/") %>% req_perform(), "api/NOTAFILE/")
     expect_GET(
       request("api/NOTAFILE/") %>%
         req_url_query(a = 1) %>%
@@ -28,7 +28,9 @@ with_mock_api({
     )
   })
   test_that("POST method reads from correct file", {
-    b <- POST("api/object1")
+    b <- request("api/object1") %>%
+      req_method("POST") %>%
+      req_perform()
     expect_identical(resp_body_json(b), list(method = "POST"))
     b2 <- request("api/object1") %>%
       req_method("POST") %>%
@@ -80,9 +82,9 @@ with_mock_api({
     )
   })
   test_that("Other verbs error too", {
-    expect_PUT(PUT("api/"), "api/")
-    expect_PATCH(PATCH("api/"), "api/")
-    expect_POST(POST("api/"), "api/")
+    expect_PUT(request("api/") %>% req_method("PUT") %>% req_perform(), "api/")
+    expect_PATCH(request("api/") %>% req_method("PATCH") %>% req_perform(), "api/")
+    expect_POST(request("api/") %>% req_method("POST") %>% req_perform(), "api/")
     expect_POST(
       request("api/") %>%
         req_body_raw('{"arg":true}') %>%
@@ -90,22 +92,22 @@ with_mock_api({
       "api/",
       '{"arg":true}'
     )
-    expect_DELETE(DELETE("api/"), "api/")
+    expect_DELETE(request("api/") %>% req_method("DELETE") %>% req_perform(), "api/")
   })
 
   test_that("mock API with http:// URL, not file path", {
     expect_GET(
-      GET("http://httpbin.org/get"),
+      request("http://httpbin.org/get") %>% req_perform(),
       "http://httpbin.org/get",
       "(httpbin.org/get.json)"
     )
     expect_GET(
-      GET("https://httpbin.org/get"),
+      request("https://httpbin.org/get") %>% req_perform(),
       "https://httpbin.org/get",
       "(httpbin.org/get.json)"
     )
     expect_identical(
-      resp_body_json(GET("http://example.com/get")),
+      resp_body_json(request("http://example.com/get") %>% req_perform()),
       list(loaded = TRUE)
     )
   })
@@ -123,7 +125,7 @@ with_mock_api({
   })
 
   test_that("Mock GET with non-JSON", {
-    dick <- GET("http://example.com/html")
+    dick <- request("http://example.com/html") %>% req_perform()
     expect_true(grepl("Melville", resp_body_string(dick)))
   })
 
@@ -187,20 +189,20 @@ with_mock_api({
   })
 
   test_that("Regular expressions in expect_VERB", {
-    expect_GET(GET("http://example.com/1234/abcd/"),
+    expect_GET(request("http://example.com/1234/abcd/") %>% req_perform(),
       "http://example.com/[0-9]{4}/[a-z]{4}/",
       fixed = FALSE
     )
-    expect_GET(GET("http://example.com/1234/abcd/"),
+    expect_GET(request("http://example.com/1234/abcd/") %>% req_perform(),
       "http://EXAMPLE.com/[0-9]{4}/[a-z]{4}/",
       fixed = FALSE,
       ignore.case = TRUE
     )
-    expect_POST(POST("http://example.com/1234/abcd/"),
+    expect_POST(request("http://example.com/1234/abcd/") %>% req_method("POST") %>% req_perform(),
       "http://example.com/[0-9]{4}/[a-z]{4}/",
       fixed = FALSE
     )
-    expect_DELETE(DELETE("http://example.com/1234/abcd/"),
+    expect_DELETE(request("http://example.com/1234/abcd/") %>% req_method("DELETE") %>% req_perform(),
       "http://example.com/[0-9]{4}/[a-z]{4}/",
       fixed = FALSE
     )

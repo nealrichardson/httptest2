@@ -9,3 +9,4 @@ Initial port of `httptest` to work on top of `httr2`. All APIs preserved except:
 * `public()` was removed
 * `fake_response()` was removed (just use `httr2::response()`)
 * `build_mock_url()` no longer accepts a string URL as an input; it only accepts `request` objects
+* The `path` argument to `capture_requests()` and `start_capturing()` has been removed; instead set the mock path explicitly with `.mockPaths()` or use `with_mock_path()`.

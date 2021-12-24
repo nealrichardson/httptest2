@@ -23,23 +23,22 @@
 #' the response will be written as a `.R` file containing syntax that, when
 #' executed, recreates the `httr2_response` object.
 #'
+#' Files are saved to the first directory in [.mockPaths()], which if not
+#' otherwise specified is either "tests/testthat" if it exists
+#' (as it should if you are in the root directory of your package),
+#' else the current working directory.
 #' If you have trouble when recording responses, or are unsure where the files
 #' are being written, set `options(httptest.verbose = TRUE)` to print a message
 #' for every file that is written containing the absolute path of the file.
 #'
 #' @param expr Code to run inside the context
-#' @param path Where to save the mock files. Default is the first directory in
-#' [.mockPaths()], which if not otherwise specified is the current working
-#' directory. It is generally better to call `.mockPaths()` directly if you
-#' want to write to a different path, rather than using the `path` argument.
 #' @param simplify logical: if `TRUE` (default), JSON responses with status 200
 #' will be written as just the text of the response body. In all other cases,
 #' and when `simplify` is `FALSE`, the "response" object will be written out to
 #' a .R file using [base::dput()].
-#' @param ... Arguments passed through `capture_requests` to `start_capturing`
 #' @return `capture_requests` returns the result of `expr`. `start_capturing`
-#' invisibly returns the `path` it is given. `stop_capturing` returns nothing;
-#' it is called for its side effects.
+#' invisibly returns the destination directory.
+#' `stop_capturing` returns nothing; it is called for its side effects.
 #' @examples
 #' \dontrun{
 #' library(httr2)
@@ -61,26 +60,16 @@
 #' @seealso [build_mock_url()] for how requests are translated to file paths.
 #' And see `vignette("redacting")` for details on how to prune sensitive
 #' content from responses when recording.
-capture_requests <- function(expr, path, ...) {
-  start_capturing(...)
+capture_requests <- function(expr, simplify = TRUE) {
+  start_capturing(simplify)
   on.exit(stop_capturing())
-  where <- parent.frame()
-  if (!missing(path)) {
-    with_mock_path(path, eval(expr, where))
-  } else {
-    eval(expr, where)
-  }
+  eval.parent(expr)
 }
 
 #' @rdname capture_requests
 #' @export
-start_capturing <- function(path = NULL, simplify = TRUE) {
-  if (!is.null(path)) {
-    # Note that this changes state and doesn't reset it
-    .mockPaths(path)
-  }
-
-  # Use "substitute" so that args get inserted. Code remains quoted.
+start_capturing <- function(simplify = TRUE) {
+  # Use "substitute" so that `simplify` is inserted. Code remains quoted.
   req_tracer <- substitute(
     {
       # Get the value returned from the function, and sanitize it
@@ -108,7 +97,7 @@ start_capturing <- function(path = NULL, simplify = TRUE) {
     list(simplify = simplify)
   )
   trace_httr2("req_perform", exit = req_tracer)
-  invisible(path)
+  invisible(.mockPaths())
 }
 
 #' Write out a captured response

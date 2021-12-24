@@ -4,25 +4,27 @@ webp_file <- tempfile()
 
 test_that("We can record a series of requests (a few ways)", {
   skip_if_disconnected()
-  capture_requests(path = d, {
-    # <<- assign these so that they're available in the next test_that too
-    r1 <<- request("http://httpbin.org/get") %>% req_perform()
-    r2 <<- request("http://httpbin.org") %>% req_perform()
-    r3 <<- request("http://httpbin.org/status/418") %>% req_perform()
-    r4 <<- request("http://httpbin.org/put") %>%
-      req_method("PUT") %>%
+  with_mock_path(d, {
+    capture_requests({
+      # <<- assign these so that they're available in the next test_that too
+      r1 <<- request("http://httpbin.org/get") %>% req_perform()
+      r2 <<- request("http://httpbin.org") %>% req_perform()
+      r3 <<- request("http://httpbin.org/status/418") %>% req_perform()
+      r4 <<- request("http://httpbin.org/put") %>%
+        req_method("PUT") %>%
+        req_perform()
+    })
+    # Now do some with start/stop
+    start_capturing()
+    r5 <<- request("http://httpbin.org/response-headers") %>%
+      req_url_query(`Content-Type` = "application/json") %>%
       req_perform()
+    # HTTR2: implement write_disk (see also commented code below)
+    # r6 <<- GET("http://httpbin.org/anything", config = write_disk(dl_file))
+    # r7 <<- GET("http://httpbin.org/image/webp", config = write_disk(webp_file))
+    r8 <<- request("http://httpbin.org/status/202") %>% req_perform()
+    stop_capturing()
   })
-  start_capturing(path = d)
-  r5 <<- request("http://httpbin.org/response-headers") %>%
-    req_url_query(`Content-Type` = "application/json") %>%
-    req_perform()
-  # HTTR2: implement write_disk (see also commented code below)
-  # r6 <<- GET("http://httpbin.org/anything", config = write_disk(dl_file))
-  # r7 <<- GET("http://httpbin.org/image/webp", config = write_disk(webp_file))
-  r8 <<- request("http://httpbin.org/status/202") %>% req_perform()
-  stop_capturing()
-  .mockPaths(NULL) # because start_capturing with path modifies global state
   expect_identical(
     sort(dir(d, recursive = TRUE)),
     c(

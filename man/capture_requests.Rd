@@ -6,21 +6,14 @@
 \alias{stop_capturing}
 \title{Record API responses as mock files}
 \usage{
-capture_requests(expr, path, ...)
+capture_requests(expr, simplify = TRUE)
 
-start_capturing(path = NULL, simplify = TRUE)
+start_capturing(simplify = TRUE)
 
 stop_capturing()
 }
 \arguments{
 \item{expr}{Code to run inside the context}
-
-\item{path}{Where to save the mock files. Default is the first directory in
-\code{\link[=.mockPaths]{.mockPaths()}}, which if not otherwise specified is the current working
-directory. It is generally better to call \code{.mockPaths()} directly if you
-want to write to a different path, rather than using the \code{path} argument.}
-
-\item{...}{Arguments passed through \code{capture_requests} to \code{start_capturing}}
 
 \item{simplify}{logical: if \code{TRUE} (default), JSON responses with status 200
 will be written as just the text of the response body. In all other cases,
@@ -29,8 +22,8 @@ a .R file using \code{\link[base:dput]{base::dput()}}.}
 }
 \value{
 \code{capture_requests} returns the result of \code{expr}. \code{start_capturing}
-invisibly returns the \code{path} it is given. \code{stop_capturing} returns nothing;
-it is called for its side effects.
+invisibly returns the destination directory.
+\code{stop_capturing} returns nothing; it is called for its side effects.
 }
 \description{
 \code{capture_requests} is a context that collects the responses from requests
@@ -57,6 +50,10 @@ responses will be stored as an empty file with extension \code{.204}. Otherwise,
 the response will be written as a \code{.R} file containing syntax that, when
 executed, recreates the \code{httr2_response} object.
 
+Files are saved to the first directory in \code{\link[=.mockPaths]{.mockPaths()}}, which if not
+otherwise specified is either "tests/testthat" if it exists
+(as it should if you are in the root directory of your package),
+else the current working directory.
 If you have trouble when recording responses, or are unsure where the files
 are being written, set \code{options(httptest.verbose = TRUE)} to print a message
 for every file that is written containing the absolute path of the file.

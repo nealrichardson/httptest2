@@ -23,7 +23,7 @@ URL: https://enpiar.com/httptest2/, https://github.com/nealrichardson/httptest2
 BugReports: https://github.com/nealrichardson/httptest2/issues
 License: MIT + file LICENSE
 Depends:
-    R (>= 3.3.0),
+    R (>= 3.4.0),
     testthat
 Imports:
     curl,

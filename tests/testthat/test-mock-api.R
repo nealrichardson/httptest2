@@ -160,8 +160,8 @@ with_mock_api({
         req_body_file(testthat::test_path("setup.R")) %>%
         req_perform(),
       "http://httpbin.org/post",
-      'req_body_file("setup.R") ',
-      "(httpbin.org/post-ae97b2-POST.json)"
+      "File: 0223fbaf025986a111a7688729cc4107 ",
+      "(httpbin.org/post-432ac4-POST.json)"
     )
 
     # HTTR2: let's make a better multipart form output format,
@@ -174,9 +174,10 @@ with_mock_api({
         )) %>%
         req_perform(),
       "http://httpbin.org/post",
-      'list\\(a = curl::form_file\\(".*setup.R"\\), b = curl::form_data\\("strings"\\)\\) ',
-      "\\(httpbin.org/post-68af78-POST.json\\)",
-      fixed = FALSE
+      "Multipart form:
+  a = File: 0223fbaf025986a111a7688729cc4107
+  b = strings
+ (httpbin.org/post-4120c4-POST.json)"
     )
   })
 

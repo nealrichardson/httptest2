@@ -80,20 +80,22 @@ get_string_request_body <- function(req) {
     if (length(req$fields)) {
       b <- lapply(req$fields, function(x) {
         if (inherits(x, "form_file")) {
-          paste0('curl::form_file("', x$path, '")')
+          # hash the file contents
+          paste("File:", digest(x$path, serialize = FALSE, file = TRUE))
         } else {
           # assume form_data
-          paste0('curl::form_data("', rawToChar(x$value), '")')
+          rawToChar(x$value)
         }
       })
-      b <- paste0(
-        "list(",
-        paste(names(b), b, sep = " = ", collapse = ", "),
-        ")"
-      )
+      b <- paste(c(
+        "Multipart form:",
+        paste(names(b), b, sep = " = ")
+      ), collapse = "\n  ")
+      # add a newline at the end too
+      b <- paste0(b, "\n")
     } else if (inherits(req$body$data, "httr_path")) {
-      # File upload
-      b <- paste0('req_body_file("', req$body$data, '")')
+      # File upload: hash its contents
+      b <- paste("File:", digest(req$body$data, serialize = FALSE, file = TRUE))
     }
   }
   b
@@ -112,7 +114,7 @@ request_postfields <- function(req) {
 get_request_method <- function(req) {
   # At the time that we process the request, some defaults may not have been
   # applied, and the request method may be NULL
-  # TODO(httr2): report upstream?
+  # HTTR2: report upstream
   req$method %||% ifelse(is.null(req$body), "GET", "POST")
 }
 

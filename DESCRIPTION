@@ -33,6 +33,7 @@ Imports:
     utils
 Suggests:
     covr,
+    curl,
     knitr,
     pkgload,
     rmarkdown,

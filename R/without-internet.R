@@ -62,12 +62,3 @@ stop_request <- function(req) {
   }
   stop(out, call. = FALSE)
 }
-
-get_request_method <- function(req) {
-  # At the time that we process the request, some defaults may not have been
-  # applied, and the request method may be NULL
-  # TODO(httr2): report upstream?
-  req$method %||% ifelse(is.null(req$body), "GET", "POST")
-}
-
-`%||%` <- function(a, b) if (is.null(a)) b else a

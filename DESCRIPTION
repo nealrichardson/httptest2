@@ -26,7 +26,6 @@ Depends:
     R (>= 3.4.0),
     testthat
 Imports:
-    curl,
     digest,
     httr2,
     jsonlite,

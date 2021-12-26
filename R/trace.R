@@ -36,13 +36,10 @@ quietly <- function(expr) {
   }
 }
 
-#' Turn off request mocking
-#'
-#' This function unsets the `httr2_mock` option so that normal, real
-#' requesting behavior can be resumed.
-#' @return Nothing; called for its side effects
-#' @export
-stop_mocking <- function() options(httr2_mock = NULL)
+untrace_httr2 <- function(what) {
+  safe_untrace(what, request)
+  safe_untrace(what)
+}
 
 safe_untrace <- function(what, where = sys.frame()) {
   # If you attempt to untrace a function (1) that isn't exported from

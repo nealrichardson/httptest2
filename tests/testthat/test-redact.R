@@ -120,10 +120,7 @@ with_mock_api({
   test_that("Redactors are applied when making requests to alter the mock file path we're reading", {
     with_redactor(
       function(resp) gsub_response(resp, "long/url.*$", "get"),
-      with_mock_api({
-        r <- request("http://example.com/long/url/with/lots/of/segments") %>%
-          req_perform()
-      })
+      r <- request("http://example.com/long/url/with/lots/of/segments") %>% req_perform()
     )
     # The URL of the mock response in this case is actually the full request URL
     # because it is a JSON mock so the httr2_response object is generated

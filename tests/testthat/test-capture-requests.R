@@ -9,7 +9,9 @@ test_that("We can record a series of requests (a few ways)", {
       # <<- assign these so that they're available in the next test_that too
       r1 <<- request("http://httpbin.org/get") %>% req_perform()
       r2 <<- request("http://httpbin.org") %>% req_perform()
-      r3 <<- request("http://httpbin.org/status/418") %>% req_perform()
+      r3 <<- request("http://httpbin.org/status/418") %>%
+        req_error(is_error = ~FALSE) %>%
+        req_perform()
       r4 <<- request("http://httpbin.org/put") %>%
         req_method("PUT") %>%
         req_perform()
@@ -68,7 +70,9 @@ test_that("We can then load the mocks it stores", {
     with_mock_api({
       m1 <- request("http://httpbin.org/get") %>% req_perform()
       m2 <- request("http://httpbin.org") %>% req_perform()
-      m3 <- request("http://httpbin.org/status/418") %>% req_perform()
+      m3 <- request("http://httpbin.org/status/418") %>%
+        req_error(is_error = ~FALSE) %>%
+        req_perform()
       m4 <- request("http://httpbin.org/put") %>%
         req_method("PUT") %>%
         req_perform()

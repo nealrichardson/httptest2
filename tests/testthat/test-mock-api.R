@@ -129,63 +129,55 @@ with_mock_api({
     expect_true(grepl("Melville", resp_body_string(dick)))
   })
 
-  test_that("POST/PUT/etc. with other body types", {
-    skip("HTTR2: update tests for all req_body_*()")
-    b2 <- "http://httpbin.org/post"
+  test_that("POST with all body types", {
+    r <- request("http://httpbin.org/post") %>% req_method("POST")
     expect_POST(
-      POST(b2, body = list(x = "A simple text string")),
+      r %>%
+        req_body_raw("A simple text string") %>%
+        req_perform(),
       "http://httpbin.org/post",
-      'list(x = "A simple text string") ',
-      "(httpbin.org/post-97fc23-POST.json)"
+      "A simple text string ",
+      "(httpbin.org/post-6ec8e0-POST.json)"
     )
     expect_POST(
-      POST(b2, body = list(x = "A simple text string"), encode = "form"),
+      r %>%
+        req_body_form(list(x = "A simple text string")) %>%
+        req_perform(),
       "http://httpbin.org/post",
       "x=A%20simple%20text%20string ",
       "(httpbin.org/post-aa2999-POST.json)"
     )
-    expect_PUT(
-      PUT(b2, body = list(x = "A simple text string")),
-      "http://httpbin.org/post",
-      'list(x = "A simple text string") ',
-      "(httpbin.org/post-97fc23-PUT.json)"
-    )
     expect_POST(
-      POST(b2, body = list(x = "A simple text string"), encode = "json"),
+      r %>%
+        req_body_json(list(x = "A simple text string")) %>%
+        req_perform(),
       "http://httpbin.org/post",
       '{"x":"A simple text string"} ',
       "(httpbin.org/post-34199a-POST.json)"
     )
     expect_POST(
-      POST(b2, body = list(y = upload_file(testthat::test_path("setup.R")))),
+      r %>%
+        req_body_file(testthat::test_path("setup.R")) %>%
+        req_perform(),
       "http://httpbin.org/post",
-      'list(y = list(path = "',
-      testthat::test_path("setup.R"),
-      '", type = "text/plain")) ',
-      "(httpbin.org/post-79b618-POST.json)"
+      'req_body_file("setup.R") ',
+      "(httpbin.org/post-ae97b2-POST.json)"
     )
-  })
 
-  test_that("PUT/POST with only a upload_file in body", {
-    skip("HTTR2: handle file uploads")
-    b1 <- "http://httpbin.org/post"
+    # HTTR2: let's make a better multipart form output format,
+    # or just use req_dry_run()?
     expect_POST(
-      POST(b1, body = upload_file(testthat::test_path("setup.R"))),
+      r %>%
+        req_body_multipart(list(
+          a = curl::form_file(testthat::test_path("setup.R")),
+          b = curl::form_data("strings")
+        )) %>%
+        req_perform(),
       "http://httpbin.org/post",
-      "(httpbin.org/post-POST.json)"
+      'list\\(a = curl::form_file\\(".*setup.R"\\), b = curl::form_data\\("strings"\\)\\) ',
+      "\\(httpbin.org/post-68af78-POST.json\\)",
+      fixed = FALSE
     )
-    # and ensure that there are no floating connections still open
-    open_conns <- showConnections()
-    expect_false(any(open_conns[, "description"] == "setup.R"))
-    b2 <- "http://httpbin.org/put"
-    expect_PUT(
-      PUT(b2, body = upload_file(testthat::test_path("setup.R"))),
-      "http://httpbin.org/put",
-      "(httpbin.org/put-PUT.json)"
-    )
-    # and ensure that there are no floating connections still open
-    open_conns <- showConnections()
-    expect_false(any(open_conns[, "description"] == "setup.R"))
   })
 
   test_that("Regular expressions in expect_VERB", {

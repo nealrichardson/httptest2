@@ -180,8 +180,7 @@ save_response <- function(response, file, simplify = TRUE) {
 #' @rdname capture_requests
 #' @export
 stop_capturing <- function() {
-  safe_untrace("req_perform", request)
-  safe_untrace("req_perform")
+  untrace_httr2("req_perform")
   invisible()
 }
 

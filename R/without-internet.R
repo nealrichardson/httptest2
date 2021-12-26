@@ -57,20 +57,10 @@ stop_request <- function(req) {
   if (!is.null(req$mockfile)) {
     # Poked in here by mock_request for ease of debugging
     # Append it to the end.
-    # TODO: remove .json if/when possible; there for backwards compat
+    # HTTR2: replace .json with .*
     out <- paste0(out, " (", req$mockfile, ".json)")
   }
   stop(out, call. = FALSE)
-}
-
-get_string_request_body <- function(req) {
-  body_apply <- utils::getFromNamespace("req_body_apply", "httr2")
-  out <- body_apply(req)$options$postfields
-  if (is.raw(out)) {
-    # Assumes string body (check content type?)
-    out <- rawToChar(out)
-  }
-  out
 }
 
 get_request_method <- function(req) {

@@ -19,7 +19,11 @@
 #' @return The result of `expr`
 #' @seealso [use_mock_api()] to enable mocking on its own (not in a context); [build_mock_url()]; [.mockPaths()]
 #' @export
-with_mock_api <- function(expr) httr2::with_mock(mock_request, expr)
+with_mock_api <- function(expr) {
+  use_mock_api()
+  on.exit(stop_mocking())
+  eval.parent(expr)
+}
 
 #' Turn on API mocking
 #'
@@ -33,7 +37,28 @@ with_mock_api <- function(expr) httr2::with_mock(mock_request, expr)
 #' @return Nothing; called for its side effects.
 #' @seealso [with_mock_api()] [stop_mocking()] [block_requests()]
 #' @export
-use_mock_api <- function() options(httr2_mock = mock_request)
+use_mock_api <- function() {
+  options(httr2_mock = mock_request)
+  # trace req_body_apply to close the file connection that it creates when the
+  # body inherits form_file
+  trace_httr2(
+    "req_body_apply",
+    exit = quote(if (exists("con")) close(con))
+  )
+  invisible()
+}
+
+#' Turn off request mocking
+#'
+#' This function unsets the `httr2_mock` option so that normal, real
+#' requesting behavior can be resumed.
+#' @return Nothing; called for its side effects
+#' @export
+stop_mocking <- function() {
+  options(httr2_mock = NULL)
+  untrace_httr2("req_body_apply")
+  invisible()
+}
 
 mock_request <- function(req) {
   # If there's a query, then req$url has been through build_url(parse_url())
@@ -162,7 +187,7 @@ find_mock_file <- function(file) {
 load_response <- function(file, req) {
   ext <- tail(unlist(strsplit(file, ".", fixed = TRUE)), 1)
   if (ext == "R") {
-    # It's a full "response". Source it.
+    # It's a full "response". Source it, and if it is from httr, adapt it
     adapt_httr_response(source(file)$value)
   } else if (ext %in% names(EXT_TO_CONTENT_TYPE)) {
     response(
@@ -199,17 +224,33 @@ adapt_httr_response <- function(resp) {
   resp
 }
 
+get_string_request_body <- function(req) {
+  body_apply <- utils::getFromNamespace("req_body_apply", "httr2")
+  req <- body_apply(req)
+  request_body(req)
+}
+
 request_body <- function(req) {
   # request_body returns a string if the request has a body, NULL otherwise
   b <- request_postfields(req)
   if (is.null(b)) {
-    b <- req$fields
-    if (!is.null(b)) {
-      # Get a readable string representation
-      b <- deparse(b, control = deparseNamedList())
-      # Strip out unhelpful indentation that it may add, then collapse
-      # to single string, if broken into multiple lines
-      b <- paste(sub("^ +", "", b), collapse = "")
+    if (length(req$fields)) {
+      b <- lapply(req$fields, function(x) {
+        if (inherits(x, "form_file")) {
+          paste0('curl::form_file("', x$path, '")')
+        } else {
+          # assume form_data
+          paste0('curl::form_data("', rawToChar(x$value), '")')
+        }
+      })
+      b <- paste0(
+        "list(",
+        paste(names(b), b, sep = " = ", collapse = ", "),
+        ")"
+      )
+    } else if (inherits(req$body$data, "httr_path")) {
+      # File upload
+      b <- paste0('req_body_file("', req$body$data, '")')
     }
   }
   return(b)
@@ -223,21 +264,6 @@ request_postfields <- function(req) {
   } else {
     return(NULL)
   }
-}
-
-deparseNamedList <- function() {
-  # r73699 2017-11-09
-  # (https://github.com/wch/r-source/commit/62fced00949b9a261034d24789175b205f7fa866)
-  # adds a "niceNames" deparse option, which is now required to get named
-  # lists printed with names (they no longer are named with `control=NULL`).
-  # As it turns out, you can't specify "niceNames" prophalactically---it
-  # errors on older versions of R that don't support it. So this function
-  # standardizes the behavior across R versions.
-  #
-  # R 3.4 has the old behavior. The new behavior will appear in R 3.5.
-  past <- inherits(try(.deparseOpts("niceNames"), silent = TRUE), "try-error")
-  past <- ifelse(past, "old", "new")
-  return(list(new = "niceNames")[[past]])
 }
 
 hash <- function(string, n = 6) substr(digest(string), 1, n)

@@ -59,15 +59,6 @@ without_internet({
       "http://httpbin.org/get",
       '{"test":true}'
     )
-    skip("HTTR2: test all req_body formats")
-    expect_POST(
-      request("http://httpbin.org/post") %>%
-        req_body_multipart(list(x = "A simple text string")) %>%
-        req_method("POST") %>%
-        req_perform(),
-      "http://httpbin.org/post",
-      'list(x = "A simple text string")'
-    )
   })
 
   test_that("max.print option", {

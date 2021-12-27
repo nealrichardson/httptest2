@@ -148,6 +148,6 @@ adapt_httr_response <- function(resp) {
   class(resp) <- "httr2_response"
   class(resp$headers) <- "httr2_headers"
   resp$body <- resp$content
-  resp$content <- NULL
+  resp$content <- resp$all_headers <- resp$cookies <- resp$times <- NULL
   resp
 }

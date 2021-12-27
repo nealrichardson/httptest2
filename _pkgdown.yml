@@ -1,12 +1,9 @@
-url: https://enpiar.com/r/httptest
+url: https://enpiar.com/httptest2
 template:
   params:
     ganalytics: UA-104182925-1
-    docsearch:
-      api_key: ad019ea9fe75a8488c96ff15cf8a57
-      index_name: enpiar_httptest
 navbar:
-  title: httptest
+  title: httptest2
   type: default
   left:
   - text: Get Started
@@ -27,7 +24,7 @@ navbar:
     href: news/
   right:
   - icon: fa-github fa-lg
-    href: https://github.com/nealrichardson/httptest
+    href: https://github.com/nealrichardson/httptest2
   - icon: fa-home fa-lg
     href: https://enpiar.com
 reference:
@@ -62,5 +59,4 @@ reference:
   contents:
   - httptest
   - use_httptest
-  - public
   - skip_if_disconnected

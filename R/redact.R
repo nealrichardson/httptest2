@@ -37,24 +37,10 @@ redact_headers <- function(response, headers = c()) {
 }
 
 header_apply <- function(response, headers, FUN, ...) {
-  # Apply some function over a set of named headers, anywhere they may
-  # appear in a response or request object
-  response$headers <- happly(response$headers, headers, FUN, ...)
-  # HTTR2: responses don't have all_headers, delete this? (report isssue and ask)
-  if (!is.null(response$all_headers)) {
-    response$all_headers <- lapply(response$all_headers, function(h) {
-      h$headers <- happly(h$headers, headers, FUN, ...)
-      return(h)
-    })
-  }
-  return(response)
-}
-
-happly <- function(header_list, headers, FUN, ...) {
-  # Called from header_apply, actually does the applying on a header list
-  todo <- tolower(names(header_list)) %in% tolower(headers)
-  header_list[todo] <- lapply(header_list[todo], FUN, ...)
-  return(header_list)
+  # Apply some function over a set of named headers
+  todo <- tolower(names(response$headers)) %in% tolower(headers)
+  response$headers[todo] <- lapply(response$headers[todo], FUN, ...)
+  response
 }
 
 #' @rdname redact
@@ -99,18 +85,6 @@ gsub_response <- function(response, pattern, replacement, ...) {
   response <- header_apply(response, "location", replacer)
   response <- within_body_text(response, replacer)
   return(response)
-}
-
-replace_in_fields <- function(x, FUN) {
-  if (is.list(x)) {
-    x <- lapply(x, replace_in_fields, FUN)
-    if (!is.null(names(x))) {
-      names(x) <- FUN(names(x))
-    }
-  } else if (is.character(x)) {
-    x <- FUN(x)
-  }
-  return(x)
 }
 
 #' Wrap a redacting expression as a proper function

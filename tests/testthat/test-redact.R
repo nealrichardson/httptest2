@@ -156,10 +156,6 @@ with_mock_api({
       "http://httpbin.org/status/404"
     )
     expect_identical(
-      loc_sub$all_headers[[1]]$headers$location,
-      "http://httpbin.org/status/404"
-    )
-    expect_identical(
       resp_body_json(loc_sub)$Location,
       "http://httpbin.org/status/404"
     )

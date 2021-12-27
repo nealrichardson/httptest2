@@ -45,6 +45,7 @@ without_internet <- function(expr) httr2::with_mock(stop_request, expr)
 #' @export
 block_requests <- function() options(httr2_mock = stop_request)
 
+#' @importFrom rlang cnd_signal error_cnd
 stop_request <- function(req) {
   out <- paste(get_request_method(req), req$url)
   body <- get_string_request_body(req)
@@ -60,5 +61,5 @@ stop_request <- function(req) {
     # HTTR2: replace .json with .*
     out <- paste0(out, " (", req$mockfile, ".json)")
   }
-  stop(out, call. = FALSE)
+  cnd_signal(error_cnd("httptest2_request", message = out))
 }

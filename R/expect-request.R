@@ -58,31 +58,31 @@
 #' @aliases expect_GET expect_POST expect_PUT expect_PATCH expect_DELETE expect_no_request
 #' @export
 expect_GET <- function(object, url = "", ...) {
-  expect_mock_request(object, "GET ", url, " ", ...)
+  expect_request(object, "GET ", url, " ", ...)
 }
 
 #' @rdname expect_verb
 #' @export
 expect_POST <- function(object, url = "", ...) {
-  expect_mock_request(object, "POST ", url, " ", ...)
+  expect_request(object, "POST ", url, " ", ...)
 }
 
 #' @rdname expect_verb
 #' @export
 expect_PATCH <- function(object, url = "", ...) {
-  expect_mock_request(object, "PATCH ", url, " ", ...)
+  expect_request(object, "PATCH ", url, " ", ...)
 }
 
 #' @rdname expect_verb
 #' @export
 expect_PUT <- function(object, url = "", ...) {
-  expect_mock_request(object, "PUT ", url, " ", ...)
+  expect_request(object, "PUT ", url, " ", ...)
 }
 
 #' @rdname expect_verb
 #' @export
 expect_DELETE <- function(object, url = "", ...) {
-  expect_mock_request(object, "DELETE ", url, " ", ...)
+  expect_request(object, "DELETE ", url, " ", ...)
 }
 
 #' @rdname expect_verb
@@ -92,21 +92,36 @@ expect_no_request <- function(object, ...) {
   expect_error(object, NA)
 }
 
-#' @importFrom testthat expect_error
-expect_mock_request <- function(object,
-                                ...,
-                                fixed = TRUE,
-                                ignore.case = FALSE,
-                                perl = FALSE,
-                                useBytes = FALSE) {
+#' @importFrom testthat expect_error fail
+expect_request <- function(object,
+                           ...,
+                           fixed = TRUE,
+                           ignore.case = FALSE,
+                           perl = FALSE,
+                           useBytes = FALSE) {
   # PUT/POST/PATCH with no body may have trailing whitespace, so trim it
   expected <- sub(" +$", "", paste0(...))
-  expect_error(
-    object,
-    expected,
-    fixed = fixed,
-    ignore.case = ignore.case,
-    perl = perl,
-    useBytes = useBytes
+  tryCatch(
+    expect_error(
+      object,
+      expected,
+      class = "httptest2_request",
+      fixed = fixed,
+      ignore.case = ignore.case,
+      perl = perl,
+      useBytes = useBytes
+    ),
+    error = function(e) {
+      # Distinguish between unexpected requests and real errors
+      if (inherits(e, "httptest2_request")) {
+        fail(paste0(
+          "An unexpected request was made:\n  Actual:   ",
+          conditionMessage(e),
+          "\n  Expected: ", expected
+        ))
+      } else {
+        stop(e)
+      }
+    }
   )
 }

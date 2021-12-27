@@ -52,6 +52,23 @@ without_internet({
       "http://httpbin.org/get",
       '{"test":true}'
     )
+    # Also test what happens when an expectation fails
+    expect_failure(
+      expect_POST(
+        this_req %>%
+          req_method("POST") %>%
+          req_perform(),
+        "http://httpbin.org/get",
+        '{"test":false}'
+      ),
+      paste(
+        "An unexpected request was made:",
+        'Actual:   POST http://httpbin.org/get {"test":true}',
+        'Expected: POST http://httpbin.org/get {"test":false}',
+        sep = "\n  "
+      ),
+      fixed = TRUE
+    )
     expect_PATCH(
       this_req %>%
         req_method("PATCH") %>%

@@ -29,6 +29,7 @@ Imports:
     digest,
     httr2,
     jsonlite,
+    rlang,
     stats,
     utils
 Suggests:

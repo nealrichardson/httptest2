@@ -27,6 +27,10 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
 
     steps:
+      - name: Configure git
+        if: runner.os == 'Windows'
+        run: git config --global core.autocrlf false
+
       - uses: actions/checkout@v2
 
       - uses: r-lib/actions/setup-pandoc@v2
@@ -47,5 +51,5 @@ jobs:
       - name: Test coverage
         if: contains(matrix.config.r, 'release') && runner.os == 'macOS'
         run: |
-          Rscript -e 'remotes::install_cran("covr")'
+          Rscript -e 'pak::pkg_install("covr")'
           Rscript -e 'covr::codecov(token = "${{secrets.CODECOV_TOKEN}}")'

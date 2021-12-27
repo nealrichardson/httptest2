@@ -21,9 +21,11 @@ test_that("We can record a series of requests (a few ways)", {
     r5 <<- request("http://httpbin.org/response-headers") %>%
       req_url_query(`Content-Type` = "application/json") %>%
       req_perform()
-    # HTTR2: implement write_disk (see also commented code below)
-    # r6 <<- GET("http://httpbin.org/anything", config = write_disk(dl_file))
-    # r7 <<- GET("http://httpbin.org/image/webp", config = write_disk(webp_file))
+    # Now, some requests that write to disk
+    r6 <<- request("http://httpbin.org/anything") %>%
+      req_perform(path = dl_file)
+    r7 <<- request("http://httpbin.org/image/webp") %>%
+      req_perform(path = webp_file)
     r8 <<- request("http://httpbin.org/status/202") %>% req_perform()
     stop_capturing()
   })
@@ -31,10 +33,10 @@ test_that("We can record a series of requests (a few ways)", {
     sort(dir(d, recursive = TRUE)),
     c(
       "httpbin.org.html", # it's HTML, and we now support that simplified
-      # "httpbin.org/anything.json",
+      "httpbin.org/anything.json",
       "httpbin.org/get.json",
-      # "httpbin.org/image/webp.R", # Not a simplifiable format, so .R
-      # "httpbin.org/image/webp.R-FILE", # The `write_disk` location
+      "httpbin.org/image/webp.R", # Not a simplifiable format, so .R
+      "httpbin.org/image/webp.R-FILE", # The `write_disk` location
       "httpbin.org/put-PUT.json", # Not a GET, but returns 200
       "httpbin.org/response-headers-ac4928.json",
       "httpbin.org/status/202.R", # Not 200 response, so .R
@@ -59,11 +61,10 @@ test_that("We can then load the mocks it stores", {
     # Because the place we wrote out the file in our real request might not
     # naturally be in our mock directory, assume that that file doesn't exist
     # when we load our mocks.
-    # HTTR2: implement write_disk
-    # content_r6 <<- content(r6)
-    # file.remove(dl_file)
-    # content_r7 <<- content(r7)
-    # file.remove(webp_file)
+    content_r6 <<- resp_body_json(r6)
+    file.remove(dl_file)
+    content_r7 <<- resp_body_raw(r7)
+    file.remove(webp_file)
 
     mock_dl_file <- tempfile()
     mock_webp_file <- tempfile()
@@ -79,8 +80,10 @@ test_that("We can then load the mocks it stores", {
       m5 <- request("http://httpbin.org/response-headers") %>%
         req_url_query(`Content-Type` = "application/json") %>%
         req_perform()
-      # m6 <- GET("http://httpbin.org/anything", config = write_disk(mock_dl_file))
-      # m7 <- GET("http://httpbin.org/image/webp", config = write_disk(mock_webp_file))
+      m6 <- request("http://httpbin.org/anything") %>%
+        req_perform(path = mock_dl_file)
+      m7 <- request("http://httpbin.org/image/webp") %>%
+        req_perform(path = mock_webp_file)
       m8 <- request("http://httpbin.org/status/202") %>% req_perform()
     })
   })
@@ -96,13 +99,12 @@ test_that("We can then load the mocks it stores", {
   expect_identical(resp_body_string(m3), resp_body_string(r3))
   expect_identical(resp_body_json(m4), resp_body_json(r4))
   expect_identical(resp_body_json(m5), resp_body_json(r5))
-  # expect_identical(resp_body_string(m6), content_r6)
-  # expect_identical(resp_body_string(m7), content_r7)
+  expect_identical(resp_body_json(m6), content_r6)
+  expect_identical(resp_body_raw(m7), content_r7)
   expect_equal(resp_status(m8), 202)
 })
 
 test_that("write_disk mocks can be reloaded even if the mock directory moves", {
-  skip("HTTR2: implement write_disk")
   skip_if_disconnected()
   # This is an edge case caught because `crunch` package puts fixtures in
   # `inst/`, so you record to one place but when you read them from the
@@ -114,12 +116,11 @@ test_that("write_disk mocks can be reloaded even if the mock directory moves", {
   }
   with_mock_path(d2, {
     with_mock_api({
-      m7b <- GET("http://httpbin.org/image/webp",
-        config = write_disk(tempfile())
-      )
+      m7b <- request("http://httpbin.org/image/webp") %>%
+        req_perform(tempfile())
     })
   })
-  expect_identical(content(m7b), content_r7)
+  expect_identical(resp_body_raw(m7b), content_r7)
 })
 
 with_mock_api({

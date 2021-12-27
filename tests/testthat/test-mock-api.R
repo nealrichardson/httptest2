@@ -112,18 +112,6 @@ with_mock_api({
     )
   })
 
-  test_that("Mocking a GET with more function args (path, auth)", {
-    skip("HTTR2: rewrite test with httr2")
-    expect_identical(
-      resp_body_json(GET("http://example.com",
-        path = "/get",
-        add_headers("Content-Type" = "application/json"),
-        authenticate("d", "d")
-      )),
-      list(loaded = TRUE)
-    )
-  })
-
   test_that("Mock GET with non-JSON", {
     dick <- request("http://example.com/html") %>% req_perform()
     expect_true(grepl("Melville", resp_body_string(dick)))
@@ -164,8 +152,6 @@ with_mock_api({
       "(httpbin.org/post-432ac4-POST.json)"
     )
 
-    # HTTR2: let's make a better multipart form output format,
-    # or just use req_dry_run()?
     expect_POST(
       r %>%
         req_body_multipart(list(

@@ -149,21 +149,16 @@ save_response <- function(response, file, simplify = TRUE) {
       "text/csv", "text/html", "text/plain",
       "text/tab-separated-values", "text/xml"
     )
-    if (ct %in% text_types && length(response$body)) {
+    if (is.raw(response$body) && ct %in% text_types && length(response$body)) {
       cont <- resp_body_string(response)
       response$body <- substitute(charToRaw(cont))
-    } else if (inherits(response$request$output, "write_disk")) {
-      # HTTR2: figure out how the write_disk business works
+    } else if (inherits(response$body, "httr_path")) {
       # Copy real file and substitute the response$content "path".
-      # Note that if content is a text type, the above attempts to
-      # make the mock file readable by calling `resp_body_string()`, which reads
-      # in the file that has been written to disk, so it effectively
-      # negates the "download" behavior for the recorded response.
       downloaded_file <- paste0(dst_file, "-FILE")
-      file.copy(response$content, downloaded_file)
+      file.copy(response$body, downloaded_file)
       file <- paste0(file, "-FILE")
-      response$content <- substitute(structure(find_mock_file(file),
-        class = "path"
+      response$body <- substitute(structure(find_mock_file(file),
+        class = "httr_path"
       ))
     }
 

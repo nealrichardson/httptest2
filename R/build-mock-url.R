@@ -94,6 +94,7 @@ get_string_request_body <- function(req) {
       # add a newline at the end too
       b <- paste0(b, "\n")
     } else if (inherits(req$body$data, "httr_path")) {
+      # HTTR2: why is this httr_path but other things are httr2_something?
       # File upload: hash its contents
       b <- paste("File:", digest(req$body$data, serialize = FALSE, file = TRUE))
     }

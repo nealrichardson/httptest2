@@ -4,7 +4,6 @@ on: [push, pull_request]
 name: R-CMD-check
 
 jobs:
-jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
 

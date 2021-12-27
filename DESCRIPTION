@@ -32,7 +32,6 @@ Imports:
     stats,
     utils
 Suggests:
-    covr,
     curl,
     knitr,
     pkgload,

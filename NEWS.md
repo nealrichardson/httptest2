@@ -8,9 +8,9 @@ Initial port of `httptest` to work on top of `httr2`. All APIs preserved except:
 
 Changes to function signatures:
 
+* The `path` argument to `capture_requests()` and `start_capturing()` has been removed; instead set the mock path explicitly with `.mockPaths()` or use `with_mock_path()`.
 * `save_response()` requires a `file` path argument because `httr2_response` objects do not contain their `request`, which is needed to construct the mock file path
 * `build_mock_url()` no longer accepts a string URL as an input; it only accepts `request` objects
-* The `path` argument to `capture_requests()` and `start_capturing()` has been removed; instead set the mock path explicitly with `.mockPaths()` or use `with_mock_path()`.
 
 Some functions were removed:
 

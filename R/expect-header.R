@@ -1,20 +1,23 @@
 #' Test that an HTTP request is made with a header
 #'
-#' This expectation checks that a HTTP header (and potentially header value)
-#' is present in a request. It works by inspecting the request object and
-#' raising warnings that are caught by [testthat::expect_warning()].
-#'
-#' `expect_request_header` works both in the mock HTTP contexts and on "live"
-#' HTTP requests.
+#' This expectation checks that HTTP headers (and potentially header values)
+#' are present in a request. It works both in the mock HTTP contexts and on
+#' "live" HTTP requests.
 #'
 #' @param expr Code to evaluate
-#' @param ... Arguments passed to `expect_warning()`
-#' @param ignore.case logical: if `FALSE`, the pattern matching is _case
-#' sensitive_ and if `TRUE`, case is ignored during matching. Default is `TRUE`;
-#' note that this is the opposite of `expect_warning` but is appropriate here
-#' because HTTP header names are case insensitive.
+#' @param ... Named headers to match. Values should either be a string (length-1 character), which will be passed to [testthat::expect_match()], or `NULL` to assert that the named header is not present in the request. To assert that a header is merely present in the request, without asserting anything about its contents, provide an empty string (`""`). Header names are always case-insensitive; header values will be matched using the following parameters:
+#' @param fixed Should matching take the pattern as is or treat it as a regular
+#' expression. Default: `TRUE`, and note that this default is the opposite of
+#' the default in `expect_match()`.
+#' (The rest of the arguments follow its defaults.)
+#' @param ignore.case Should matching of header values be done case
+#' insensitively? Default: `FALSE`, meaning matches are case sensitive.
+#' @param perl Should Perl-compatible regular expressions be used? Default: `FALSE`
+#' @param useBytes Should matching be done byte-by-byte rather than
+#' character-by-character? Default: `FALSE`
 #' @return The value of `expr` if there are no expectation failures
 #' @importFrom testthat expect_null expect_match
+#' @importFrom rlang is_string
 #' @examplesIf !httptest2:::currently_offline()
 #'
 #' library(httr2)
@@ -22,13 +25,29 @@
 #'   request("http://httpbin.org") %>%
 #'     req_headers(Accept = "image/png") %>%
 #'     req_perform(),
-#'   accept = "image/png"
+#'   accept = "image/png",
+#'   `x-fake-header` = NULL
+#' )
+#' expect_request_header(
+#'   request("http://httpbin.org") %>%
+#'     req_headers(Accept = "image/png") %>%
+#'     req_perform(),
+#'   accept = ""
 #' )
 #' @export
-expect_request_header <- function(expr, ..., ignore.case = TRUE) {
-  # HTTR2: enumerate regex options since ... is for headers now
+expect_request_header <- function(expr,
+                                  ...,
+                                  fixed = !(ignore.case || perl),
+                                  ignore.case = FALSE,
+                                  perl = FALSE,
+                                  useBytes = FALSE) {
   expected <- list(...)
-  # HTTR2: validate `expected`
+  if (length(expected) == 0) {
+    stop("No headers provided")
+  }
+  if (is.null(names(expected)) || !all(nzchar(names(expected)))) {
+    stop("Header values must be named")
+  }
   names(expected) <- tolower(names(expected))
 
   # Slightly different behavior based on whether we already are mocking
@@ -38,13 +57,22 @@ expect_request_header <- function(expr, ..., ignore.case = TRUE) {
     names(actual) <- tolower(names(actual))
     for (n in names(expected)) {
       if (is.null(expected[[n]])) {
-        expect_null(actual[[n]])
-      } else {
+        expect_null(
+          actual[[n]],
+          label = sprintf('Header "%s"', n)
+        )
+      } else if (is_string(expected[[n]])) {
         expect_match(
           actual[[n]],
           expected[[n]],
+          fixed = fixed,
+          ignore.case = ignore.case,
+          perl = perl,
+          useBytes = useBytes,
           label = sprintf('Header "%s"', n)
         )
+      } else {
+        stop("Expected headers must be strings (length 1)", call. = FALSE)
       }
     }
 

@@ -10,14 +10,15 @@ with_mock_api({
       request("api/object1/") %>%
         req_headers(Accept = "image/jpeg", `X-Stuff` = "more") %>%
         req_perform(),
-      accept = "image/jpeg"
+      accept = ""
     )
     expect_request_header(
       request("api/object1/") %>%
         req_headers(Accept = "image/jpeg", `X-Stuff` = "more") %>%
         req_perform(),
       Accept = "image/jpeg",
-      `X-stuff` = "mo"
+      `X-stuff` = "mo",
+      `x-not-present` = NULL
     )
     expect_failure(
       expect_request_header(
@@ -28,31 +29,113 @@ with_mock_api({
       ),
       'Header "accept" does not match "image/jpeg"'
     )
+    expect_failure(
+      expect_request_header(
+        request("api/object1/") %>%
+          req_headers(Accept = "image/png") %>%
+          req_perform(),
+        accept = NULL
+      ),
+      'Header "accept" is not NULL'
+    )
   })
-  # behaviors to test:
-  # * existence of header ("")
-  # * absence of header? (NULL)
-  # * a header value (with args for regex)
-  # * multiple headers
-  # * also test invalid ...
 
-  # test_that("expect_request_header ignore.case", {
-  #   expect_success(expect_request_header(
-  #     request("api/object1/") %>%
-  #       req_headers(Accept = "image/jpeg") %>%
-  #       req_perform(),
-  #     "accept: image/jpeg"
-  #   ))
-  #   suppressWarnings(
-  #     expect_failure(expect_request_header(
-  #       request("api/object1/") %>%
-  #         req_headers(Accept = "image/jpeg") %>%
-  #         req_perform(),
-  #       "accept: image/jpeg",
-  #       ignore.case = FALSE
-  #     ))
-  #   )
-  # })
+  test_that("Args passed to expect_match", {
+    expect_request_header(
+      request("api/object1/") %>%
+        req_headers(Accept = "image/jpeg") %>%
+        req_perform(),
+      accept = "image.*",
+      fixed = FALSE
+    )
+    expect_failure(
+      expect_request_header(
+        request("api/object1/") %>%
+          req_headers(Accept = "image/jpeg") %>%
+          req_perform(),
+        accept = "image.*"
+      )
+    )
+    expect_request_header(
+      request("api/object1/") %>%
+        req_headers(Accept = "image/jpeg") %>%
+        req_perform(),
+      accept = "IMAGE",
+      ignore.case = TRUE
+    )
+    expect_failure(
+      expect_request_header(
+        request("api/object1/") %>%
+          req_headers(Accept = "image/jpeg") %>%
+          req_perform(),
+        accept = "IMAGE"
+      )
+    )
+    expect_request_header(
+      request("api/object1/") %>%
+        req_headers(Accept = "image/jpeg") %>%
+        req_perform(),
+      accept = "image.*",
+      perl = TRUE
+    )
+    expect_request_header(
+      request("api/object1/") %>%
+        req_headers(Accept = "image/jpeg") %>%
+        req_perform(),
+      accept = "image",
+      useBytes = TRUE
+    )
+  })
+
+  test_that("Input validation", {
+    expect_error(
+      expect_request_header(
+        request("api/object1/") %>%
+          req_headers(Accept = "image/png") %>%
+          req_perform()
+      ),
+      "No headers provided"
+    )
+    expect_error(
+      expect_request_header(
+        request("api/object1/") %>%
+          req_headers(Accept = "image/png") %>%
+          req_perform(),
+        "image/png"
+      ),
+      "Header values must be named"
+    )
+    expect_error(
+      expect_request_header(
+        request("api/object1/") %>%
+          req_headers(Accept = "image/png") %>%
+          req_perform(),
+        accept = "image/png",
+        "another"
+      ),
+      "Header values must be named"
+    )
+    expect_error(
+      expect_request_header(
+        request("api/object1/") %>%
+          req_headers(Accept = "image/png") %>%
+          req_perform(),
+        accept = c("image", "/png")
+      ),
+      "Expected headers must be strings (length 1)",
+      fixed = TRUE
+    )
+    expect_error(
+      expect_request_header(
+        request("api/object1/") %>%
+          req_headers(Accept = "image/png") %>%
+          req_perform(),
+        accept = c(12, 34)
+      ),
+      "Expected headers must be strings (length 1)",
+      fixed = TRUE
+    )
+  })
 })
 
 without_internet({

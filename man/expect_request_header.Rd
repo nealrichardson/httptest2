@@ -4,29 +4,40 @@
 \alias{expect_request_header}
 \title{Test that an HTTP request is made with a header}
 \usage{
-expect_request_header(expr, ..., ignore.case = TRUE)
+expect_request_header(
+  expr,
+  ...,
+  fixed = !(ignore.case || perl),
+  ignore.case = FALSE,
+  perl = FALSE,
+  useBytes = FALSE
+)
 }
 \arguments{
 \item{expr}{Code to evaluate}
 
-\item{...}{Arguments passed to \code{expect_warning()}}
+\item{...}{Named headers to match. Values should either be a string (length-1 character), which will be passed to \code{\link[testthat:expect_match]{testthat::expect_match()}}, or \code{NULL} to assert that the named header is not present in the request. To assert that a header is merely present in the request, without asserting anything about its contents, provide an empty string (\code{""}). Header names are always case-insensitive; header values will be matched using the following parameters:}
 
-\item{ignore.case}{logical: if \code{FALSE}, the pattern matching is \emph{case
-sensitive} and if \code{TRUE}, case is ignored during matching. Default is \code{TRUE};
-note that this is the opposite of \code{expect_warning} but is appropriate here
-because HTTP header names are case insensitive.}
+\item{fixed}{Should matching take the pattern as is or treat it as a regular
+expression. Default: \code{TRUE}, and note that this default is the opposite of
+the default in \code{expect_match()}.
+(The rest of the arguments follow its defaults.)}
+
+\item{ignore.case}{Should matching of header values be done case
+insensitively? Default: \code{FALSE}, meaning matches are case sensitive.}
+
+\item{perl}{Should Perl-compatible regular expressions be used? Default: \code{FALSE}}
+
+\item{useBytes}{Should matching be done byte-by-byte rather than
+character-by-character? Default: \code{FALSE}}
 }
 \value{
 The value of \code{expr} if there are no expectation failures
 }
 \description{
-This expectation checks that a HTTP header (and potentially header value)
-is present in a request. It works by inspecting the request object and
-raising warnings that are caught by \code{\link[testthat:expect_error]{testthat::expect_warning()}}.
-}
-\details{
-\code{expect_request_header} works both in the mock HTTP contexts and on "live"
-HTTP requests.
+This expectation checks that HTTP headers (and potentially header values)
+are present in a request. It works both in the mock HTTP contexts and on
+"live" HTTP requests.
 }
 \examples{
 \dontshow{if (!httptest2:::currently_offline()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
@@ -36,7 +47,14 @@ expect_request_header(
   request("http://httpbin.org") \%>\%
     req_headers(Accept = "image/png") \%>\%
     req_perform(),
-  accept = "image/png"
+  accept = "image/png",
+  `x-fake-header` = NULL
+)
+expect_request_header(
+  request("http://httpbin.org") \%>\%
+    req_headers(Accept = "image/png") \%>\%
+    req_perform(),
+  accept = ""
 )
 \dontshow{\}) # examplesIf}
 }

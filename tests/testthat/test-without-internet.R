@@ -69,6 +69,9 @@ without_internet({
       ),
       fixed = TRUE
     )
+    # HTTR2: also test behavior of expect_VERB when no request at all
+    # is made, or when a different error is raised
+    # Also test expect_no_request() and make it use the classed error
     expect_PATCH(
       this_req %>%
         req_method("PATCH") %>%

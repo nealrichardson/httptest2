@@ -20,7 +20,7 @@
 #' raised by the mocked HTTP service and check that the request URL and optional
 #' body match the expectation. [expect_no_request()] is the inverse of those: it
 #' asserts that no error or message from a mocked HTTP service is raised.
-#' [expect_header()] asserts that an HTTP request, mocked or not, contains a
+#' [expect_request_header()] asserts that an HTTP request, mocked or not, contains a
 #' request header. [expect_json_equivalent()] checks that two R objects would
 #' generate equivalent JSON, taking into account how JSON objects are unordered
 #' whereas R named lists are ordered.

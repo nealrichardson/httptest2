@@ -4,8 +4,8 @@
 #' is present in a request. It works by inspecting the request object and
 #' raising warnings that are caught by [testthat::expect_warning()].
 #'
-#' `expect_header` works both in the mock HTTP contexts and on "live" HTTP
-#' requests.
+#' `expect_request_header` works both in the mock HTTP contexts and on "live"
+#' HTTP requests.
 #'
 #' @param expr Code to evaluate
 #' @param ... Arguments passed to `expect_warning()`
@@ -13,43 +13,50 @@
 #' sensitive_ and if `TRUE`, case is ignored during matching. Default is `TRUE`;
 #' note that this is the opposite of `expect_warning` but is appropriate here
 #' because HTTP header names are case insensitive.
-#' @return `NULL`, according to `expect_warning`.
-#' @importFrom testthat expect_warning
+#' @return The value of `expr` if there are no expectation failures
+#' @importFrom testthat expect_null expect_match
 #' @examplesIf !httptest2:::currently_offline()
 #'
 #' library(httr2)
-#' expect_header(
+#' expect_request_header(
 #'   request("http://httpbin.org") %>%
 #'     req_headers(Accept = "image/png") %>%
 #'     req_perform(),
-#'   "Accept: image/png"
+#'   accept = "image/png"
 #' )
 #' @export
-expect_header <- function(expr, ..., ignore.case = TRUE) {
-  current_mocker <- getOption("httr2_mock")
-  warn_headers <- function(req) {
-    heads <- req$headers
-    msgs <- lapply(names(heads), function(h) paste(h, heads[h], sep = ": "))
-    warning(msgs, call. = FALSE)
-    NULL
-  }
+expect_request_header <- function(expr, ..., ignore.case = TRUE) {
+  # HTTR2: enumerate regex options since ... is for headers now
+  expected <- list(...)
+  # HTTR2: validate `expected`
+  names(expected) <- tolower(names(expected))
 
   # Slightly different behavior based on whether we already are mocking
+  current_mocker <- getOption("httr2_mock")
   header_mocker <- function(req) {
-    warn_headers(req)
-    # warn_headers() returns NULL, so if there is no other mocking,
-    # req_perform() will proceed normally
-    if (!is.null(current_mocker)) {
+    actual <- req$headers
+    names(actual) <- tolower(names(actual))
+    for (n in names(expected)) {
+      if (is.null(expected[[n]])) {
+        expect_null(actual[[n]])
+      } else {
+        expect_match(
+          actual[[n]],
+          expected[[n]],
+          label = sprintf('Header "%s"', n)
+        )
+      }
+    }
+
+    if (is.null(current_mocker)) {
+      # If there is no other mocking, req_perform() will proceed normally
+      NULL
+    } else {
       current_mocker(req)
     }
   }
 
-  # TODO: can we do something different than warn?
-  expect_warning(
-    httr2::with_mock(header_mocker, expr),
-    ...,
-    ignore.case = ignore.case
-  )
+  httr2::with_mock(header_mocker, expr)
 }
 
 # HTTR2: report this to testthat

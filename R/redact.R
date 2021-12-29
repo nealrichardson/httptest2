@@ -80,6 +80,7 @@ within_body_text <- function(response, FUN) {
 #' pattern replaced in the URLs and bodies.
 #' @export
 gsub_response <- function(response, pattern, replacement, ...) {
+  # HTTR2: rename since this is supposed to affect requests too?
   replacer <- function(x) gsub(pattern, replacement, x, ...)
   response$url <- replacer(response$url)
   response <- header_apply(response, "location", replacer)

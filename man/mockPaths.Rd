@@ -16,24 +16,26 @@ a character vector. If \code{new} is provided, the updated value will be returne
 invisibly.
 }
 \description{
-By default, \code{with_mock_api} will look for mocks relative to the current
-working directory (the test directory). If you want to look in other places,
-you can call \code{.mockPaths} to add directories to the search path.
+By default, \code{with_mock_api()} will look for and \code{capture_requests()} will
+write mocks to your package's \code{tests/testthat} directory, or else the current
+working directory if that path does not exist. If you want to look in or
+write to other places, call \code{.mockPaths()} to add directories to the search
+path.
 }
 \details{
 It works like \code{\link[base:libPaths]{base::.libPaths()}}: any directories you specify will be added
 to the list and searched first. The default directory will be searched last.
 Only unique values are kept: if you provide a path that is already found in
-\code{.mockPaths}, the result effectively moves that path to the first position.
+\code{.mockPaths()}, the result effectively moves that path to the first position.
 
 For finer-grained control, or to completely override the default behavior
 of searching in the current working directory, you can set the option
 "httptest2.mock.paths" directly.
 }
 \examples{
-identical(.mockPaths(), ".")
+.mockPaths()
 .mockPaths("/var/somewhere/else")
-identical(.mockPaths(), c("/var/somewhere/else", "."))
+.mockPaths()
 .mockPaths(NULL)
-identical(.mockPaths(), ".")
+.mockPaths()
 }

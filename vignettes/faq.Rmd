@@ -9,9 +9,13 @@ vignette: >
 
 ## Where are my mocks recorded?
 
-By default, the destination path for `capture_requests()` is relative to the current working directory of the process. This matches the behavior of `with_mock_api()`, which looks for files relative to its directory, which typically is `tests/testthat/`.
+By default, `with_mock_api()` will look for and `capture_requests()` will
+write mocks to your package's `tests/testthat` directory, or else the current
+working directory if that path does not exist. If you want to look in or
+write to other places, call `.mockPaths()` to add directories to the search
+path.
 
-If you're running `capture_requests` within a test suite in an installed package, or if you're running interactively from a different directory, the working directory may not be the same as your code repository. If you aren't sure where the files are going, set `options(httptest.verbose=TRUE)`, and it will message the absolute path of the files as it writes them.
+If you're running `capture_requests()` within a test suite in an installed package, or if you're running interactively from a different directory, the working directory may not be the same as your code repository. If you aren't sure where the files are going, set `options(httptest2.verbose = TRUE)`, and it will message the absolute path of the files as it writes them.
 
 To change where files are being written or read from, use `.mockPaths()` (like `base::.libPaths()`) to specify a different directory.
 
@@ -22,17 +26,17 @@ Indeed, the file-system tree view of the mock files gives a visual representatio
 
 Depending on how long your URLs are, there are a few ways to save on characters without compromising readability of your code and tests.
 
-A big way to cut long file paths is by using a request preprocessor: a function that alters the content of your 'httr' `request` before mapping it to a mock file. For example, if all of your API endpoints sit beneath `https://language.googleapis.com/v1/`, you could set a request preprocessor like:
+A big way to cut long file paths is by using a redactor: a function that alters the content of your requests and responses before mapping them to mock files. For example, if all of your API endpoints sit beneath `https://language.googleapis.com/v1/`, you could:
 
 ```r
-set_requester(function (request) {
-  gsub_request(request, "https\\://language.googleapis.com/v1/", "api/")
+set_redactor(function (x) {
+  gsub_response(x, "https\\://language.googleapis.com/v1/", "api/")
 })
 ```
 
-and then all mocked requests would look for a path starting with "api/" rather than "language.googleapis.com/v1/", saving you (in this case) 23 characters.
+This will replace that string in all parts of the mock file that is saved, including in the file path that is written--that is, paths will start with "api/" rather than "language.googleapis.com/v1/", saving you (in this case) 23 characters. The function will also be called when loading mocks in `with_mock_api()` so that the shortened file paths are found.
 
-You can also provide this function in `inst/httptest/request.R`, and any time your package is loaded (as when you run tests or build vignettes), this function will be called automatically. See `vignette("redacting")` for more.
+You can also provide this function in `inst/httptest2/redact.R`, and any time your package is loaded (as when you run tests or build vignettes, or when anyone else uses your package in *their* package), this function will be called automatically. See `vignette("redacting")` for more.
 
 You may also be able to economize on other parts of the file paths. If you've recorded requests and your file paths contain long ids like "1495480537a3c1bf58486b7e544ce83d", depending on how you access the API in your code, you may be able to simply replace that id with something shorter, like "1". The mocks are just files, disconnected from a real server and API, so you can rename them and munge them as needed.
 
@@ -40,7 +44,7 @@ Finally, if you have your tests inside a `tests/testthat/` directory, and your f
 
 ## How do I switch between mocking and real requests?
 
-`httptest` does not intend that every request in your test suite is something that could be run against a live server. There are practical reasons why you should be able to see, modify, and maintain test fixtures, rather than re-record them every time you make a change. Among the considerations:
+`httptest2` does not intend that every request in your test suite is something that could be run against a live server. There are practical reasons why you should be able to see, modify, and maintain test fixtures, rather than re-record them every time you make a change. Among the considerations:
 
 * In many cases, API responses contain way more content than is necessary to test your R code around them: 100 records when 2 will suffice, request metadata that you don't care about and can't meaningfully assert things about, and so on. In the interest of minimally reproducible examples, and of making tests readable, it often makes sense to take an actual API response and delete a lot of its content, or even to fabricate one entirely.
 * It's good to keep an API mock fixed so you know exactly what is in it. If you re-recorded a Twitter API response of, say, the most recent 10 tweets with `#rstats`, the specific content will change every time you record it, so your tests can't say much about what is in the response without having to rewrite them every time too.
@@ -51,7 +55,7 @@ That said, it can be worthwhile to have a subset of tests that can be run agains
 
 ```r
 with_mock_dir("httpbin-get", {
-  a <- GET("https://httpbin.org/get")
+  a <- request("https://httpbin.org/get") %>% req_perform()
   print(a)
 })
 ```

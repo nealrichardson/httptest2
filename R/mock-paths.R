@@ -1,13 +1,15 @@
 #' Set an alternate directory for mock API fixtures
 #'
-#' By default, `with_mock_api` will look for mocks relative to the current
-#' working directory (the test directory). If you want to look in other places,
-#' you can call `.mockPaths` to add directories to the search path.
+#' By default, `with_mock_api()` will look for and `capture_requests()` will
+#' write mocks to your package's `tests/testthat` directory, or else the current
+#' working directory if that path does not exist. If you want to look in or
+#' write to other places, call `.mockPaths()` to add directories to the search
+#' path.
 #'
 #' It works like [base::.libPaths()]: any directories you specify will be added
 #' to the list and searched first. The default directory will be searched last.
 #' Only unique values are kept: if you provide a path that is already found in
-#' `.mockPaths`, the result effectively moves that path to the first position.
+#' `.mockPaths()`, the result effectively moves that path to the first position.
 #'
 #' For finer-grained control, or to completely override the default behavior
 #' of searching in the current working directory, you can set the option
@@ -18,11 +20,11 @@
 #' a character vector. If `new` is provided, the updated value will be returned
 #' invisibly.
 #' @examples
-#' identical(.mockPaths(), ".")
+#' .mockPaths()
 #' .mockPaths("/var/somewhere/else")
-#' identical(.mockPaths(), c("/var/somewhere/else", "."))
+#' .mockPaths()
 #' .mockPaths(NULL)
-#' identical(.mockPaths(), ".")
+#' .mockPaths()
 #' @rdname mockPaths
 #' @export
 .mockPaths <- function(new) {

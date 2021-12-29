@@ -84,3 +84,12 @@ without_internet({
     )
   })
 })
+
+test_that("block_requests()", {
+  block_requests()
+  on.exit(stop_mocking())
+  expect_GET(
+    request("http://httpbin.org/get") %>% req_perform(),
+    "http://httpbin.org/get"
+  )
+})

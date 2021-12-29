@@ -101,7 +101,7 @@ expect_request <- function(object,
                            useBytes = FALSE) {
   # PUT/POST/PATCH with no body may have trailing whitespace, so trim it
   expected <- sub(" +$", "", paste0(...))
-  tryCatch(
+  withCallingHandlers(
     expect_error(
       object,
       expected,

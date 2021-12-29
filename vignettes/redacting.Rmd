@@ -1,6 +1,6 @@
 ---
 title: "Redacting and Modifying Recorded Requests"
-description: "httptest provides a framework for sanitizing mocks recorded from real requests so that your tests don't reveal private tokens. By default, it redacts standard auth credentials, and it is extensible so that you can modify the responses however you want."
+description: "httptest2 provides a framework for sanitizing mocks recorded from real requests so that your tests don't reveal private tokens. By default, it redacts standard auth credentials, and it is extensible so that you can modify the responses however you want."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Redacting and Modifying Recorded Requests}
@@ -8,33 +8,46 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-`httptest` makes it easy for you to write tests that don't require a network connection. With `capture_requests()`, you can record responses from real requests so that you can use them later in tests. A further benefit of testing with mocks is that you don't have to deal with authentication and authorization on the server in your tests---you don't need to supply real login credentials for your test suite to run. You can have full test coverage of your code, both on public continuous-integration services like Travis-CI and when you submit packages to CRAN, all without having to publish secret tokens or passwords.
+`httptest2` makes it easy for you to write tests that don't require a network connection. With `capture_requests()`, you can record responses from real requests so that you can use them later in tests. A further benefit of testing with mocks is that you don't have to deal with authentication and authorization on the server in your tests---you don't need to supply real login credentials for your test suite to run. You can have full test coverage of your code, both on public continuous-integration services like GitHub Actions and when you submit packages to CRAN, all without having to publish secret tokens or passwords.
 
-It is important to ensure that the mocks you include in your test suite do not inadvertently reveal private information as well. For many requests and responses, the default behavior of `capture_requests` is to write out only the response body, which makes for clean, easy-to-read test fixtures. For other responses, however---those returning non-JSON content or an error status---it writes a `.R` file containing a `httr` "response" object. This response contains all of the headers and cookies that the server returns, and if not addressed, it could publicly expose your personal credentials.
+It is important to ensure that the mocks you include in your test suite do not inadvertently reveal private information as well. HTTP responses may contain things you don't want to share: credentials in the headers, record IDs in the body or even the URL itself, or even personally identifiable information.
 
-`httptest` provides a framework for sanitizing the responses that `capture_requests` records. By default, it redacts the standard ways that auth credentials are passed in responses. The framework is extensible and allows you to specify custom redaction policies that match how your API accepts and returns sensitive information. Common redacting functions are configurable and natural to adapt to your needs, while the workflow also supports custom redacting functions that can alter the recorded requests however you want, including altering the response content and URL.
+`httptest2` provides a framework for sanitizing the responses that `capture_requests()` records. By default, it redacts some standard ways that auth secrets may appear in HTTP responses. The framework is extensible and allows you to specify custom redaction policies that match how your API accepts and returns sensitive information.
 
 ## Default: redact standard auth methods
 
-By default, the `capture_requests` context evaluates the `redact_auth()` function on a response object before writing it to disk. `redact_auth` wraps more specific redacting functions that do things like sanitize any cookies in the server response. Note that request parameters that communicate your credentials to the API, including cookies, authorization headers, basic HTTP auth, and OAuth, are also purged from the recorded response file: `capture_requests()` only records the response, not the request, even though an `httr` response object generally includes the request object.
+By default, the `capture_requests()` context evaluates the `redact_cookies()` function on a response object before writing it to disk. `redact_cookies()` redacts the `Set-Cookie` response header, which may contain auth credentials. Many APIs don't return anything in the HTTP response that leaks auth secrets, and while you send secrets in your request, the `httr2_request` object isn't saved in the mocks, only the `httr2_response`.
 
-What does "redacting" entail? We aren't the CIA working with classified reports, taking a heavy black marker over certain details. In our case, redacting means replacing the sensitive content with the string "REDACTED". Your recorded responses will be as "real" as possible: if, for example, you have an "Authorization" header in your request, the header will remain in your test fixture, but real token value will be replaced with "REDACTED". And only the recorded responses will be affected---the actual response you're capturing in your active R session is not modified, only the mock that is written out.
+What does "redacting" entail? We aren't the CIA working with classified reports, taking a heavy black marker over certain details. In our case, redacting means replacing the sensitive content with the string "REDACTED". Your recorded responses will be just as it was "live". And only the recorded responses will be affected---the actual response you're capturing in your active R session is not modified, only the mock that is written out.
 
 To illustrate, here's a request that has a cookie in the response. Let's record it.
 
 ```r
-capture_requests(simplify = FALSE, {
-  real_resp <- GET("http://httpbin.org/cookies/set?token=12345")
+capture_requests({
+  real_resp <- request("http://httpbin.org/cookies/set") %>%
+    req_url_query(token = "12345") %>%
+    # httpbin normally does a 302 redirect after this request,
+    # but let's prevent that just to illustrate
+    req_options(followlocation = FALSE) %>%
+    req_perform()
 })
 ```
 
 In the actual response object in our R session, the cookie is there:
 
 ```r
-real_resp$cookies
+resp_headers(real_resp)
 
-##        domain  flag path secure expiration  name value
-## 1 httpbin.org FALSE    /  FALSE       <NA> token 12345
+## <httr2_headers>
+## Date: Wed, 29 Dec 2021 18:14:20 GMT
+## Content-Type: text/html; charset=utf-8
+## Content-Length: 223
+## Connection: keep-alive
+## Server: gunicorn/19.9.0
+## Location: /cookies
+## Set-Cookie: token=12345; Path=/
+## Access-Control-Allow-Origin: *
+## Access-Control-Allow-Credentials: true
 ```
 
 But when we load that recorded response in tests later, the cookie won't appear because it was redacted:
@@ -42,17 +55,29 @@ But when we load that recorded response in tests later, the cookie won't appear 
 ```r
 mockfile <- "httpbin.org/cookies/set-5b2631.R"
 mock <- source(mockfile)$value
-mock$cookies
+resp_headers(mock)
 
-##        domain  flag path secure expiration  name    value
-## 1 httpbin.org FALSE    /  FALSE       <NA> token REDACTED
+## <httr2_headers>
+## Date: Wed, 29 Dec 2021 18:14:20 GMT
+## Content-Type: text/html; charset=utf-8
+## Content-Length: 223
+## Connection: keep-alive
+## Server: gunicorn/19.9.0
+## Location: /cookies
+## Set-Cookie: REDACTED
+## Access-Control-Allow-Origin: *
+## Access-Control-Allow-Credentials: true
 
-mock$all_headers[[1]][["set-cookie"]]
+with_mock_api({
+  request("http://httpbin.org/cookies/set") %>%
+    req_url_query(token = "12345") %>%
+    req_options(followlocation = FALSE) %>%
+    req_perform() %>%
+    resp_header("Set-Cookie")
+})
 
 ## [1] "REDACTED"
 ```
-
-> Side note: the example uses the `simplify=FALSE` option to `capture_requests` for illustration purposes. With the default `simplify=TRUE`, only the response body would be written to a mock file because this particular GET request returns JSON content. Thus, there would be no cookie present anyway. `simplify=FALSE` forces `capture_requests` to write the verbose .R response object file for every request, not just those that don't return JSON content.
 
 ## Writing custom redacting functions
 
@@ -62,7 +87,9 @@ Redacting functions can help with this content as well. You can use redactors on
 
 For example, in the [API for Pivotal Tracker](https://www.pivotaltracker.com/help/api), the agile project management tool, the Pivotal project id is built into many of its URLs. As a result, it would appear in mock file paths you record. The id is also often included in the response body.
 
-We'd rather not have that information leak in our test fixtures, so in the [pivotaltrackR](https://enpiar.com/r/pivotaltrackR/) package, which wraps this API, we need to tell `capture_requests` to scrub this id when we record mocks.
+We'd rather not have that information leak in our test fixtures, so in the [pivotaltrackR](https://enpiar.com/r/pivotaltrackR/) package, which wraps this API, we need to tell `capture_requests()` to scrub this id when we record mocks.
+
+> Note: `pivotaltrackR` uses `httr` and `httptest`, not `httr2` and `httptest2`, but the redacting behavior is consistent between `httptest` and `httptest2`.
 
 To do this, we'll use `set_redactor()` to supply a custom function. The project id is stored in the R session in `options(pivotal.project)`, so we can identify it and find-and-replace it with `gsub_response()`. The function takes `response` as its first argument and then passes the rest to `gsub()`, which is called on both the response URL and the response body.
 
@@ -77,7 +104,7 @@ Valid inputs to `set_redactor()` include:
 * A function taking a single argument, the `response`, and returning a valid `response` object
 * A formula as shorthand for an anonymous function with `.` as the "response" argument
 * A list of redacting functions/formulas, which will be executed in sequence on the response
-* `NULL`, to override the default `redact_auth()` and do no redacting
+* `NULL`, to override the default `redact_cookies()` and do no redacting
 
 To see this in action, let's record a request:
 
@@ -96,11 +123,11 @@ s[[1]]$project_id
 ## [1] "my-project-name"
 ```
 
-However, the project id won't be found in the recorded file. If we load the recorded response in `with_mock_api`, we'll see the value we substituted in:
+However, the project id won't be found in the recorded file. If we load the recorded response in `with_mock_api()`, we'll see the value we substituted in:
 
 ```r
 with_mock_api({
-    s <- getStories(search = "mnt")
+  s <- getStories(search = "mnt")
 })
 s[[1]]$project_id
 ## [1] "123"
@@ -108,7 +135,7 @@ s[[1]]$project_id
 
 Nor will the project id appear in the file path: since the redactor is evaluated before determining the file path to write to, if you alter the response URL, the destination file path will be generated based on the modified URL. In this case, our mock is written to ".../projects/123/stories-fb1776.json", not ".../projects/my-project-name/stories-fb1776.json".
 
-We can do more response cleaning with custom functions. All of the redactors in `httptest` take the "response" object as their first argument and return the response object modified in some way. This lends them to pipelining, as with the [`magrittr`](https://magrittr.tidyverse.org/) package.
+We can do more response cleaning with custom functions. All of the redactors in `httptest2` take the "response" object as their first argument and return the response object modified in some way. This lends them to pipelining, as with the [`magrittr`](https://magrittr.tidyverse.org/) package.
 
 Continuing with the `pivotaltrackR` example, let's also prune the domain and API root path from the URLs we're recording so that we're making shorter file paths:
 
@@ -127,31 +154,20 @@ function(response) {
 
 If you're writing a package that wraps an API and you need a custom redactor to safely record API responses, you'll want to make sure that you _always_ record with that redactor. You don't want to forget to call `set_redactor()` in your R session and end up recording fixtures that contain your auth secrets.
 
-To make sure that your redactor is "always on" for your package, `httptest` enables you to define a package-level redactor. To do this, put a redacting function in `inst/httptest/redact.R` in your package. (In fact, the function in the above example is in [`inst/httptest/redact.R` in the `pivotaltrackR` package](https://github.com/nealrichardson/pivotaltrackR/blob/master/inst/httptest/redact.R).)
+To make sure that your redactor is "always on" for your package, `httptest2` enables you to define a package-level redactor. To do this, put a redacting function in `inst/httptest2/redact.R` in your package. (In fact, the function in the above example is [the package redactor in `pivotaltrackR`](https://github.com/nealrichardson/pivotaltrackR/blob/master/inst/httptest/redact.R).)
 
 Any time you record requests while your package is loaded, as when running tests or building vignettes, this function will be called on the `response` object before writing it to disk. It's automatic: set it there once and you never have to remember.
 
-## Request preprocessing
+## URL shortening
 
 Finally, depending on how long the URLs are in the API requests you make, you may need to programmatically shorten them if you're planning on submitting your package to CRAN because CRAN requires file names to be 100 characters or less. Long file names throw a "non-portable file paths" message in `R CMD check`.
 
-A good way to solve this problem is to use a request preprocessor: a function that alters the content of your 'httr' `request` before mapping it to a mock file. It's like a redactor but for the request object. Just as you can provide a custom function to modify responses that are recorded, you can provide a function to tweak the request being made in order to map the request to the right file in the mocked context. Importantly, this lets you truncate the URLs, which then map to files.
-
-For example, if all of your API endpoints sit beneath `https://language.googleapis.com/v1/`, you could set a request preprocessor like:
+A redactor can help solve this. For example, if all of your API endpoints sit beneath `https://language.googleapis.com/v1/`, you could:
 
 ```r
-set_requester(~ gsub_request(., "https\\://language.googleapis.com/v1/", "api/"))
+set_redactor(function (x) {
+  gsub_response(x, "https\\://language.googleapis.com/v1/", "api/")
+})
 ```
 
-and then all mocked requests would look for a path starting with "api/" rather than "language.googleapis.com/v1/", saving you (in this case) 23 characters.
-
-You can also provide this function in `inst/httptest/request.R`, just as you can for the redactor, and any time your package is loaded and you're reading mock (previously recorded) responses, this function will be called on the `request` object before mapping it to a file. For example, [here](https://github.com/nealrichardson/pivotaltrackR/blob/master/inst/httptest/request.R) is the one from `pivotaltrackR`:
-
-```r
-function(request) {
-  require(magrittr, quietly=TRUE)
-  request %>%
-    gsub_request("https://www.pivotaltracker.com/services/v5/", "", fixed = TRUE) %>%
-    gsub_request(getOption("pivotal.project"), "123")
-}
-```
+This will replace that string in all parts of the mock file that is saved, including in the file path that is written--that is, paths will start with "api/" rather than "language.googleapis.com/v1/", saving you (in this case) 23 characters. The function will also be called when loading mocks in `with_mock_api()` so that the shortened file paths are found.

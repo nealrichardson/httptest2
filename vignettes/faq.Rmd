@@ -26,7 +26,7 @@ Indeed, the file-system tree view of the mock files gives a visual representatio
 
 Depending on how long your URLs are, there are a few ways to save on characters without compromising readability of your code and tests.
 
-A big way to cut long file paths is by using a redactor: a function that alters the content of your requests and responses before mapping them to mock files. For example, if all of your API endpoints sit beneath `https://language.googleapis.com/v1/`, you could:
+A good way to cut long file paths is by using a redactor: a function that alters the content of your requests and responses before mapping them to mock files. For example, if all of your API endpoints sit beneath `https://language.googleapis.com/v1/`, you could:
 
 ```r
 set_redactor(function (x) {

@@ -26,6 +26,7 @@ such as \code{\link[=expect_GET]{expect_GET()}} and \code{\link[=expect_POST]{ex
 }
 \examples{
 library(httr2)
+library(testthat, warn.conflicts = FALSE)
 without_internet({
   expect_error(
     request("http://httpbin.org/get") \%>\% req_perform(),

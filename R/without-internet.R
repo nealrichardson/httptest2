@@ -14,6 +14,7 @@
 #' @seealso [block_requests()] to enable mocking on its own (not in a context)
 #' @examples
 #' library(httr2)
+#' library(testthat, warn.conflicts = FALSE)
 #' without_internet({
 #'   expect_error(
 #'     request("http://httpbin.org/get") %>% req_perform(),

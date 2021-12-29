@@ -13,9 +13,7 @@
 #' @inheritParams start_capturing
 #' @param replace Logical: should the mock directory replace current mock
 #' directories? Default is `TRUE`.
-#'
 #' @export
-#'
 with_mock_dir <- function(dir, expr, simplify = TRUE, replace = TRUE) {
   if (dir.exists("tests/testthat") && !(substr(dir, 1, 1) %in% c("/", "\\"))) {
     # If we're at the top level directory of the package,

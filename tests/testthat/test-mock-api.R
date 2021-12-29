@@ -49,14 +49,14 @@ with_mock_api({
       ) %>%
       req_perform()
     expect_identical(resp_body_json(p), list(content = TRUE))
-    expect_POST(
+    expect_error(
       request("api/object1") %>%
         req_body_raw('{"b":2}', type = "application/json") %>%
         req_headers(
           Accept = "application/json"
         ) %>%
         req_perform(),
-      'api/object1 {"b":2} (api/object1-3e8d9a-POST.json)'
+      "api/object1-3e8d9a-POST."
     )
   })
   test_that("max.print option", {
@@ -68,8 +68,7 @@ with_mock_api({
         req_body_json(list(test = TRUE)) %>%
         req_perform(),
       "http://httpbin.org/get",
-      '{"t ',
-      "(httpbin.org/get-"
+      '{"t '
     )
   })
   test_that("Request body and query", {
@@ -78,13 +77,28 @@ with_mock_api({
         req_method("PATCH") %>%
         req_body_json(list(arg = 45)) %>%
         req_perform(),
-      'api/object2?d=1 {"arg":45} (api/object2-899b0e-3d8d62-PATCH.json)'
+      'api/object2?d=1 {"arg":45}'
     )
   })
   test_that("Other verbs error too", {
-    expect_PUT(request("api/") %>% req_method("PUT") %>% req_perform(), "api/")
-    expect_PATCH(request("api/") %>% req_method("PATCH") %>% req_perform(), "api/")
-    expect_POST(request("api/") %>% req_method("POST") %>% req_perform(), "api/")
+    expect_PUT(
+      request("api/") %>%
+        req_method("PUT") %>%
+        req_perform(),
+      "api/"
+    )
+    expect_PATCH(
+      request("api/") %>%
+        req_method("PATCH") %>%
+        req_perform(),
+      "api/"
+    )
+    expect_POST(
+      request("api/") %>%
+        req_method("POST") %>%
+        req_perform(),
+      "api/"
+    )
     expect_POST(
       request("api/") %>%
         req_body_raw('{"arg":true}') %>%
@@ -92,19 +106,22 @@ with_mock_api({
       "api/",
       '{"arg":true}'
     )
-    expect_DELETE(request("api/") %>% req_method("DELETE") %>% req_perform(), "api/")
+    expect_DELETE(
+      request("api/") %>%
+        req_method("DELETE") %>%
+        req_perform(),
+      "api/"
+    )
   })
 
   test_that("mock API with http:// URL, not file path", {
     expect_GET(
       request("http://httpbin.org/get") %>% req_perform(),
-      "http://httpbin.org/get",
-      "(httpbin.org/get.json)"
+      "http://httpbin.org/get"
     )
     expect_GET(
       request("https://httpbin.org/get") %>% req_perform(),
-      "https://httpbin.org/get",
-      "(httpbin.org/get.json)"
+      "https://httpbin.org/get"
     )
     expect_identical(
       resp_body_json(request("http://example.com/get") %>% req_perform()),
@@ -124,32 +141,28 @@ with_mock_api({
         req_body_raw("A simple text string") %>%
         req_perform(),
       "http://httpbin.org/post",
-      "A simple text string ",
-      "(httpbin.org/post-6ec8e0-POST.json)"
+      "A simple text string "
     )
     expect_POST(
       r %>%
         req_body_form(list(x = "A simple text string")) %>%
         req_perform(),
       "http://httpbin.org/post",
-      "x=A%20simple%20text%20string ",
-      "(httpbin.org/post-aa2999-POST.json)"
+      "x=A%20simple%20text%20string "
     )
     expect_POST(
       r %>%
         req_body_json(list(x = "A simple text string")) %>%
         req_perform(),
       "http://httpbin.org/post",
-      '{"x":"A simple text string"} ',
-      "(httpbin.org/post-34199a-POST.json)"
+      '{"x":"A simple text string"} '
     )
     expect_POST(
       r %>%
         req_body_file(testthat::test_path("setup.R")) %>%
         req_perform(),
       "http://httpbin.org/post",
-      "File: 0223fbaf025986a111a7688729cc4107 ",
-      "(httpbin.org/post-432ac4-POST.json)"
+      "File: 0223fbaf025986a111a7688729cc4107 "
     )
 
     expect_POST(
@@ -162,8 +175,7 @@ with_mock_api({
       "http://httpbin.org/post",
       "Multipart form:
   a = File: 0223fbaf025986a111a7688729cc4107
-  b = strings
- (httpbin.org/post-4120c4-POST.json)"
+  b = strings"
     )
   })
 

@@ -88,8 +88,8 @@ expect_DELETE <- function(object, url = "", ...) {
 #' @rdname expect_verb
 #' @export
 expect_no_request <- function(object, ...) {
-  # No request means no error/message thrown
-  expect_error(object, NA)
+  # No request means no httptest2_request error raised
+  expect_error(object, NA, ..., class = "httptest2_request")
 }
 
 #' @importFrom testthat expect_error fail
@@ -116,10 +116,14 @@ expect_request <- function(object,
       if (inherits(e, "httptest2_request")) {
         fail(paste0(
           "An unexpected request was made:\n  Actual:   ",
-          conditionMessage(e),
+          e$message,
           "\n  Expected: ", expected
         ))
+      } else if (inherits(e, "expectation_failure") && grepl("did not throw", e$message)) {
+        # This is what expect_error() says (under testthat 3e) when there is no error
+        fail("No request was made")
       } else {
+        # A regular error. Re-raise it.
         stop(e)
       }
     }

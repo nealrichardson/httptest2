@@ -45,7 +45,7 @@ without_internet <- function(expr) httr2::with_mock(stop_request, expr)
 #' @export
 block_requests <- function() options(httr2_mock = stop_request)
 
-#' @importFrom rlang cnd_signal error_cnd
+#' @importFrom rlang abort cnd_header cnd_body cnd_footer
 stop_request <- function(req) {
   out <- paste(get_request_method(req), req$url)
   body <- get_string_request_body(req)
@@ -55,11 +55,26 @@ stop_request <- function(req) {
     out <- paste(out, body)
   }
 
-  if (!is.null(req$mockfile)) {
+  # Raise an error with a special class attached so we can distinguish it
+  abort(out, mockfile = req$mockfile, class = "httptest2_request")
+}
+
+#' @export
+cnd_header.httptest2_request <- function(cnd, ...) {
+  "An unexpected request was made:"
+}
+
+#' @export
+cnd_body.httptest2_request <- function(cnd, ...) {
+  cnd$message
+}
+
+#' @export
+cnd_footer.httptest2_request <- function(cnd, ...) {
+  if (is.null(cnd$mockfile)) {
+    character(0)
+  } else {
     # Poked in here by mock_request for ease of debugging
-    # Append it to the end.
-    # HTTR2: replace .json with .*
-    out <- paste0(out, " (", req$mockfile, ".json)")
+    paste0("Expected mock file: ", cnd$mockfile, ".*")
   }
-  cnd_signal(error_cnd("httptest2_request", message = out))
 }

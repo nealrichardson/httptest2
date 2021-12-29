@@ -52,26 +52,6 @@ without_internet({
       "http://httpbin.org/get",
       '{"test":true}'
     )
-    # Also test what happens when an expectation fails
-    expect_failure(
-      expect_POST(
-        this_req %>%
-          req_method("POST") %>%
-          req_perform(),
-        "http://httpbin.org/get",
-        '{"test":false}'
-      ),
-      paste(
-        "An unexpected request was made:",
-        'Actual:   POST http://httpbin.org/get {"test":true}',
-        'Expected: POST http://httpbin.org/get {"test":false}',
-        sep = "\n  "
-      ),
-      fixed = TRUE
-    )
-    # HTTR2: also test behavior of expect_VERB when no request at all
-    # is made, or when a different error is raised
-    # Also test expect_no_request() and make it use the classed error
     expect_PATCH(
       this_req %>%
         req_method("PATCH") %>%
@@ -102,10 +82,5 @@ without_internet({
         req_perform(),
       "http://httpbin.org/get?test=a%20phrase&two=3"
     )
-  })
-
-  test_that("expect_no_request", {
-    expect_no_request(rnorm(5))
-    expect_failure(expect_no_request(request("http://httpbin.org/get") %>% req_perform()))
   })
 })

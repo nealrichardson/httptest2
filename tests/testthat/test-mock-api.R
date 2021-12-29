@@ -60,8 +60,8 @@ with_mock_api({
     )
   })
   test_that("max.print option", {
-    options(httptest.max.print = 3)
-    on.exit(options(httptest.max.print = NULL))
+    options(httptest2.max.print = 3)
+    on.exit(options(httptest2.max.print = NULL))
     expect_PUT(
       request("http://httpbin.org/get") %>%
         req_method("PUT") %>%
@@ -162,7 +162,7 @@ with_mock_api({
         req_body_file(testthat::test_path("setup.R")) %>%
         req_perform(),
       "http://httpbin.org/post",
-      "File: 0223fbaf025986a111a7688729cc4107 "
+      "File: 08b50510a0b157c7816d6d8798d4c0e3"
     )
 
     expect_POST(
@@ -174,7 +174,7 @@ with_mock_api({
         req_perform(),
       "http://httpbin.org/post",
       "Multipart form:
-  a = File: 0223fbaf025986a111a7688729cc4107
+  a = File: 08b50510a0b157c7816d6d8798d4c0e3
   b = strings"
     )
   })

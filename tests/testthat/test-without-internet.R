@@ -62,8 +62,8 @@ without_internet({
   })
 
   test_that("max.print option", {
-    options(httptest.max.print = 3)
-    on.exit(options(httptest.max.print = NULL))
+    options(httptest2.max.print = 3)
+    on.exit(options(httptest2.max.print = NULL))
     expect_PUT(
       request("http://httpbin.org/get") %>%
         req_body_json(list(test = TRUE)) %>%

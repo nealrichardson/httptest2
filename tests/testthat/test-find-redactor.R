@@ -24,9 +24,9 @@ test_that("prepare_redactor: garbage", {
 })
 
 test_that("get_current_redactor edge cases", {
-  options(httptest.redactor = NULL)
+  options(httptest2.redactor = NULL)
   expect_identical(get_current_redactor(), redact_cookies)
-  options(httptest.redactor.packages = "NOTAPACKAGE")
+  options(httptest2.redactor.packages = "NOTAPACKAGE")
   expect_identical(get_current_redactor(), redact_cookies)
 })
 

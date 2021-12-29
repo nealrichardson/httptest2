@@ -11,7 +11,7 @@
 #'
 #' For finer-grained control, or to completely override the default behavior
 #' of searching in the current working directory, you can set the option
-#' "httptest.mock.paths" directly.
+#' "httptest2.mock.paths" directly.
 #' @param new Either a character vector of path(s) to add, or `NULL` to reset
 #' to the default.
 #' @return If `new` is omitted, the function returns the current search paths, a
@@ -26,18 +26,18 @@
 #' @rdname mockPaths
 #' @export
 .mockPaths <- function(new) {
-  current <- getOption("httptest.mock.paths", default = default_mock_path())
+  current <- getOption("httptest2.mock.paths", default = default_mock_path())
   if (missing(new)) {
     # We're calling the function to get the list of paths
     return(current)
   } else if (is.null(new)) {
     # We're calling the function to reset to the default
-    options(httptest.mock.paths = new)
+    options(httptest2.mock.paths = new)
     invisible(current)
   } else {
     # We're adding one or more paths
     current <- unique(c(new, current))
-    options(httptest.mock.paths = current)
+    options(httptest2.mock.paths = current)
     invisible(current)
   }
 }
@@ -53,11 +53,11 @@ default_mock_path <- function() {
 with_mock_path <- function(path, expr, replace = FALSE) {
   oldmp <- .mockPaths()
   if (replace) {
-    options(httptest.mock.paths = path)
+    options(httptest2.mock.paths = path)
   } else {
     # Append
     .mockPaths(path)
   }
-  on.exit(options(httptest.mock.paths = oldmp))
+  on.exit(options(httptest2.mock.paths = oldmp))
   eval.parent(expr)
 }

@@ -18,7 +18,7 @@ test_that("start/end_vignette with recording (dir does not exist yet)", {
 })
 
 test_that("start/end_vignette with mocking (dir exists)", {
-  on.exit(options(httptest.verbose = NULL))
+  on.exit(options(httptest2.verbose = NULL))
   dir.create(path)
   start_vignette(path)
   expect_false(we_are_recording())

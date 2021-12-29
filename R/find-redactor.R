@@ -32,10 +32,10 @@
 set_redactor <- function(FUN) {
   FUN <- prepare_redactor(FUN)
   options(
-    httptest.redactor = FUN,
+    httptest2.redactor = FUN,
     # Because we're directly setting a redactor, remove any record that
     # a previous redactor was set by reading from packages
-    httptest.redactor.packages = NULL
+    httptest2.redactor.packages = NULL
   )
   invisible(FUN)
 }
@@ -44,7 +44,7 @@ default_redactor <- function(packages = get_attached_packages()) {
   # Look for package-defined redactors
   func <- redactor_from_packages(packages)
   # Record what packages we considered here
-  options(httptest.redactor.packages = packages)
+  options(httptest2.redactor.packages = packages)
   return(func)
 }
 
@@ -73,19 +73,22 @@ find_package_functions <- function(packages, file = "redact.R") {
   return(funcs)
 }
 
-# TODO: export?
 get_package_function <- function(package, file = "redact.R") {
   if ("pkgload" %in% loadedNamespaces()) {
     # Someone may have loaded a package with pkgload::load_all(), so we
     # need this shim function to look up system files
     system.file <- get("shim_system.file", asNamespace("pkgload"))
   }
-  func_file <- system.file("httptest", file, package = package)
-  if (nchar(func_file)) {
-    # If file does not exist, it returns ""
+  func_file <- system.file("httptest2", file, package = package)
+  # If file does not exist, it returns ""
+  if (!nzchar(func_file)) {
+    # Try the httptest dir too
+    func_file <- system.file("httptest", file, package = package)
+  }
+  if (nzchar(func_file)) {
     func <- source(func_file)$value
     if (is.function(func)) {
-      if (isTRUE(getOption("httptest.verbose", TRUE))) {
+      if (isTRUE(getOption("httptest2.verbose", TRUE))) {
         message(paste("Using", file, "from", dQuote(package)))
       }
       return(func)
@@ -104,14 +107,14 @@ get_package_function <- function(package, file = "redact.R") {
 #' @keywords internal
 get_current_redactor <- function() {
   # First, check where we've cached the current one
-  out <- getOption("httptest.redactor")
+  out <- getOption("httptest2.redactor")
   if (is.null(out)) {
     # Set the default
     out <- default_redactor()
-    options(httptest.redactor = out)
+    options(httptest2.redactor = out)
   } else {
     # See if default is based on packages and needs refreshing
-    pkgs <- getOption("httptest.redactor.packages")
+    pkgs <- getOption("httptest2.redactor.packages")
     if (!is.null(pkgs)) {
       # We're using the result of default_redactor(). Let's see if any
       # new packages have been loaded
@@ -120,7 +123,7 @@ get_current_redactor <- function() {
       if ("pkgload" %in% loadedNamespaces() || !identical(current_packages, pkgs)) {
         # Re-evaluate
         out <- default_redactor(current_packages)
-        options(httptest.redactor = out)
+        options(httptest2.redactor = out)
       }
     }
   }

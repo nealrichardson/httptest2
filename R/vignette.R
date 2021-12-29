@@ -38,9 +38,9 @@ start_vignette <- function(path, ...) {
   # Cache the original .mockPaths so we can restore it on exit
   # And don't print messages in a vignette
   options(
-    httptest.mock.paths.old = getOption("httptest.mock.paths"),
-    httptest.verbose.old = getOption("httptest.verbose"),
-    httptest.verbose = FALSE
+    httptest2.mock.paths.old = getOption("httptest2.mock.paths"),
+    httptest2.verbose.old = getOption("httptest2.verbose"),
+    httptest2.verbose = FALSE
   )
   # This actually sources the files, if they exist
   find_package_functions(get_attached_packages(), "start-vignette.R")
@@ -101,8 +101,8 @@ end_vignette <- function() {
 
   # Restore original settings
   options(
-    httptest.mock.paths = getOption("httptest.mock.paths.old"),
-    httptest.mock.paths.old = NULL,
-    httptest.verbose = getOption("httptest.verbose.old")
+    httptest2.mock.paths = getOption("httptest2.mock.paths.old"),
+    httptest2.mock.paths.old = NULL,
+    httptest2.verbose = getOption("httptest2.verbose.old")
   )
 }

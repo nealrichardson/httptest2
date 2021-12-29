@@ -7,7 +7,7 @@
 with_trace(
   x,
   where = topenv(parent.frame()),
-  print = getOption("httptest.debug", FALSE),
+  print = getOption("httptest2.debug.trace", FALSE),
   ...,
   expr
 )

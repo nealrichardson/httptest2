@@ -10,14 +10,14 @@
 #' @return The result of `expr`
 #' @export
 #' @keywords internal
-with_trace <- function(x, where = topenv(parent.frame()), print = getOption("httptest.debug", FALSE), ..., expr) {
+with_trace <- function(x, where = topenv(parent.frame()), print = getOption("httptest2.debug.trace", FALSE), ..., expr) {
   quietly(trace(x, print = print, where = where, ...))
   on.exit(safe_untrace(x, where = where))
   eval.parent(expr)
 }
 
 #' @importFrom utils sessionInfo
-trace_httr2 <- function(..., print = getOption("httptest.debug", FALSE)) {
+trace_httr2 <- function(..., print = getOption("httptest2.debug.trace", FALSE)) {
   # Trace it as seen from within httr2
   quietly(trace(..., print = print, where = request))
   # And if httr2 is attached and the function is exported, trace the
@@ -29,7 +29,7 @@ trace_httr2 <- function(..., print = getOption("httptest.debug", FALSE)) {
 
 quietly <- function(expr) {
   env <- parent.frame()
-  if (getOption("httptest.debug", FALSE)) {
+  if (getOption("httptest2.debug.trace", FALSE)) {
     eval(expr, env)
   } else {
     suppressMessages(eval(expr, env))

@@ -55,7 +55,7 @@ otherwise specified is either "tests/testthat" if it exists
 (as it should if you are in the root directory of your package),
 else the current working directory.
 If you have trouble when recording responses, or are unsure where the files
-are being written, set \code{options(httptest.verbose = TRUE)} to print a message
+are being written, set \code{options(httptest2.verbose = TRUE)} to print a message
 for every file that is written containing the absolute path of the file.
 }
 \examples{

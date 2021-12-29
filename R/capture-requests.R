@@ -28,7 +28,7 @@
 #' (as it should if you are in the root directory of your package),
 #' else the current working directory.
 #' If you have trouble when recording responses, or are unsure where the files
-#' are being written, set `options(httptest.verbose = TRUE)` to print a message
+#' are being written, set `options(httptest2.verbose = TRUE)` to print a message
 #' for every file that is written containing the absolute path of the file.
 #'
 #' @param expr Code to run inside the context
@@ -166,7 +166,7 @@ save_response <- function(response, file, simplify = TRUE) {
     on.exit(close(f))
     dput(response, file = f)
   }
-  if (isTRUE(getOption("httptest.verbose", FALSE))) {
+  if (isTRUE(getOption("httptest2.verbose", FALSE))) {
     message("Writing ", normalizePath(dst_file))
   }
   return(dst_file)

@@ -2,7 +2,7 @@ Sys.setlocale("LC_COLLATE", "C") # What CRAN does
 set.seed(999)
 options(
   warn = 1,
-  httptest.debug = FALSE
+  httptest2.debug.trace = FALSE
 )
 
 library(httr2, warn.conflicts = FALSE)
@@ -11,7 +11,7 @@ capture_while_mocking <- function(..., path) {
   with_mock_path(path, {
     # We'll write to `path` but read from wherever was set before
     tracer <- quote({
-      .mockPaths <- function() getOption("httptest.mock.paths")[-1]
+      .mockPaths <- function() getOption("httptest2.mock.paths")[-1]
     })
     with_trace("find_mock_file",
       where = with_mock_api, tracer = tracer,
@@ -21,20 +21,20 @@ capture_while_mocking <- function(..., path) {
 }
 
 with_redactor <- function(x, ...) {
-  old <- getOption("httptest.redactor")
-  old.pkgs <- getOption("httptest.redactor.packages")
+  old <- getOption("httptest2.redactor")
+  old.pkgs <- getOption("httptest2.redactor.packages")
   set_redactor(x)
   on.exit({
     set_redactor(old)
-    options(httptest.redactor.packages = old.pkgs)
+    options(httptest2.redactor.packages = old.pkgs)
   })
   eval.parent(...)
 }
 
 reset_redactors <- function() {
   options(
-    httptest.redactor = NULL,
-    httptest.redactor.packages = NULL
+    httptest2.redactor = NULL,
+    httptest2.redactor.packages = NULL
   )
 }
 

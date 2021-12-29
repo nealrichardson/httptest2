@@ -187,9 +187,9 @@ with_mock_api({
     response <- readLines(file.path(d3, "api/object1.R"))
   })
 
-  test_that("Using options(httptest.verbose=TRUE) works", {
+  test_that("Using options(httptest2.verbose=TRUE) works", {
     d4 <- tempfile()
-    old <- options(httptest.verbose = TRUE)
+    old <- options(httptest2.verbose = TRUE)
     on.exit(options(old))
     with_mock_path(d4, {
       capture_while_mocking(

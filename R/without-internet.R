@@ -51,7 +51,7 @@ stop_request <- function(req) {
   body <- get_string_request_body(req)
   if (!is.null(body)) {
     # Max print option for debugging large payloads
-    body <- substr(body, 1, getOption("httptest.max.print", nchar(body)))
+    body <- substr(body, 1, getOption("httptest2.max.print", nchar(body)))
     out <- paste(out, body)
   }
 

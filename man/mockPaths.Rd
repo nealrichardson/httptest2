@@ -28,7 +28,7 @@ Only unique values are kept: if you provide a path that is already found in
 
 For finer-grained control, or to completely override the default behavior
 of searching in the current working directory, you can set the option
-"httptest.mock.paths" directly.
+"httptest2.mock.paths" directly.
 }
 \examples{
 identical(.mockPaths(), ".")

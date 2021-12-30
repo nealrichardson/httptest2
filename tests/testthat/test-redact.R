@@ -30,6 +30,7 @@ with_mock_api({
       # in the 302, but the final 200 response doesn't have it, so I've
       # modified the mock to have the Set-Cookie header, just so we can test
       # redacting it.
+      # This could also be done by setting `req_options(followlocation = FALSE)`
       c2 <- req_perform(c2_req)
       expect_equal(
         resp_header(c2, "set-cookie"),

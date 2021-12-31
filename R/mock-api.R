@@ -6,6 +6,9 @@
 #' corresponding fixture file raise errors, like how [without_internet()]
 #' does.
 #'
+#' `use_mock_api()` and `stop_mocking()` allow you to turn on/off request
+#' mocking for more convenient use in an interactive session.
+#'
 #' Requests are translated to mock file paths according to several rules that
 #' incorporate the request method, URL, query parameters, and body. See
 #' [build_mock_url()] for details.
@@ -15,27 +18,27 @@
 #' location for storing and retrieving mocks, but you can put them anywhere you
 #' want as long as you set the appropriate location with [.mockPaths()].
 #'
-#' @param expr Code to run inside the fake context
-#' @return The result of `expr`
-#' @seealso [use_mock_api()] to enable mocking on its own (not in a context); [build_mock_url()]; [.mockPaths()]
+#' @param expr Code to run inside the mock context
+#' @return `with_mock_api()` returns the result of `expr`. `use_mock_api()` and `stop_mocking()` return nothing.
 #' @export
+#' @examples
+#' library(httr2)
+#' with_mock_api({
+#'   # There are no mocks recorded in this example, so catch this request with
+#'   # expect_GET()
+#'   expect_GET(
+#'     request("http://httpbin.org/get") %>% req_perform(),
+#'     "http://httpbin.org/get"
+#'   )
+#'   # For examples with mocks, see the tests and vignettes
+#' })
 with_mock_api <- function(expr) {
   use_mock_api()
   on.exit(stop_mocking())
   eval.parent(expr)
 }
 
-#' Turn on API mocking
-#'
-#' This function intercepts HTTP requests made through `httr2` and serves mock
-#' file responses instead. It is what [with_mock_api()] does, minus the
-#' automatic disabling of mocking when the context finishes.
-#'
-#' Note that you in order to resume normal request behavior, you will need to
-#' call [stop_mocking()] yourself---this function does not clean up after itself
-#' as 'with_mock_api` does.
-#' @return Nothing; called for its side effects.
-#' @seealso [with_mock_api()] [stop_mocking()] [block_requests()]
+#' @rdname with_mock_api
 #' @export
 use_mock_api <- function() {
   options(httr2_mock = mock_request)
@@ -48,11 +51,7 @@ use_mock_api <- function() {
   invisible()
 }
 
-#' Turn off request mocking
-#'
-#' This function unsets the `httr2_mock` option so that normal, real
-#' requesting behavior can be resumed.
-#' @return Nothing; called for its side effects
+#' @rdname with_mock_api
 #' @export
 stop_mocking <- function() {
   options(httr2_mock = NULL)

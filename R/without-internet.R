@@ -1,8 +1,11 @@
 #' Make all HTTP requests raise an error
 #'
-#' `without_internet` simulates the situation when any network request will
+#' `without_internet()` simulates the situation when any network request will
 #' fail, as in when you are without an internet connection. Any HTTP request
-#' through the verb functions in `httr` will raise an error.
+#' through `httr2` will raise an error.
+#'
+#' `block_requests()` and `stop_mocking()` allow you to turn on/off request
+#' blocking for more convenient use in an interactive session.
 #'
 #' The error message raised has a well-defined shape, made of three
 #' elements, separated by space: (1) the request
@@ -11,7 +14,6 @@
 #' such as [expect_GET()] and [expect_POST()], look for this shape.
 #' @param expr Code to run inside the mock context
 #' @return The result of `expr`
-#' @seealso [block_requests()] to enable mocking on its own (not in a context)
 #' @examples
 #' library(httr2)
 #' library(testthat, warn.conflicts = FALSE)
@@ -32,17 +34,7 @@
 #' @export
 without_internet <- function(expr) httr2::with_mock(stop_request, expr)
 
-#' Block HTTP requests
-#'
-#' This function intercepts HTTP requests made through `httr` and raises an
-#' informative error instead. It is what [without_internet()] does, minus the
-#' automatic disabling of mocking when the context finishes.
-#'
-#' Note that you in order to resume normal request behavior, you will need to
-#' call [stop_mocking()] yourself---this function does not clean up after itself
-#' as 'without_internet` does.
-#' @return Nothing; called for its side effects.
-#' @seealso [without_internet()] [stop_mocking()] [use_mock_api()]
+#' @rdname without_internet
 #' @export
 block_requests <- function() options(httr2_mock = stop_request)
 

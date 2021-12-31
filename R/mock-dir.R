@@ -11,8 +11,10 @@
 #' under `tests/testthat/`
 #' @inheritParams with_mock_api
 #' @inheritParams start_capturing
-#' @param replace Logical: should the mock directory replace current mock
-#' directories? Default is `TRUE`.
+#' @param replace Logical: should `dir` replace the contents of `.mockPaths()`
+#' (default) or be added in front of the existing paths? The default behavior
+#' here is the opposite of `.mockPaths()` so that the tests inside of
+#' `with_mock_dir()` are fully isolated.
 #' @export
 with_mock_dir <- function(dir, expr, simplify = TRUE, replace = TRUE) {
   if (dir.exists("tests/testthat") && !(substr(dir, 1, 1) %in% c("/", "\\"))) {

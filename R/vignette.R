@@ -18,10 +18,10 @@
 #' vignette runs.
 #'
 #' If you have additional setup code that you'd like available across all of
-#' your package's vignettes, put it in `inst/httptest/start-vignette.R` in your
+#' your package's vignettes, put it in `inst/httptest2/start-vignette.R` in your
 #' package, and it will be called in `start_vignette()` before the mock/record
 #' context is set. Similarly, teardown code can go in
-#' `inst/httptest/end-vignette.R`, evaluated in `end_vignette()` after mocking
+#' `inst/httptest2/end-vignette.R`, evaluated in `end_vignette()` after mocking
 #' is stopped.
 #'
 #' @param path Root file path for the mocks for this vignette. A good idea is
@@ -33,7 +33,7 @@
 #' @seealso [start_capturing()] for how requests are recorded; [use_mock_api()]
 #' for how previously recorded requests are loaded; [change_state()] for how to
 #' handle recorded requests when the server state is changing;
-#' `vignette("vignettes", package="httptest")` for an overview of all
+#' `vignette("vignettes", package = "httptest2")` for an overview of all
 start_vignette <- function(path, ...) {
   # Cache the original .mockPaths so we can restore it on exit
   # And don't print messages in a vignette

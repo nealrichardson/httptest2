@@ -1,11 +1,11 @@
 #' Record API responses as mock files
 #'
-#' `capture_requests` is a context that collects the responses from requests
+#' `capture_requests()` is a context that collects the responses from requests
 #' you make and stores them as mock files. This enables you to perform a series
 #' of requests against a live server once and then build your test suite using
 #' those mocks, running your tests in [with_mock_api()].
 #'
-#' `start_capturing` and `stop_capturing` allow you to turn on/off request
+#' `start_capturing()` and `stop_capturing()` allow you to turn on/off request
 #' recording for more convenient use in an interactive session.
 #'
 #' Recorded responses are written out as plain-text files. By storing fixtures
@@ -32,13 +32,13 @@
 #' for every file that is written containing the absolute path of the file.
 #'
 #' @param expr Code to run inside the context
-#' @param simplify logical: if `TRUE` (default), JSON responses with status 200
+#' @param simplify logical: if `TRUE` (default), plain-text responses with status 200
 #' will be written as just the text of the response body. In all other cases,
-#' and when `simplify` is `FALSE`, the "response" object will be written out to
+#' and when `simplify` is `FALSE`, the `httr2_response` object will be written out to
 #' a .R file using [base::dput()].
-#' @return `capture_requests` returns the result of `expr`. `start_capturing`
+#' @return `capture_requests()` returns the result of `expr`. `start_capturing()`
 #' invisibly returns the destination directory.
-#' `stop_capturing` returns nothing; it is called for its side effects.
+#' `stop_capturing()` returns nothing; it is called for its side effects.
 #' @examples
 #' \dontrun{
 #' library(httr2)

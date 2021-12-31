@@ -34,5 +34,8 @@ the URL and the response body of \code{httr2_response} objects.
 Note that, unlike \code{gsub()}, the first argument of the function is \code{response},
 not \code{pattern}, while the equivalent argument in \code{gsub()}, "\code{x}", is placed
 third. This difference is to maintain consistency with the other redactor
-functions in \code{httptest}, which all take \code{response} as the first argument.
+functions in \code{httptest2}, which all take \code{response} as the first argument.
+
+This function also can be applied to an \code{http2_request} object to replace
+patterns inside the request URL.
 }

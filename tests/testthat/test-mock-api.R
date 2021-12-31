@@ -9,7 +9,7 @@ with_mock_api({
     obj <- request("api/object1/") %>%
       req_url_query(a = 1) %>%
       req_perform()
-    expect_json_equivalent(
+    expect_json_equal(
       resp_body_json(obj),
       list(query = list(a = 1), mocked = "yes")
     )

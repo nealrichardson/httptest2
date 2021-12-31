@@ -9,22 +9,21 @@
 #' and is the default redactor in `capture_requests()`.
 #' `redact_headers()` lets you target selected request and response headers for
 #' redaction.
-#'
 #' `within_body_text()` lets you manipulate the text of the response body
-#' and manages the parsing of the raw (binary) data in the 'httr_response' object.
+#' and manages the parsing of the raw (binary) data in the `httr_response` object.
 #'
-#' @param response An `httr2_response` object to sanitize.
+#' Note that if you set a redacting function, it will also be applied to requests when loading mocks. This allows you to sanitize and/or shorten URLs in your mock files.
+#' @param response An `httr2_response` or `httr2_request` object to sanitize.
 #' @param headers For `redact_headers()`, a character vector of header names to
-#' sanitize. Note that `redact_headers()` itself does not do redacting but
-#' returns a function that when called does the redacting.
+#' sanitize.
 #' @param FUN For `within_body_text()`, a function that takes as its argument a
 #' character vector and returns a modified version of that. This function will
-#' be applied to the text of the response's "content".
+#' be applied to the text of the response's body.
 #' @return All redacting functions return a well-formed `httr2_response`
-#' object.
+#' or `httr2_request` object.
 #' @name redact
 #' @aliases redact_cookies redact_headers within_body_text
-#' @seealso `vignette("redacting", package = "httptest")` for a detailed discussion of what these functions do and how to customize them. [gsub_response()] is another redactor.
+#' @seealso `vignette("redacting", package = "httptest2")` for a detailed discussion of what these functions do and how to customize them. [gsub_response()] is another redactor.
 #' @export
 redact_cookies <- function(response) {
   redact_headers(response, "Set-Cookie")
@@ -65,7 +64,10 @@ within_body_text <- function(response, FUN) {
 #' Note that, unlike `gsub()`, the first argument of the function is `response`,
 #' not `pattern`, while the equivalent argument in `gsub()`, "`x`", is placed
 #' third. This difference is to maintain consistency with the other redactor
-#' functions in `httptest`, which all take `response` as the first argument.
+#' functions in `httptest2`, which all take `response` as the first argument.
+#'
+#' This function also can be applied to an `http2_request` object to replace
+#' patterns inside the request URL.
 #' @param response An `httr2_response` object to sanitize.
 #' @param pattern From [base::gsub()]: "character string containing a regular
 #' expression (or character string for `fixed = TRUE`) to be matched in the
@@ -90,7 +92,7 @@ gsub_response <- function(response, pattern, replacement, ...) {
 
 #' Wrap a redacting expression as a proper function
 #'
-#' Redactors take a `httr2_response` as their first argument, and some take additional
+#' Redactors take a `httr2_response` or `httr2_request` as their first argument, and some take additional
 #' arguments: `redact_headers()`, for example, requires that you specify
 #' `headers`. This function allows you to take a simplified expression via a
 #' formula, similar to what `purrr` does, so that you can provide the function
@@ -100,7 +102,7 @@ gsub_response <- function(response, pattern, replacement, ...) {
 #' to `function (response) redact_headers(response, "X-Custom-Header")`. This
 #' allows you to do
 #' `set_redactor(~ redact_headers(., "X-Custom-Header"))`.
-#' @param expr Partial expression to turn into a function of `response`
+#' @param expr Partial expression to turn into a function
 #' @return A `function`.
 #' @rdname as-redactor
 #' @importFrom stats terms

@@ -15,24 +15,24 @@ stop_capturing()
 \arguments{
 \item{expr}{Code to run inside the context}
 
-\item{simplify}{logical: if \code{TRUE} (default), JSON responses with status 200
+\item{simplify}{logical: if \code{TRUE} (default), plain-text responses with status 200
 will be written as just the text of the response body. In all other cases,
-and when \code{simplify} is \code{FALSE}, the "response" object will be written out to
+and when \code{simplify} is \code{FALSE}, the \code{httr2_response} object will be written out to
 a .R file using \code{\link[base:dput]{base::dput()}}.}
 }
 \value{
-\code{capture_requests} returns the result of \code{expr}. \code{start_capturing}
+\code{capture_requests()} returns the result of \code{expr}. \code{start_capturing()}
 invisibly returns the destination directory.
-\code{stop_capturing} returns nothing; it is called for its side effects.
+\code{stop_capturing()} returns nothing; it is called for its side effects.
 }
 \description{
-\code{capture_requests} is a context that collects the responses from requests
+\code{capture_requests()} is a context that collects the responses from requests
 you make and stores them as mock files. This enables you to perform a series
 of requests against a live server once and then build your test suite using
 those mocks, running your tests in \code{\link[=with_mock_api]{with_mock_api()}}.
 }
 \details{
-\code{start_capturing} and \code{stop_capturing} allow you to turn on/off request
+\code{start_capturing()} and \code{stop_capturing()} allow you to turn on/off request
 recording for more convenient use in an interactive session.
 
 Recorded responses are written out as plain-text files. By storing fixtures

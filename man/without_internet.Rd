@@ -2,9 +2,12 @@
 % Please edit documentation in R/without-internet.R
 \name{without_internet}
 \alias{without_internet}
+\alias{block_requests}
 \title{Make all HTTP requests raise an error}
 \usage{
 without_internet(expr)
+
+block_requests()
 }
 \arguments{
 \item{expr}{Code to run inside the mock context}
@@ -13,11 +16,14 @@ without_internet(expr)
 The result of \code{expr}
 }
 \description{
-\code{without_internet} simulates the situation when any network request will
+\code{without_internet()} simulates the situation when any network request will
 fail, as in when you are without an internet connection. Any HTTP request
-through the verb functions in \code{httr} will raise an error.
+through \code{httr2} will raise an error.
 }
 \details{
+\code{block_requests()} and \code{stop_mocking()} allow you to turn on/off request
+blocking for more convenient use in an interactive session.
+
 The error message raised has a well-defined shape, made of three
 elements, separated by space: (1) the request
 method (e.g. "GET"); (2) the request URL; and
@@ -41,7 +47,4 @@ without_internet({
     fixed = TRUE
   )
 })
-}
-\seealso{
-\code{\link[=block_requests]{block_requests()}} to enable mocking on its own (not in a context)
 }

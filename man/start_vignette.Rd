@@ -39,15 +39,15 @@ mocks will be used. To record fresh responses from the server, delete the
 vignette runs.
 
 If you have additional setup code that you'd like available across all of
-your package's vignettes, put it in \code{inst/httptest/start-vignette.R} in your
+your package's vignettes, put it in \code{inst/httptest2/start-vignette.R} in your
 package, and it will be called in \code{start_vignette()} before the mock/record
 context is set. Similarly, teardown code can go in
-\code{inst/httptest/end-vignette.R}, evaluated in \code{end_vignette()} after mocking
+\code{inst/httptest2/end-vignette.R}, evaluated in \code{end_vignette()} after mocking
 is stopped.
 }
 \seealso{
 \code{\link[=start_capturing]{start_capturing()}} for how requests are recorded; \code{\link[=use_mock_api]{use_mock_api()}}
 for how previously recorded requests are loaded; \code{\link[=change_state]{change_state()}} for how to
 handle recorded requests when the server state is changing;
-\code{vignette("vignettes", package="httptest")} for an overview of all
+\code{vignette("vignettes", package = "httptest2")} for an overview of all
 }

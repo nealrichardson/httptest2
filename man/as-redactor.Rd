@@ -7,13 +7,13 @@
 as.redactor(fmla)
 }
 \arguments{
-\item{expr}{Partial expression to turn into a function of \code{response}}
+\item{expr}{Partial expression to turn into a function}
 }
 \value{
 A \code{function}.
 }
 \description{
-Redactors take a \code{httr2_response} as their first argument, and some take additional
+Redactors take a \code{httr2_response} or \code{httr2_request} as their first argument, and some take additional
 arguments: \code{redact_headers()}, for example, requires that you specify
 \code{headers}. This function allows you to take a simplified expression via a
 formula, similar to what \code{purrr} does, so that you can provide the function

@@ -25,22 +25,19 @@
 #' * `POST http://example.com/api/object1/?a=1` may read
 #' "example.com/api/object1-b64371-POST.json".
 #'
-#' This function is exported so that other packages can construct similar mock
-#' behaviors or override specific requests at a higher level than
-#' `with_mock_api` mocks.
-#'
 #' Note that if you are trying to guess the mock file paths corresponding to a
 #' test for which you intend to create a mock file manually,
 #' instead of trying to build the URL, you should run the test
-#' with `with_mock_api` as the error message will contain the mock file path.
+#' with `with_mock_api()` as the error message will contain the mock file path.
 #'
-#' @param req A `request` object
+#' @param req A `httr2_request` object
 #' @return A file path and name, without an extension. The file, or a file with
 #' some extension appended, may or may not
 #' exist: existence is not a concern of this function.
 #' @importFrom digest digest
 #' @seealso [with_mock_api()] [capture_requests()]
 #' @export
+#' @keywords internal
 build_mock_url <- function(req) {
   method <- get_request_method(req)
   body <- get_string_request_body(req)

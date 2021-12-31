@@ -2,15 +2,21 @@
 % Please edit documentation in R/mock-api.R
 \name{with_mock_api}
 \alias{with_mock_api}
+\alias{use_mock_api}
+\alias{stop_mocking}
 \title{Serve a mock API from files}
 \usage{
 with_mock_api(expr)
+
+use_mock_api()
+
+stop_mocking()
 }
 \arguments{
-\item{expr}{Code to run inside the fake context}
+\item{expr}{Code to run inside the mock context}
 }
 \value{
-The result of \code{expr}
+\code{with_mock_api()} returns the result of \code{expr}. \code{use_mock_api()} and \code{stop_mocking()} return nothing.
 }
 \description{
 In this context, HTTP requests attempt to load API response fixtures from
@@ -20,6 +26,9 @@ corresponding fixture file raise errors, like how \code{\link[=without_internet]
 does.
 }
 \details{
+\code{use_mock_api()} and \code{stop_mocking()} allow you to turn on/off request
+mocking for more convenient use in an interactive session.
+
 Requests are translated to mock file paths according to several rules that
 incorporate the request method, URL, query parameters, and body. See
 \code{\link[=build_mock_url]{build_mock_url()}} for details.
@@ -29,6 +38,15 @@ directory, i.e. relative to the .R test files themselves. This is the default
 location for storing and retrieving mocks, but you can put them anywhere you
 want as long as you set the appropriate location with \code{\link[=.mockPaths]{.mockPaths()}}.
 }
-\seealso{
-\code{\link[=use_mock_api]{use_mock_api()}} to enable mocking on its own (not in a context); \code{\link[=build_mock_url]{build_mock_url()}}; \code{\link[=.mockPaths]{.mockPaths()}}
+\examples{
+library(httr2)
+with_mock_api({
+  # There are no mocks recorded in this example, so catch this request with
+  # expect_GET()
+  expect_GET(
+    request("http://httpbin.org/get") \%>\% req_perform(),
+    "http://httpbin.org/get"
+  )
+  # For examples with mocks, see the tests and vignettes
+})
 }

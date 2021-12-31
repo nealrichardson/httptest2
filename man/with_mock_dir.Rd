@@ -10,15 +10,17 @@ with_mock_dir(dir, expr, simplify = TRUE, replace = TRUE)
 \item{dir}{character string, unique folder name that will be used or created
 under \verb{tests/testthat/}}
 
-\item{expr}{Code to run inside the fake context}
+\item{expr}{Code to run inside the mock context}
 
-\item{simplify}{logical: if \code{TRUE} (default), JSON responses with status 200
+\item{simplify}{logical: if \code{TRUE} (default), plain-text responses with status 200
 will be written as just the text of the response body. In all other cases,
-and when \code{simplify} is \code{FALSE}, the "response" object will be written out to
+and when \code{simplify} is \code{FALSE}, the \code{httr2_response} object will be written out to
 a .R file using \code{\link[base:dput]{base::dput()}}.}
 
-\item{replace}{Logical: should the mock directory replace current mock
-directories? Default is \code{TRUE}.}
+\item{replace}{Logical: should \code{dir} replace the contents of \code{.mockPaths()}
+(default) or be added in front of the existing paths? The default behavior
+here is the opposite of \code{.mockPaths()} so that the tests inside of
+\code{with_mock_dir()} are fully isolated.}
 }
 \description{
 This context will switch the \code{\link[=.mockPaths]{.mockPaths()}} to \code{tests/testthat/dir}

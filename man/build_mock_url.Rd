@@ -7,7 +7,7 @@
 build_mock_url(req)
 }
 \arguments{
-\item{req}{A \code{request} object}
+\item{req}{A \code{httr2_request} object}
 }
 \value{
 A file path and name, without an extension. The file, or a file with
@@ -43,15 +43,12 @@ Other examples:
 "example.com/api/object1-b64371-POST.json".
 }
 
-This function is exported so that other packages can construct similar mock
-behaviors or override specific requests at a higher level than
-\code{with_mock_api} mocks.
-
 Note that if you are trying to guess the mock file paths corresponding to a
 test for which you intend to create a mock file manually,
 instead of trying to build the URL, you should run the test
-with \code{with_mock_api} as the error message will contain the mock file path.
+with \code{with_mock_api()} as the error message will contain the mock file path.
 }
 \seealso{
 \code{\link[=with_mock_api]{with_mock_api()}} \code{\link[=capture_requests]{capture_requests()}}
 }
+\keyword{internal}

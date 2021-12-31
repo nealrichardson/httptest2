@@ -7,7 +7,7 @@
 #' default, the [redact_cookies()] function will be used to purge standard
 #' auth methods, but `set_redactor()` allows you to provide a different one.
 #'
-#' Alternatively, you can put a redacting function in `inst/httptest/redact.R`
+#' Alternatively, you can put a redacting function in `inst/httptest2/redact.R`
 #' in your package, and
 #' any time your package is loaded (as in when running tests or building
 #' vignettes), the function will be used automatically.
@@ -29,6 +29,11 @@
 #' Formulas and function lists are turned into proper functions. `NULL` as input
 #' returns the `force()` function.
 #' @export
+#' @examples
+#' # Shorten UUIDs in response body/URLs to their first 6 digits:
+#' set_redactor(function(resp) gsub_response(resp, "([0-9a-f]{6}[0-9a-f]{26}", "\\1"))
+#' # Restore the default
+#' set_redactor(redact_cookies)
 set_redactor <- function(FUN) {
   FUN <- prepare_redactor(FUN)
   options(

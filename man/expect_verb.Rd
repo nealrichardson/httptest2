@@ -30,7 +30,7 @@ an empty string, meaning that you can just assert that a request is made with
 a certain method without asserting anything further.}
 
 \item{...}{character segments of a request payload you expect to be included
-in the request body, to be joined together by \code{paste0}. You may also pass
+in the request body, to be joined together by \code{paste0()}. You may also pass
 any of the following named logical arguments, which will be passed to
 \code{\link[base:grep]{base::grepl()}}:
 \itemize{

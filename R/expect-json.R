@@ -15,11 +15,16 @@
 #' @seealso [testthat::expect_equivalent()]
 #' @importFrom testthat expect
 #' @export
-expect_json_equivalent <- function(object,
-                                   expected,
-                                   info = NULL,
-                                   label = "object",
-                                   expected.label = "expected") {
+#' @examples
+#' expect_json_equal(
+#'   list(n = 5, q = list(r = 55, p = 9)),
+#'   list(q = list(p = 9, r = 55), n = 5)
+#' )
+expect_json_equal <- function(object,
+                              expected,
+                              info = NULL,
+                              label = "object",
+                              expected.label = "expected") {
   comp <- json_compare(object, expected, check.attributes = FALSE)
   expect(comp$equal, sprintf(
     "%s not JSON-equivalent to %s.\n%s",

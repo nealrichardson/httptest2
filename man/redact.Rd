@@ -14,19 +14,18 @@ redact_headers(response, headers = c())
 within_body_text(response, FUN)
 }
 \arguments{
-\item{response}{An \code{httr2_response} object to sanitize.}
+\item{response}{An \code{httr2_response} or \code{httr2_request} object to sanitize.}
 
 \item{headers}{For \code{redact_headers()}, a character vector of header names to
-sanitize. Note that \code{redact_headers()} itself does not do redacting but
-returns a function that when called does the redacting.}
+sanitize.}
 
 \item{FUN}{For \code{within_body_text()}, a function that takes as its argument a
 character vector and returns a modified version of that. This function will
-be applied to the text of the response's "content".}
+be applied to the text of the response's body.}
 }
 \value{
 All redacting functions return a well-formed \code{httr2_response}
-object.
+or \code{httr2_request} object.
 }
 \description{
 When recording requests for use as test fixtures, you don't want to include
@@ -39,10 +38,11 @@ responses that \code{\link[=capture_requests]{capture_requests()}} saves.
 and is the default redactor in \code{capture_requests()}.
 \code{redact_headers()} lets you target selected request and response headers for
 redaction.
-
 \code{within_body_text()} lets you manipulate the text of the response body
-and manages the parsing of the raw (binary) data in the 'httr_response' object.
+and manages the parsing of the raw (binary) data in the \code{httr_response} object.
+
+Note that if you set a redacting function, it will also be applied to requests when loading mocks. This allows you to sanitize and/or shorten URLs in your mock files.
 }
 \seealso{
-\code{vignette("redacting", package = "httptest")} for a detailed discussion of what these functions do and how to customize them. \code{\link[=gsub_response]{gsub_response()}} is another redactor.
+\code{vignette("redacting", package = "httptest2")} for a detailed discussion of what these functions do and how to customize them. \code{\link[=gsub_response]{gsub_response()}} is another redactor.
 }

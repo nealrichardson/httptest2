@@ -7,13 +7,13 @@ navbar:
   type: default
   left:
   - text: Get Started
-    href: articles/httptest.html
+    href: articles/httptest2.html
   - text: Reference
     href: reference/
   - text: Articles
     menu:
     - text: Overview
-      href: articles/httptest.html
+      href: articles/httptest2.html
     - text: Redacting Sensitive Information
       href: articles/redacting.html
     - text: Using with Vignettes
@@ -31,32 +31,26 @@ reference:
 - title: Contexts
   contents:
   - with_mock_api
-  - use_mock_api
   - with_mock_dir
   - without_internet
-  - block_requests
-  - stop_mocking
+  - .mockPaths
 - title: Expectations
   contents:
   - expect_verb
   - expect_header
-  - expect_json_equivalent
+  - expect_json_equal
 - title: Recording and redacting responses
   contents:
   - capture_requests
   - redact
   - gsub_response
   - set_redactor
-- title: Loading mock (recorded) fixtures
-  contents:
-  - .mockPaths
-  - build_mock_url
 - title: Vignettes
   contents:
   - start_vignette
   - change_state
 - title: Other testing tools
   contents:
-  - httptest
-  - use_httptest
+  - httptest2
+  - use_httptest2
   - skip_if_disconnected

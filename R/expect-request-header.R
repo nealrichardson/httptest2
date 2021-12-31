@@ -86,17 +86,3 @@ expect_request_header <- function(expr,
 
   httr2::with_mock(header_mocker, expr)
 }
-
-# HTTR2: report this to testthat
-# f <- function(expr, ...) {
-#   testthat::expect_warning(expr, ..., ignore.case = TRUE)
-# }
-# f("No warning", NA)
-
-# Warning message:
-# 1 components of `...` were not used.
-#
-# We detected these problematic arguments:
-# * `ignore.case`
-#
-# Did you misspecify an argument?

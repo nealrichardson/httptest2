@@ -68,7 +68,7 @@ within_body_text <- function(response, FUN) {
 #'
 #' This function also can be applied to an `http2_request` object to replace
 #' patterns inside the request URL.
-#' @param response An `httr2_response` object to sanitize.
+#' @param response An `httr2_response` or `http2_request` object to sanitize.
 #' @param pattern From [base::gsub()]: "character string containing a regular
 #' expression (or character string for `fixed = TRUE`) to be matched in the
 #' given character vector." Passed to `gsub()`. See the docs for `gsub()` for

@@ -41,5 +41,5 @@ expect_json_equal(
 )
 }
 \seealso{
-\code{\link[testthat:expect_equivalent]{testthat::expect_equivalent()}}
+\code{\link[testthat:expect_setequal]{testthat::expect_mapequal()}}
 }

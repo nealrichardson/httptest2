@@ -129,8 +129,9 @@ load_response <- function(file, req) {
       url = req$url,
       method = req$method,
       status_code = 204L,
-      # HTTR2: report upstream: default for response() is body = NULL
+      # httr2's default for response() is body = NULL
       # but all real requests seem to have body = raw(n)
+      # https://github.com/r-lib/httr2/issues/100
       body = raw(0L)
     )
   } else {

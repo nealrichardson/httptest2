@@ -91,8 +91,6 @@ get_string_request_body <- function(req) {
       # add a newline at the end too
       b <- paste0(b, "\n")
     } else if (inherits(req$body$data, "httr_path")) {
-      # HTTR2: why is this httr_path but other things are httr2_something?
-      # File upload: hash its contents
       b <- paste("File:", digest(req$body$data, serialize = FALSE, file = TRUE))
     }
   }
@@ -112,10 +110,7 @@ request_postfields <- function(req) {
 get_request_method <- function(req) {
   # At the time that we process the request, some defaults may not have been
   # applied, and the request method may be NULL
-  # HTTR2: report upstream
-  req$method %||% ifelse(is.null(req$body), "GET", "POST")
+  utils::getFromNamespace("req_method_get", "httr2")(req)
 }
 
 hash <- function(string, n = 6) substr(digest(string), 1, n)
-
-`%||%` <- function(a, b) if (is.null(a)) b else a

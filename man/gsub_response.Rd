@@ -7,7 +7,7 @@
 gsub_response(response, pattern, replacement, ...)
 }
 \arguments{
-\item{response}{An \code{httr2_response} object to sanitize.}
+\item{response}{An \code{httr2_response} or \code{http2_request} object to sanitize.}
 
 \item{pattern}{From \code{\link[base:grep]{base::gsub()}}: "character string containing a regular
 expression (or character string for \code{fixed = TRUE}) to be matched in the

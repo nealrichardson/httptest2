@@ -12,7 +12,7 @@
 #' @param expected.label character same as `label` but for `expected`
 #' @return Invisibly, returns `object` for optionally passing to other
 #' expectations.
-#' @seealso [testthat::expect_equivalent()]
+#' @seealso [testthat::expect_mapequal()]
 #' @importFrom testthat expect
 #' @export
 #' @examples
@@ -32,16 +32,9 @@ expect_json_equal <- function(object,
   ), info = info)
   invisible(object)
 }
-# HTTR2: report testthat issue that expect_mapequal should/could be recursive
-# testthat::expect_mapequal(
-#   list(n = 5, q = list(r = 55, p = 9)),
-#   list(q = list(p = 9, r = 55), n = 5)
-# )
-#
-# Error: act$val[exp_nms] (`actual`) not equal to exp$val (`expected`).
-#
-# `names(actual$q)`:   "r" "p"
-# `names(expected$q)`: "p" "r"
+
+# This all could be deleted in favor of testthat::expect_mapequal()
+# if it were recursive: https://github.com/r-lib/testthat/issues/1521
 
 #' @importFrom testthat compare
 json_compare <- function(object, expected, check.attributes = FALSE) {

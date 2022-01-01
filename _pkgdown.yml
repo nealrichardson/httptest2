@@ -37,7 +37,7 @@ reference:
 - title: Expectations
   contents:
   - expect_verb
-  - expect_header
+  - expect_request_header
   - expect_json_equal
 - title: Recording and redacting responses
   contents:

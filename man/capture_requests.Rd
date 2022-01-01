@@ -59,7 +59,12 @@ are being written, set \code{options(httptest2.verbose = TRUE)} to print a messa
 for every file that is written containing the absolute path of the file.
 }
 \examples{
-\dontrun{
+\dontshow{if (!httptest2:::currently_offline()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+# Setup so that our examples clean up after themselves
+tmp <- tempfile()
+.mockPaths(tmp)
+on.exit(unlink(tmp, recursive = TRUE))
+
 library(httr2)
 capture_requests({
   request("http://httpbin.org/get") \%>\% req_perform()
@@ -74,10 +79,10 @@ request("http://httpbin.org/response-headers") \%>\%
   req_headers(`Content-Type` = "application/json") \%>\%
   req_perform()
 stop_capturing()
-}
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=build_mock_url]{build_mock_url()}} for how requests are translated to file paths.
-And see \code{vignette("redacting")} for details on how to prune sensitive
-content from responses when recording.
+And see \code{vignette("redacting", package = "httptest2")}
+for details on how to prune sensitive content from responses when recording.
 }

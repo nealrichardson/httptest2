@@ -39,8 +39,12 @@
 #' @return `capture_requests()` returns the result of `expr`. `start_capturing()`
 #' invisibly returns the destination directory.
 #' `stop_capturing()` returns nothing; it is called for its side effects.
-#' @examples
-#' \dontrun{
+#' @examplesIf !httptest2:::currently_offline()
+#' # Setup so that our examples clean up after themselves
+#' tmp <- tempfile()
+#' .mockPaths(tmp)
+#' on.exit(unlink(tmp, recursive = TRUE))
+#'
 #' library(httr2)
 #' capture_requests({
 #'   request("http://httpbin.org/get") %>% req_perform()
@@ -55,11 +59,10 @@
 #'   req_headers(`Content-Type` = "application/json") %>%
 #'   req_perform()
 #' stop_capturing()
-#' }
 #' @export
 #' @seealso [build_mock_url()] for how requests are translated to file paths.
-#' And see `vignette("redacting")` for details on how to prune sensitive
-#' content from responses when recording.
+#' And see `vignette("redacting", package = "httptest2")`
+#' for details on how to prune sensitive content from responses when recording.
 capture_requests <- function(expr, simplify = TRUE) {
   start_capturing(simplify)
   on.exit(stop_capturing())

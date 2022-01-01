@@ -21,3 +21,7 @@ request previously done and expect a different result.
 overwriting previously recorded responses for the same request. In
 vignettes, these mock layers are subdirectories with integer names.
 }
+\seealso{
+\code{\link[=start_vignette]{start_vignette()}};
+\code{vignette("vignettes", package = "httptest2")} for an overview of all
+}

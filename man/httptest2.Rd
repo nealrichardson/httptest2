@@ -58,3 +58,4 @@ without a network connection or API credentials. To record fresh API
 responses, delete the subfolder of cached responses and re-run. See
 \code{vignette("vignettes")} for more discussion and links to examples.
 }
+\keyword{internal}

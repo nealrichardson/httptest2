@@ -10,11 +10,11 @@
 #' want to make those R code chunks have `echo=FALSE` in order to hide the fact
 #' that you're calling them.
 #'
-#' The behavior changes based on the existence of the `path` directory. The
+#' As in [with_mock_dir()], the behavior changes based on the existence of the `dir` directory. The
 #' first time you build the vignette, the directory won't exist yet, so it will
-#' make real requests and record them inside of `path`. On subsequent runs, the
+#' make real requests and record them inside of `dir`. On subsequent runs, the
 #' mocks will be used. To record fresh responses from the server, delete the
-#' `path` directory, and the responses will be recorded again the next time the
+#' `dir` directory, and the responses will be recorded again the next time the
 #' vignette runs.
 #'
 #' If you have additional setup code that you'd like available across all of
@@ -24,7 +24,7 @@
 #' `inst/httptest2/end-vignette.R`, evaluated in `end_vignette()` after mocking
 #' is stopped.
 #'
-#' @param path Root file path for the mocks for this vignette. A good idea is
+#' @param dir Root file path for the mocks for this vignette. A good idea is
 #' to use the file name of the vignette itself.
 #' @param ... Optional arguments passed to `start_capturing()`
 #' @return Nothing; called for its side effect of starting/ending
@@ -34,7 +34,7 @@
 #' for how previously recorded requests are loaded; [change_state()] for how to
 #' handle recorded requests when the server state is changing;
 #' `vignette("vignettes", package = "httptest2")` for an overview of all
-start_vignette <- function(path, ...) {
+start_vignette <- function(dir, ...) {
   # Cache the original .mockPaths so we can restore it on exit
   # And don't print messages in a vignette
   options(
@@ -49,10 +49,10 @@ start_vignette <- function(path, ...) {
   if (dir.exists("vignettes")) {
     # We're in the package root directory, probably running interactively
     # but we need to make sure we record/load relative to the vignette dir
-    path <- file.path("vignettes", path)
+    dir <- file.path("vignettes", dir)
   }
-  .mockPaths(file.path(path, "0"))
-  if (dir.exists(path)) {
+  .mockPaths(file.path(dir, "0"))
+  if (dir.exists(dir)) {
     # We already have recorded, so use the fixtures
     use_mock_api()
   } else {
@@ -74,6 +74,8 @@ start_vignette <- function(path, ...) {
 #' vignettes, these mock layers are subdirectories with integer names.
 #'
 #' @return Invisibly, the return of `.mockPaths()` with the new path added.
+#' @seealso [start_vignette()];
+#' `vignette("vignettes", package = "httptest2")` for an overview of all
 #' @export
 change_state <- function() {
   current_path <- .mockPaths()[1]

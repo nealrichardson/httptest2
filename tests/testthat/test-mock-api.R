@@ -157,24 +157,26 @@ with_mock_api({
       "http://httpbin.org/post",
       '{"x":"A simple text string"} '
     )
+    file_to_upload <- tempfile()
+    cat("testing", file = file_to_upload)
     expect_POST(
       r %>%
-        req_body_file(testthat::test_path("setup.R")) %>%
+        req_body_file(file_to_upload) %>%
         req_perform(),
       "http://httpbin.org/post",
-      "File: 08b50510a0b157c7816d6d8798d4c0e3"
+      "File: ae2b1fca515949e5d54fb22b8ed95575"
     )
 
     expect_POST(
       r %>%
         req_body_multipart(list(
-          a = curl::form_file(testthat::test_path("setup.R")),
+          a = curl::form_file(file_to_upload),
           b = curl::form_data("strings")
         )) %>%
         req_perform(),
       "http://httpbin.org/post",
       "Multipart form:
-  a = File: 08b50510a0b157c7816d6d8798d4c0e3
+  a = File: ae2b1fca515949e5d54fb22b8ed95575
   b = strings"
     )
   })

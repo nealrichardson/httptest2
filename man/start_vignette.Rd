@@ -5,12 +5,12 @@
 \alias{end_vignette}
 \title{Set mocking/capturing state for a vignette}
 \usage{
-start_vignette(path, ...)
+start_vignette(dir, ...)
 
 end_vignette()
 }
 \arguments{
-\item{path}{Root file path for the mocks for this vignette. A good idea is
+\item{dir}{Root file path for the mocks for this vignette. A good idea is
 to use the file name of the vignette itself.}
 
 \item{...}{Optional arguments passed to \code{start_capturing()}}
@@ -31,11 +31,11 @@ before the first API request is made, and put
 want to make those R code chunks have \code{echo=FALSE} in order to hide the fact
 that you're calling them.
 
-The behavior changes based on the existence of the \code{path} directory. The
+As in \code{\link[=with_mock_dir]{with_mock_dir()}}, the behavior changes based on the existence of the \code{dir} directory. The
 first time you build the vignette, the directory won't exist yet, so it will
-make real requests and record them inside of \code{path}. On subsequent runs, the
+make real requests and record them inside of \code{dir}. On subsequent runs, the
 mocks will be used. To record fresh responses from the server, delete the
-\code{path} directory, and the responses will be recorded again the next time the
+\code{dir} directory, and the responses will be recorded again the next time the
 vignette runs.
 
 If you have additional setup code that you'd like available across all of

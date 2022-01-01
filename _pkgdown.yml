@@ -28,29 +28,28 @@ navbar:
   - icon: fa-home fa-lg
     href: https://enpiar.com
 reference:
-- title: Contexts
+- title: Getting started
+  contents:
+  - use_httptest2
+- title: Test contexts
   contents:
   - with_mock_api
   - with_mock_dir
   - without_internet
   - .mockPaths
-- title: Expectations
-  contents:
-  - expect_verb
-  - expect_request_header
-  - expect_json_equal
 - title: Recording and redacting responses
   contents:
   - capture_requests
   - redact
   - gsub_response
   - set_redactor
+- title: Expectations
+  contents:
+  - expect_verb
+  - expect_request_header
+  - expect_json_equal
 - title: Vignettes
   contents:
   - start_vignette
   - change_state
-- title: Other testing tools
-  contents:
-  - httptest2
-  - use_httptest2
-  - skip_if_disconnected
+

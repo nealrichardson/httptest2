@@ -71,3 +71,8 @@ cnd_footer.httptest2_request <- function(cnd, ...) {
     paste0("Expected mock file: ", cnd$mockfile, ".*")
   }
 }
+
+# For use in tests and examples; can be mocked
+currently_offline <- function(url = "http://httpbin.org/") {
+  inherits(try(req_perform(request(url)), silent = TRUE), "try-error")
+}

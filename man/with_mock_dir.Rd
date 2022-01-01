@@ -10,7 +10,7 @@ with_mock_dir(dir, expr, simplify = TRUE, replace = TRUE)
 \item{dir}{character string, unique folder name that will be used or created
 under \verb{tests/testthat/}}
 
-\item{expr}{Code to run inside the mock context}
+\item{expr}{Code to run inside the context}
 
 \item{simplify}{logical: if \code{TRUE} (default), plain-text responses with status 200
 will be written as just the text of the response body. In all other cases,
@@ -29,4 +29,7 @@ If the \code{tests/testthat/dir} folder doesn't exist, \code{\link[=capture_requ
 be run to create mocks.
 If it exists, \code{\link[=with_mock_api]{with_mock_api()}} will be run.
 To re-record mock files, simply delete \code{tests/testthat/dir} and run the test.
+}
+\seealso{
+\code{vignette("httptest2")} for usage examples.
 }

@@ -36,8 +36,20 @@ ignore the order of elements in a named list.
 }
 \examples{
 expect_json_equal(
-  list(n = 5, q = list(r = 55, p = 9)),
-  list(q = list(p = 9, r = 55), n = 5)
+  list(
+    outer_1 = 1,
+    outer_2 = list(
+      inner_1 = 1,
+      inner_2 = 2
+    )
+  ),
+  list(
+    outer_2 = list(
+      inner_2 = 2,
+      inner_1 = 1
+    ),
+    outer_1 = 1
+  )
 )
 }
 \seealso{

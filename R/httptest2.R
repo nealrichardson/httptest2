@@ -55,4 +55,5 @@
 #' @name httptest2
 #' @docType package
 #' @importFrom httr2 req_perform request
+#' @keywords internal
 NULL

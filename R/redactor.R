@@ -12,8 +12,6 @@
 #' any time your package is loaded (as in when running tests or building
 #' vignettes), the function will be used automatically.
 #'
-#' For further details on how to redact responses, see `vignette("redacting")`.
-#'
 #' @param FUN A function or expression that modifies `httr2_response` objects.
 #' Specifically, a valid input is one of:
 #' * A function taking a single argument, the `httr2_response`,
@@ -29,6 +27,7 @@
 #' Formulas and function lists are turned into proper functions. `NULL` as input
 #' returns the `force()` function.
 #' @export
+#' @seealso For further details on how to redact responses, see `vignette("redacting", package = "httptest2")`.
 #' @examples
 #' # Shorten UUIDs in response body/URLs to their first 6 digits:
 #' set_redactor(function(resp) gsub_response(resp, "([0-9a-f]{6}[0-9a-f]{26}", "\\1"))

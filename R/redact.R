@@ -55,7 +55,7 @@ within_body_text <- function(response, FUN) {
   return(response)
 }
 
-#' Find and replace within a 'httr2_response'
+#' Find and replace within a response object
 #'
 #' This function passes its arguments to [base::gsub()] in order to find and
 #' replace string patterns (regular expressions) within
@@ -82,7 +82,6 @@ within_body_text <- function(response, FUN) {
 #' pattern replaced in the URLs and bodies.
 #' @export
 gsub_response <- function(response, pattern, replacement, ...) {
-  # HTTR2: rename since this is supposed to affect requests too?
   replacer <- function(x) gsub(pattern, replacement, x, ...)
   response$url <- replacer(response$url)
   response <- header_apply(response, "location", replacer)

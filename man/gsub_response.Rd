@@ -2,7 +2,7 @@
 % Please edit documentation in R/redact.R
 \name{gsub_response}
 \alias{gsub_response}
-\title{Find and replace within a 'httr2_response'}
+\title{Find and replace within a response object}
 \usage{
 gsub_response(response, pattern, replacement, ...)
 }

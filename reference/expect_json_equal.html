@@ -128,8 +128,20 @@ expectations.</p>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">expect_json_equal</span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, q <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>r <span class="op">=</span> <span class="fl">55</span>, p <span class="op">=</span> <span class="fl">9</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>q <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fl">9</span>, r <span class="op">=</span> <span class="fl">55</span><span class="op">)</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span class="r-in">    outer_1 <span class="op">=</span> <span class="fl">1</span>,</span>
+<span class="r-in">    outer_2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span class="r-in">      inner_1 <span class="op">=</span> <span class="fl">1</span>,</span>
+<span class="r-in">      inner_2 <span class="op">=</span> <span class="fl">2</span></span>
+<span class="r-in">    <span class="op">)</span></span>
+<span class="r-in">  <span class="op">)</span>,</span>
+<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span class="r-in">    outer_2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span class="r-in">      inner_2 <span class="op">=</span> <span class="fl">2</span>,</span>
+<span class="r-in">      inner_1 <span class="op">=</span> <span class="fl">1</span></span>
+<span class="r-in">    <span class="op">)</span>,</span>
+<span class="r-in">    outer_1 <span class="op">=</span> <span class="fl">1</span></span>
+<span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
 </code></pre></div>
     </div>

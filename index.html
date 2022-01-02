@@ -116,7 +116,7 @@
 <p><code>httptest2</code> makes it easy to write tests for code and packages that wrap web APIs. Testing code that communicates with remote servers can otherwise be painful: things like authentication, server state, and network flakiness can make testing seem too costly to bother with. The <code>httptest2</code> package enables you to test all of the logic on the R sides of the API in your package without requiring access to the remote service.</p>
 <p>Importantly, it provides <strong>contexts</strong> that mock the network connection and tools for <strong>recording</strong> real requests for future offline use as fixtures, both in tests and in vignettes. The package also includes additional <strong>expectations</strong> to assert that HTTP requests were—or were not—made.</p>
 <p>Using these tools, you can test that code is making the intended requests and that it handles the expected responses correctly, all without depending on a connection to a remote API. The ability to save responses and load them offline also enables you to write package vignettes and other dynamic documents that can be distributed without access to a live server.</p>
-<p>This package is an adaptation of <a href="https://enpiar.com/r/httptest/" class="external-link"><code>httptest</code></a> to work with <a href="https://httr2.r-lib.org/" class="external-link"><code>httr2</code></a>. Most features work exactly as they do in <code>httptest</code>; see the changelog for the initial release for a summary of what has changed.</p>
+<p>This package is an adaptation of <a href="https://enpiar.com/r/httptest/" class="external-link"><code>httptest</code></a> to work with <a href="https://httr2.r-lib.org/" class="external-link"><code>httr2</code></a>. Most features work exactly as they do in <code>httptest</code>; see the NEWS.md for the initial release for a summary of what has changed.</p>
 <div class="section level2">
 <h2 id="installing">Installing<a class="anchor" aria-label="anchor" href="#installing"></a>
 </h2>
@@ -179,8 +179,7 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/nealrichardson/httptest2/actions" class="external-link"><img src="https://github.com/nealrichardson/httptest2/workflows/R-CMD-check/badge.svg" alt="Build Status"></a></li>
-<li><a href="https://codecov.io/gh/nealrichardson/httptest2" class="external-link"><img src="https://codecov.io/gh/nealrichardson/httptest2/branch/main/graph/badge.svg?token=PxOGymudAS" alt="codecov"></a></li>
-<li><a href="https://cran.r-project.org/package=httptest2" class="external-link"><img src="https://www.r-pkg.org/badges/version-last-release/httptest2" alt="cran"></a></li>
+<li><a href="https://app.codecov.io/gh/nealrichardson/httptest2" class="external-link"><img src="https://codecov.io/gh/nealrichardson/httptest2/branch/main/graph/badge.svg?token=PxOGymudAS" alt="codecov"></a></li>
 </ul>
 </div>
 

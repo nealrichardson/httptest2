@@ -1,17 +1,13 @@
 Package: httptest2
 Type: Package
-Title: A Test Environment for HTTP Requests
+Title: Test Helpers for 'httr2'
 Description: Testing and documenting code that communicates with remote servers
-    can be painful. Dealing with authentication, server state,
-    and other complications can make testing seem too costly to
-    bother with. But it doesn't need to be that hard. This package enables one
-    to test all of the logic on the R sides of the API in your package without
-    requiring access to the remote service. Importantly, it provides three
-    contexts that mock the network connection in different ways, as well as
-    testing functions to assert that HTTP requests were---or were
-    not---made. It also allows one to safely record real API responses to use as
+    can be painful. This package helps with writing tests for packages that
+    use 'httr2'. It enables testing all of the logic
+    on the R sides of the API without requiring access to the
+    remote service, and it also allows recording real API responses to use as
     test fixtures. The ability to save responses and load them offline also
-    enables one to write vignettes and other dynamic documents that can be
+    enables writing vignettes and other dynamic documents that can be
     distributed without access to a live server.
 Version: 0.0.0.9000
 Authors@R: c(

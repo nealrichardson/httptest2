@@ -169,9 +169,7 @@ save_response <- function(response, file, simplify = TRUE) {
     on.exit(close(f))
     dput(response, file = f)
   }
-  if (isTRUE(getOption("httptest2.verbose", FALSE))) {
-    message("Writing ", normalizePath(dst_file))
-  }
+  verbose_message("Writing ", normalizePath(dst_file))
   return(dst_file)
 }
 
@@ -195,4 +193,10 @@ cat_wb <- function(x, file, ...) {
   f <- file(file, "wb", encoding = "UTF-8")
   on.exit(close(f))
   cat(enc2utf8(x), file = f, ...)
+}
+
+verbose_message <- function(...) {
+  if (isTRUE(getOption("httptest2.verbose", FALSE))) {
+    message(...)
+  }
 }

@@ -92,9 +92,7 @@ get_package_function <- function(package, file = "redact.R") {
   if (nzchar(func_file)) {
     func <- source(func_file)$value
     if (is.function(func)) {
-      if (isTRUE(getOption("httptest2.verbose", TRUE))) {
-        message(paste("Using", file, "from", dQuote(package)))
-      }
+      verbose_message(paste("Using", file, "from", dQuote(package)))
       return(func)
     }
   }

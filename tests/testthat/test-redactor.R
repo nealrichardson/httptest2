@@ -33,17 +33,26 @@ test_that("get_current_redactor edge cases", {
 with_mock_api({
   test_that("Reading redactors from within a package (and install that package)", {
     newmocks <- tempfile()
+    # Also show verbose messaging of redactor
+    options(httptest2.verbose = TRUE)
     expect_message(
-      capture_while_mocking(path = newmocks, {
-        # Install the "testpkg" to a temp lib.loc _after_ we've
-        # already started recording
-        lib <- install_testpkg("testpkg")
-        library(testpkg, lib.loc = lib)
-        expect_true("testpkg" %in% names(sessionInfo()$otherPkgs))
-        r <- request("http://example.com/get") %>% req_perform()
-      }),
-      paste0("Using redact.R from ", dQuote("testpkg"))
+      expect_message(
+        expect_message(
+          capture_while_mocking(path = newmocks, {
+            # Install the "testpkg" to a temp lib.loc _after_ we've
+            # already started recording
+            lib <- install_testpkg("testpkg")
+            library(testpkg, lib.loc = lib)
+            expect_true("testpkg" %in% names(sessionInfo()$otherPkgs))
+            r <- request("http://example.com/get") %>% req_perform()
+          }),
+          paste0("Using redact.R from ", dQuote("testpkg"))
+        ),
+        "Writing .*example.com.get.json"
+      ),
+      "Reading .*example.com.get.json"
     )
+    options(httptest2.verbose = FALSE)
     with_mock_path(newmocks, {
       r2 <- request("http://example.com/get") %>% req_perform()
     })
@@ -76,24 +85,14 @@ with_mock_api({
     newmocks3 <- tempfile()
     expect_false("testpkg" %in% names(sessionInfo()$otherPkgs))
     on.exit(pkgload::unload("testpkg"))
-    expect_message(
-      expect_message(
-        capture_while_mocking(path = newmocks3, {
-          pkgload::load_all("testpkg", quiet = TRUE)
-          expect_true("testpkg" %in% names(sessionInfo()$otherPkgs))
-          r <- request("http://example.com/get") %>% req_perform()
-        }),
-        paste0("Using redact.R from ", dQuote("testpkg"))
-      ),
-      # This fires twice: once on the mocked request, once on the response saving
-      paste0("Using redact.R from ", dQuote("testpkg"))
-    )
-    expect_message(
-      with_mock_path(newmocks3, {
-        r2 <- request("http://example.com/get") %>% req_perform()
-      }),
-      paste0("Using redact.R from ", dQuote("testpkg"))
-    )
+    capture_while_mocking(path = newmocks3, {
+      pkgload::load_all("testpkg", quiet = TRUE)
+      expect_true("testpkg" %in% names(sessionInfo()$otherPkgs))
+      r <- request("http://example.com/get") %>% req_perform()
+    })
+    with_mock_path(newmocks3, {
+      r2 <- request("http://example.com/get") %>% req_perform()
+    })
     # The resulting mock content is what we injected into it from testpkg
     expect_identical(resp_body_json(r2), list(fake = TRUE))
   })

@@ -112,6 +112,7 @@ find_mock_file <- function(file) {
 #' @importFrom utils tail
 #' @importFrom httr2 response
 load_response <- function(file, req) {
+  verbose_message("Reading ", normalizePath(file))
   ext <- tail(unlist(strsplit(file, ".", fixed = TRUE)), 1)
   if (ext == "R") {
     # It's a full "response". Source it, and if it is from httr, adapt it

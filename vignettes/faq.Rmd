@@ -42,27 +42,49 @@ You may also be able to economize on other parts of the file paths. If you've re
 
 Finally, if you have your tests inside a `tests/testthat/` directory, and your fixture files inside that, you can save 9 characters by moving the fixtures up to `tests/` and setting `.mockPaths("../")`.
 
-## How do I switch between mocking and real requests?
+# Why are mocks stored as text files?
 
-`httptest2` does not intend that every request in your test suite is something that could be run against a live server. There are practical reasons why you should be able to see, modify, and maintain test fixtures, rather than re-record them every time you make a change. Among the considerations:
+Plain-text files have several nice features, particularly relative to storing serialized (binary) R objects. You can more easily confirm that your mocks look correct, and you can more easily maintain them without having to re-record them. When you do edit them, text files are more easily handled by version-control systems like Git. Plain-text files can also have comments, so you can make notes as to why a certain fixture exists, what a particular value means, and so on, which will help the users of your package—and your future self!
 
-* In many cases, API responses contain way more content than is necessary to test your R code around them: 100 records when 2 will suffice, request metadata that you don't care about and can't meaningfully assert things about, and so on. In the interest of minimally reproducible examples, and of making tests readable, it often makes sense to take an actual API response and delete a lot of its content, or even to fabricate one entirely.
-* It's good to keep an API mock fixed so you know exactly what is in it. If you re-recorded a Twitter API response of, say, the most recent 10 tweets with `#rstats`, the specific content will change every time you record it, so your tests can't say much about what is in the response without having to rewrite them every time too.
-* Some conditions (rate limiting, server errors, e.g.) are difficult to test with real responses, but if you can hand-create a API mock with, say, a 503 response status code and test how your code handles it, you can have confidence of how your package will respond when that rare event happens with the real API.
-* Re-recording all responses can make for a huge code diff, which can blow up your repository size and make code review harder.
+By having mocks in human-readable text files, you can also more easily extend your code. APIs are living things that evolve over time, and your code that communicates with an API needs to be able to change with them. If the API adds an additional attribute to an object, no big deal: just touch up the mocks. In addition, you can future-proof your code against that kind of API change by tweaking a fixture file. In [this example](https://github.com/Crunch-io/rcrunch/blob/49cf2526c0c54d05550b6401e0b97a0beeaa1640/inst/app.crunch.io/api/datasets/1.json#L34) from the `crunch` package, an extra, nonsense attribute was added to the JSON just to ensure that the code doesn't break if there are new, unknown features added to the API response. That way, if the API grows new features, people who are using your package don't get errors if they haven't upgraded to the latest release that recognizes the new feature.
 
-That said, it can be worthwhile to have a subset of tests that can be run against a live API so that you can detect and respond to API changes. One option is to set up some tests with the `with_mock_dir()` context instead of `with_mock_api()`. For example:
+If you're responsible for the API as well as the R client code that communicates with it, the plain-text mocks can be a valuable source of documentation. Indeed, the file-system tree view of the mock files gives a visual representation of your API. For example, in the [crunch](https://crunch.io/r/crunch/) package, the mocks show an API of catalogs that contain entities that may contain other subdocuments:
 
-```r
-with_mock_dir("httpbin-get", {
-  a <- request("https://httpbin.org/get") %>% req_perform()
-  print(a)
-})
 ```
-
-The first time you run the code, it will create the directory `tests/testthat/httpbin-get`,
- and create mock files under it.
-The next times you run it, it will _use_ the mock files in `tests/testthat/httpbin-get`.
-To re-record, simply delete the directory.
-
-Another option is to have a secondary integration test suite in your code repository, a directory outside of the standard R package directories and included in `.Rbuildignore` so that it doesn't get packaged. You could run this locally with `testthat::test_dir()`, and you could run it on continuous integration builds by replacing the `tests/testthat` directory with the alternate test directory.
+app.crunch.io/
+├── api
+│   ├── accounts
+│   │   ├── account1
+│   │   │   └── users.json
+│   │   └── account1.json
+│   ├── datasets
+│   │   ├── 1
+│   │   │   ├── export.json
+│   │   │   ├── filters
+│   │   │   │   └── filter1.json
+│   │   │   ├── filters.json
+│   │   │   ├── permissions.json
+│   │   │   ├── summary-73a614.json
+│   │   │   ├── variables
+│   │   │   │   ├── birthyr
+│   │   │   │   │   ├── summary-73a614.json
+│   │   │   │   │   └── values-3d4982.json
+│   │   │   │   ├── birthyr.json
+│   │   │   │   ├── gender
+│   │   │   │   │   ├── summary.json
+│   │   │   │   │   └── values-51980f.json
+│   │   │   │   ├── gender.json
+│   │   │   │   ├── starttime
+│   │   │   │   │   └── values-3d4982.json
+│   │   │   │   ├── starttime.json
+│   │   │   │   ├── textVar
+│   │   │   │   │   └── values-641ef3.json
+│   │   │   │   ├── textVar.json
+│   │   │   │   └── weights.json
+│   │   │   ├── variables-d118fa.json
+│   │   │   └── variables.json
+│   │   ├── 1.json
+│   │   └── search-c89aba.json
+│   └── users.json
+└── api.json
+```

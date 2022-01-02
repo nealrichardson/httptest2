@@ -25,9 +25,11 @@ with_mock_dir <- function(dir, expr, simplify = TRUE, replace = TRUE) {
   with_mock_path(dir, replace = replace, {
     if (dir.exists(dir)) {
       # We already have recorded, so use the fixtures
+      verbose_message("Using mocks found in ", dir)
       with_mock_api(expr)
     } else {
       # Record!
+      verbose_message("Recording responses to ", dir)
       capture_requests(expr, simplify = simplify)
     }
   })

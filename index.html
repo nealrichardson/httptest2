@@ -5,25 +5,21 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A Test Environment for HTTP Requests • httptest2</title>
+<title>Test Helpers for httr2 • httptest2</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
-<meta property="og:title" content="A Test Environment for HTTP Requests">
+<meta property="og:title" content="Test Helpers for httr2">
 <meta property="og:description" content="Testing and documenting code that communicates with remote servers
-    can be painful. Dealing with authentication, server state,
-    and other complications can make testing seem too costly to
-    bother with. But it doesn't need to be that hard. This package enables one
-    to test all of the logic on the R sides of the API in your package without
-    requiring access to the remote service. Importantly, it provides three
-    contexts that mock the network connection in different ways, as well as
-    testing functions to assert that HTTP requests were---or were
-    not---made. It also allows one to safely record real API responses to use as
+    can be painful. This package helps with writing tests for packages that
+    use httr2. It enables testing all of the logic
+    on the R sides of the API without requiring access to the
+    remote service, and it also allows recording real API responses to use as
     test fixtures. The ability to save responses and load them offline also
-    enables one to write vignettes and other dynamic documents that can be
+    enables writing vignettes and other dynamic documents that can be
     distributed without access to a live server.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -113,17 +109,14 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-
-<blockquote>
-<p>This is a work-in-progress porting <a href="https://enpiar.com/r/httptest/" class="external-link"><code>httptest</code></a> to work with <a href="https://httr2.r-lib.org/" class="external-link"><code>httr2</code></a>. Please see the Issues for known features remaining to be updated–we’d love your help in finishing this up so we can submit to CRAN.</p>
-</blockquote>
 <div class="section level1">
 <div class="page-header"><h1 id="httptest2-a-test-environment-for-http-requests-in-r">httptest2: A Test Environment for HTTP Requests in R<a class="anchor" aria-label="anchor" href="#httptest2-a-test-environment-for-http-requests-in-r"></a>
 </h1></div>
-<p><a href="https://github.com/nealrichardson/httptest2/actions" class="external-link"><img src="https://github.com/nealrichardson/httptest2/workflows/R-CMD-check/badge.svg" alt="Build Status"></a> <a href="https://codecov.io/gh/nealrichardson/httptest2" class="external-link"><img src="https://codecov.io/gh/nealrichardson/httptest2/branch/main/graph/badge.svg?token=PxOGymudAS" alt="codecov"></a> <a href="https://cran.r-project.org/package=httptest2" class="external-link"><img src="https://www.r-pkg.org/badges/version-last-release/httptest2" alt="cran"></a></p>
+
 <p><code>httptest2</code> makes it easy to write tests for code and packages that wrap web APIs. Testing code that communicates with remote servers can otherwise be painful: things like authentication, server state, and network flakiness can make testing seem too costly to bother with. The <code>httptest2</code> package enables you to test all of the logic on the R sides of the API in your package without requiring access to the remote service.</p>
 <p>Importantly, it provides <strong>contexts</strong> that mock the network connection and tools for <strong>recording</strong> real requests for future offline use as fixtures, both in tests and in vignettes. The package also includes additional <strong>expectations</strong> to assert that HTTP requests were—or were not—made.</p>
 <p>Using these tools, you can test that code is making the intended requests and that it handles the expected responses correctly, all without depending on a connection to a remote API. The ability to save responses and load them offline also enables you to write package vignettes and other dynamic documents that can be distributed without access to a live server.</p>
+<p>This package is an adaptation of <a href="https://enpiar.com/r/httptest/" class="external-link"><code>httptest</code></a> to work with <a href="https://httr2.r-lib.org/" class="external-link"><code>httr2</code></a>. Most features work exactly as they do in <code>httptest</code>; see the changelog for the initial release for a summary of what has changed.</p>
 <div class="section level2">
 <h2 id="installing">Installing<a class="anchor" aria-label="anchor" href="#installing"></a>
 </h2>
@@ -136,91 +129,16 @@
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"nealrichardson/httptest2"</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="using">Using<a class="anchor" aria-label="anchor" href="#using"></a>
+<h2 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
 <p>To start using <code>httptest2</code> with your package, run <code><a href="reference/use_httptest2.html">use_httptest2()</a></code> in the root of your package directory. This will</p>
 <ul>
 <li>add <code>httptest2</code> to “Suggests” in the DESCRIPTION file</li>
 <li>add <code><a href="https://enpiar.com/httptest2/">library(httptest2)</a></code> to <code>tests/testthat/setup.R</code>, which <code>testthat</code> loads before running tests</li>
 </ul>
-<p>Then, you’re ready to start using the tools that <code>httptest2</code> provides. Here’s an overview of how to get started. For a longer discussion and examples, see <code><a href="articles/httptest2.html">vignette("httptest2")</a></code>, and check out <code><a href="articles/faq.html">vignette("faq")</a></code> for some common questions. See also the <a href="https://enpiar.com/httptest2/reference/">package reference</a> for a list of all of the test contexts and expectations provided in the package.</p>
-<div class="section level3">
-<h3 id="in-your-test-suite">In your test suite<a class="anchor" aria-label="anchor" href="#in-your-test-suite"></a>
-</h3>
-<p>The package includes several contexts, which you wrap around test code that would otherwise make network requests through <code>httr2</code>. They intercept the requests and prevent actual network traffic from occurring.</p>
-<p><strong><code><a href="reference/with_mock_api.html">with_mock_api()</a></code></strong> maps requests—URLs along with request bodies and query parameters—to file paths. If the file exists, its contents are returned as the response object, as if the API server had returned it. This allows you to test complex R code that makes requests and does something with the response, simulating how the API should respond to specific requests.</p>
-<p>Requests that do not have a corresponding fixture file raise errors that print the request method, URL, and body payload, if provided. <strong><code><a href="reference/expect_verb.html">expect_GET()</a></code></strong>, <strong><code><a href="reference/expect_verb.html">expect_POST()</a></code></strong>, and the rest of the HTTP-request-method expectations look for those errors and check that the requests match the expectations. These are useful for asserting that a function call would make a correctly-formed HTTP request without the need to generate a mock, as well as for asserting that a function does not make a request (because if it did, it would raise an error in this context).</p>
-<p>Adding <code><a href="reference/with_mock_api.html">with_mock_api()</a></code> to your tests is straightforward. Given a very basic test that makes network requests:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">test_that</span><span class="op">(</span><span class="st">"Requests happen"</span>, <span class="op">{</span>
-  <span class="fu">expect_s3_class</span><span class="op">(</span><span class="fu">GET</span><span class="op">(</span><span class="st">"http://httpbin.org/get"</span><span class="op">)</span>, <span class="st">"response"</span><span class="op">)</span>
-  <span class="fu">expect_s3_class</span><span class="op">(</span>
-    <span class="fu">GET</span><span class="op">(</span><span class="st">"http://httpbin.org/response-headers"</span>,
-      query <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>`Content-Type` <span class="op">=</span> <span class="st">"application/json"</span><span class="op">)</span><span class="op">)</span>,
-    <span class="st">"response"</span>
-  <span class="op">)</span>
-<span class="op">}</span><span class="op">)</span></code></pre></div>
-<p>if we wrap the code in <code><a href="reference/with_mock_api.html">with_mock_api()</a></code>, actual requests won’t happen.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/with_mock_api.html">with_mock_api</a></span><span class="op">(</span><span class="op">{</span>
-  <span class="fu">test_that</span><span class="op">(</span><span class="st">"Requests happen"</span>, <span class="op">{</span>
-    <span class="fu">expect_s3_class</span><span class="op">(</span><span class="fu">GET</span><span class="op">(</span><span class="st">"http://httpbin.org/get"</span><span class="op">)</span>, <span class="st">"response"</span><span class="op">)</span>
-    <span class="fu">expect_s3_class</span><span class="op">(</span>
-      <span class="fu">GET</span><span class="op">(</span><span class="st">"http://httpbin.org/response-headers"</span>,
-        query <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>`Content-Type` <span class="op">=</span> <span class="st">"application/json"</span><span class="op">)</span><span class="op">)</span>,
-      <span class="st">"response"</span>
-    <span class="op">)</span>
-  <span class="op">}</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span></code></pre></div>
-<p>Those requests will now raise errors unless we either (1) wrap them in <code><a href="reference/expect_verb.html">expect_GET()</a></code> and assert that we expect those requests to happen, or (2) supply mocks in the file paths that match those requests. We might get those mocks from the documentation for the API we’re using, or we could record them ourselves—and <code>httptest</code> provides tools for recording.</p>
-<p>Another context, <strong><code><a href="reference/capture_requests.html">capture_requests()</a></code></strong>, collects the responses from requests you make and stores them as mock files. This enables you to perform a series of requests against a live server once and then build your test suite using those mocks, running your tests in <code>with_mock_api</code>.</p>
-<p>In our example, running this once:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/capture_requests.html">capture_requests</a></span><span class="op">(</span><span class="op">{</span>
-  <span class="fu">GET</span><span class="op">(</span><span class="st">"http://httpbin.org/get"</span><span class="op">)</span>
-  <span class="fu">GET</span><span class="op">(</span><span class="st">"http://httpbin.org/response-headers"</span>,
-    query <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>`Content-Type` <span class="op">=</span> <span class="st">"application/json"</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span></code></pre></div>
-<p>would make the actual requests over the network and store the responses where <code><a href="reference/with_mock_api.html">with_mock_api()</a></code> will find them.</p>
-<p>For convenience, you may find it easier in an interactive session to call <code><a href="reference/capture_requests.html">start_capturing()</a></code>, make requests, and then <code><a href="reference/capture_requests.html">stop_capturing()</a></code> when you’re done, as in:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/capture_requests.html">start_capturing</a></span><span class="op">(</span><span class="op">)</span>
-<span class="fu">GET</span><span class="op">(</span><span class="st">"http://httpbin.org/get"</span><span class="op">)</span>
-<span class="fu">GET</span><span class="op">(</span><span class="st">"http://httpbin.org/response-headers"</span>,
-  query <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>`Content-Type` <span class="op">=</span> <span class="st">"application/json"</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="reference/capture_requests.html">stop_capturing</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>Mocks stored by <code>capture_requests</code> are written out as plain-text files. By storing fixtures as human-readable files, you can more easily confirm that your mocks look correct, and you can more easily maintain them if the API changes subtly without having to re-record them (though it is easy enough to delete and recapture). Text files also play well with version control systems, such as git.</p>
-<p>When recording requests, <code>httptest</code> redacts the standard ways that auth credentials are passed, so you won’t accidentally publish your personal tokens. The redacting behavior is fully customizable: you can programmatically sanitize or alter other parts of the request and response. See <code><a href="articles/redacting.html">vignette("redacting")</a></code> for details.</p>
-</div>
-<div class="section level3">
-<h3 id="in-your-vignettes">In your vignettes<a class="anchor" aria-label="anchor" href="#in-your-vignettes"></a>
-</h3>
-<p>Package vignettes are a valuable way to show how to use your code, but when communicating with a remote API, it has been difficult to write useful vignettes. With <code>httptest</code>, however, by adding as little as one line of code to your vignette, you can safely record API responses from a live session, using your secret credentials. These API responses are scrubbed of sensitive personal information and stored in a subfolder in your <code>vignettes</code> directory. Subsequent vignette builds, including on continuous-integration services, CRAN, and your package users’ computers, use these recorded responses, allowing the document to regenerate without a network connection or API credentials. To record fresh API responses, delete the subfolder of cached responses and re-run.</p>
-<p>To use <code>httptest</code> in your vignettes, add a code chunk with <code><a href="reference/start_vignette.html">start_vignette()</a></code> at the beginning, and for many use cases, that’s the only thing you need. If you need to handle changes of server state, as when you make an API request that creates a record on the server, add a call to <code><a href="reference/change_state.html">change_state()</a></code>. See <code><a href="articles/vignettes.html">vignette("vignettes")</a></code> for more discussion and links to examples.</p>
+<p>Then, you’re ready to start using the tools that <code>httptest2</code> provides. For an overview of how to get started, see <code><a href="articles/httptest2.html">vignette("httptest2")</a></code>, and check out <code><a href="articles/faq.html">vignette("faq")</a></code> for some common questions. See also the <a href="https://enpiar.com/httptest2/reference/">package reference</a> for a list of all of the test contexts and expectations provided in the package.</p>
 </div>
 </div>
-<div class="section level2">
-<h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
-</h2>
-<p>Suggestions and pull requests are more than welcome!</p>
-</div>
-<div class="section level2">
-<h2 id="for-developers">For developers<a class="anchor" aria-label="anchor" href="#for-developers"></a>
-</h2>
-<p>The repository includes a Makefile to facilitate some common tasks from the command line, if you’re into that sort of thing.</p>
-<div class="section level3">
-<h3 id="running-tests">Running tests<a class="anchor" aria-label="anchor" href="#running-tests"></a>
-</h3>
-<p><code>$ make test</code>. You can also specify a specific test file or files to run by adding a “file=” argument, like <code>$ make test file=offline</code>. <code>test_package</code> will do a regular-expression pattern match within the file names. See its documentation in the <code>testthat</code> package.</p>
-</div>
-<div class="section level3">
-<h3 id="updating-documentation">Updating documentation<a class="anchor" aria-label="anchor" href="#updating-documentation"></a>
-</h3>
-<p><code>$ make doc</code>. Requires the <a href="https://github.com/r-lib/roxygen2" class="external-link">roxygen2</a> package.</p>
-</div>
-</div>
-</div>
-
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -257,7 +175,14 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/nealrichardson/httptest2/actions" class="external-link"><img src="https://github.com/nealrichardson/httptest2/workflows/R-CMD-check/badge.svg" alt="Build Status"></a></li>
+<li><a href="https://codecov.io/gh/nealrichardson/httptest2" class="external-link"><img src="https://codecov.io/gh/nealrichardson/httptest2/branch/main/graph/badge.svg?token=PxOGymudAS" alt="codecov"></a></li>
+<li><a href="https://cran.r-project.org/package=httptest2" class="external-link"><img src="https://www.r-pkg.org/badges/version-last-release/httptest2" alt="cran"></a></li>
+</ul>
+</div>
 
   </div>
 </div>

@@ -84,7 +84,7 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.0.0.9000" id="httptest2-0009000">httptest2 0.0.0.9000<a class="anchor" aria-label="anchor" href="#httptest2-0009000"></a></h2>
 <p>Initial port of <code>httptest</code> to work on top of <code>httr2</code>. All APIs preserved except:</p>
-<ul><li>Mock file hashes and error messages for multipart or file upload requests have changed.</li>
+<ul><li>Mock file hashes and error messages for requests with multipart forms or file uploads have changed. Aside from this, all mock files and file paths recorded by <code>httptest</code> using <code>httr</code> will work with <code>httptest2</code> and return valid <code>httr2_response</code> objects when loaded.</li>
 <li>Redacting functions are applied to both the <code>httr2_response</code> and <code>httr2_request</code> objects, the latter in order to be able to alter the URL/mock file path being written. You do not need separate “redactors” and “requesters”.</li>
 <li>
 <code>expect_header()</code> has been renamed to <code><a href="../reference/expect_request_header.html">expect_request_header()</a></code> and takes headers to match by argument name rather than a single string “Header: value”. This allows more flexibility in matching headers, plus the ability to match multiple headers. It also no longer uses <code><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning()</a></code> to extract the headers, so test failures are cleaner.</li>
@@ -92,12 +92,7 @@
 <code>expect_json_equivalent()</code> has been renamed to <code><a href="../reference/expect_json_equal.html">expect_json_equal()</a></code> to match testthat 3.0’s convention.</li>
 <li>The failure message when an unexpected request is made is more clear and is distinguished from other “errors”. Expected mock file paths are more clearly shown when appropriate, and they are no longer included in the message itself that you would assert in <code><a href="../reference/expect_verb.html">expect_GET()</a></code>, <code><a href="../reference/expect_verb.html">expect_POST()</a></code>, et al.</li>
 <li>All <code><a href="https://rdrr.io/r/base/options.html" class="external-link">options()</a></code> have been renamed to match the package name (e.g. <code>options(httptest2.verbose)</code>)</li>
-</ul><p>Changes to function signatures:</p>
-<ul><li>The <code>path</code> argument to <code><a href="../reference/capture_requests.html">capture_requests()</a></code> and <code><a href="../reference/capture_requests.html">start_capturing()</a></code> has been removed; instead set the mock path explicitly with <code><a href="../reference/mockPaths.html">.mockPaths()</a></code> or use <code>with_mock_path()</code>.</li>
-<li>
-<code><a href="../reference/save_response.html">save_response()</a></code> requires a <code>file</code> path argument because <code>httr2_response</code> objects do not contain their <code>request</code>, which is needed to construct the mock file path</li>
-<li>
-<code><a href="../reference/build_mock_url.html">build_mock_url()</a></code> no longer accepts a string URL as an input; it only accepts <code>request</code> objects</li>
+<li>With <code>options(httptest2.verbose = TRUE)</code>, messages are printed in more places; messages about when a package redactor is called are now only printed if the option is set.</li>
 </ul><p>Some functions were removed:</p>
 <ul><li>
 <code>redact_auth()</code>, which had previously been reduced to an alias for <code><a href="../reference/redact.html">redact_cookies()</a></code>
@@ -105,9 +100,15 @@
 <li><code>with_fake_http()</code></li>
 <li><code>public()</code></li>
 <li>
+<code>skip_if_disconnected()</code> (just use <code><a href="https://testthat.r-lib.org/reference/skip.html" class="external-link">testthat::skip_if_offline()</a></code>)</li>
+<li>
 <code>fake_response()</code> (just use <code><a href="https://httr2.r-lib.org/reference/response.html" class="external-link">httr2::response()</a></code>)</li>
 <li>
 <code>gsub_request()</code> and <code>set_requester()</code> (no longer necessary)</li>
+</ul><p>Changes to function signatures:</p>
+<ul><li>The <code>path</code> argument to <code><a href="../reference/capture_requests.html">capture_requests()</a></code> and <code><a href="../reference/capture_requests.html">start_capturing()</a></code> has been removed; instead set the mock path explicitly with <code><a href="../reference/mockPaths.html">.mockPaths()</a></code> or use <code>with_mock_path()</code>.</li>
+<li>Internal function <code><a href="../reference/save_response.html">save_response()</a></code> requires a <code>file</code> path argument because <code>httr2_response</code> objects do not contain their <code>request</code>, which is needed to construct the mock file path</li>
+<li>Internal function <code><a href="../reference/build_mock_url.html">build_mock_url()</a></code> no longer accepts a string URL as an input; it only accepts <code>request</code> objects</li>
 </ul></div>
   </div>
 

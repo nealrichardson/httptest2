@@ -1,4 +1,4 @@
-# httptest2: A Test Environment for HTTP Requests in R
+# httptest2: Test Helpers for 'httr2'
 
 [![Build Status](https://github.com/nealrichardson/httptest2/workflows/R-CMD-check/badge.svg)](https://github.com/nealrichardson/httptest2/actions)
 [![codecov](https://codecov.io/gh/nealrichardson/httptest2/branch/main/graph/badge.svg?token=PxOGymudAS)](https://app.codecov.io/gh/nealrichardson/httptest2)

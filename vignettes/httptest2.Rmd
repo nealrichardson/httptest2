@@ -130,7 +130,7 @@ which contains the JSON response body from our request:
 ```
 
 Note how the file path matches the request URL. Requests are translated to mock file paths according to several rules that incorporate the request method, URL, query parameters, and body.
-First, the request protocol, such as "https://", is removed from the URL.
+First, the request protocol is removed from the URL.
 Second, if the request URL contains a query string, it will be popped off,
 hashed by `digest::digest()`, and the first six characters appended to the
 file being read. Third, request bodies are similarly hashed and

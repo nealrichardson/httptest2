@@ -27,7 +27,7 @@ First, we need to add `httptest2` to our package test suite. Once you've configu
 * `without_internet()`: any `httr2` request performed will raise an informative error
 * `with_mock_api()`: requests will look for an associated mock file to return instead of making a real request; if none found, it will raise an informative error
 * `capture_requests()`: real requests will be saved to mock files so that `with_mock_api()` can load them
-* `with_mock_dir()`: wrapper around `capture_requests()` and `with_mock_api()`, switching between them based on the existence of the given directory. If it exists, `with_mock_api()` will use it; if not, real requests will be made and responses will be recored into it so that subsequent runs will use them as mocks. To re-record real responses, delete the directory.
+* `with_mock_dir()`: wrapper around `capture_requests()` and `with_mock_api()`, switching between them based on the existence of the given directory. If it exists, `with_mock_api()` will use it; if not, real requests will be made and responses will be recorded into it so that subsequent runs will use them as mocks. To re-record real responses, delete the directory.
 
 ## Basic tests from a live server
 

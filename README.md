@@ -1,8 +1,7 @@
 # httptest2: A Test Environment for HTTP Requests in R
 
 [![Build Status](https://github.com/nealrichardson/httptest2/workflows/R-CMD-check/badge.svg)](https://github.com/nealrichardson/httptest2/actions)
-[![codecov](https://codecov.io/gh/nealrichardson/httptest2/branch/main/graph/badge.svg?token=PxOGymudAS)](https://codecov.io/gh/nealrichardson/httptest2)
-[![cran](https://www.r-pkg.org/badges/version-last-release/httptest2)](https://cran.r-project.org/package=httptest2)
+[![codecov](https://codecov.io/gh/nealrichardson/httptest2/branch/main/graph/badge.svg?token=PxOGymudAS)](https://app.codecov.io/gh/nealrichardson/httptest2)
 
 `httptest2` makes it easy to write tests for code and packages that wrap web APIs.
 Testing code that communicates with remote servers can otherwise be painful: things like authentication, server state, and network flakiness can make testing seem too costly to bother with. The `httptest2` package enables you to test all of the logic on the R sides of the API in your package without requiring access to the remote service.
@@ -11,7 +10,7 @@ Importantly, it provides **contexts** that mock the network connection and tools
 
 Using these tools, you can test that code is making the intended requests and that it handles the expected responses correctly, all without depending on a connection to a remote API. The ability to save responses and load them offline also enables you to write package vignettes and other dynamic documents that can be distributed without access to a live server.
 
-This package is an adaptation of [`httptest`](https://enpiar.com/r/httptest/) to work with [`httr2`](https://httr2.r-lib.org/). Most features work exactly as they do in `httptest`; see the changelog for the initial release for a summary of what has changed.
+This package is an adaptation of [`httptest`](https://enpiar.com/r/httptest/) to work with [`httr2`](https://httr2.r-lib.org/). Most features work exactly as they do in `httptest`; see the NEWS.md for the initial release for a summary of what has changed.
 
 ## Installing
 

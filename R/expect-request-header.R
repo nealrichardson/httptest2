@@ -6,15 +6,7 @@
 #'
 #' @param expr Code to evaluate
 #' @param ... Named headers to match. Values should either be a string (length-1 character), which will be passed to [testthat::expect_match()], or `NULL` to assert that the named header is not present in the request. To assert that a header is merely present in the request, without asserting anything about its contents, provide an empty string (`""`). Header names are always case-insensitive; header values will be matched using the following parameters:
-#' @param fixed Should matching take the pattern as is or treat it as a regular
-#' expression. Default: `TRUE`, and note that this default is the opposite of
-#' the default in `expect_match()`.
-#' (The rest of the arguments follow its defaults.)
-#' @param ignore.case Should matching of header values be done case
-#' insensitively? Default: `FALSE`, meaning matches are case sensitive.
-#' @param perl Should Perl-compatible regular expressions be used? Default: `FALSE`
-#' @param useBytes Should matching be done byte-by-byte rather than
-#' character-by-character? Default: `FALSE`
+#' @inheritParams base::grepl
 #' @return The value of `expr` if there are no expectation failures
 #' @importFrom testthat expect_null expect_match
 #' @importFrom rlang is_string
@@ -37,7 +29,7 @@
 #' @export
 expect_request_header <- function(expr,
                                   ...,
-                                  fixed = !(ignore.case || perl),
+                                  fixed = FALSE,
                                   ignore.case = FALSE,
                                   perl = FALSE,
                                   useBytes = FALSE) {

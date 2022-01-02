@@ -7,7 +7,7 @@
 expect_request_header(
   expr,
   ...,
-  fixed = !(ignore.case || perl),
+  fixed = FALSE,
   ignore.case = FALSE,
   perl = FALSE,
   useBytes = FALSE
@@ -18,18 +18,17 @@ expect_request_header(
 
 \item{...}{Named headers to match. Values should either be a string (length-1 character), which will be passed to \code{\link[testthat:expect_match]{testthat::expect_match()}}, or \code{NULL} to assert that the named header is not present in the request. To assert that a header is merely present in the request, without asserting anything about its contents, provide an empty string (\code{""}). Header names are always case-insensitive; header values will be matched using the following parameters:}
 
-\item{fixed}{Should matching take the pattern as is or treat it as a regular
-expression. Default: \code{TRUE}, and note that this default is the opposite of
-the default in \code{expect_match()}.
-(The rest of the arguments follow its defaults.)}
+\item{fixed}{logical.  If \code{TRUE}, \code{pattern} is a string to be
+    matched as is.  Overrides all conflicting arguments.}
 
-\item{ignore.case}{Should matching of header values be done case
-insensitively? Default: \code{FALSE}, meaning matches are case sensitive.}
+\item{ignore.case}{if \code{FALSE}, the pattern matching is \emph{case
+      sensitive} and if \code{TRUE}, case is ignored during matching.}
 
-\item{perl}{Should Perl-compatible regular expressions be used? Default: \code{FALSE}}
+\item{perl}{logical.  Should Perl-compatible regexps be used?}
 
-\item{useBytes}{Should matching be done byte-by-byte rather than
-character-by-character? Default: \code{FALSE}}
+\item{useBytes}{logical.  If \code{TRUE} the matching is done
+    byte-by-byte rather than character-by-character.  See
+    \sQuote{Details}.}
 }
 \value{
 The value of \code{expr} if there are no expectation failures

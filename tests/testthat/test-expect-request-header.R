@@ -45,15 +45,15 @@ with_mock_api({
       request("api/object1/") %>%
         req_headers(Accept = "image/jpeg") %>%
         req_perform(),
-      accept = "image.*",
-      fixed = FALSE
+      accept = "image.*"
     )
     expect_failure(
       expect_request_header(
         request("api/object1/") %>%
           req_headers(Accept = "image/jpeg") %>%
           req_perform(),
-        accept = "image.*"
+        accept = "image.*",
+        fixed = TRUE
       )
     )
     expect_request_header(

@@ -106,7 +106,7 @@
 <li>
 <code>gsub_request()</code> and <code>set_requester()</code> (no longer necessary)</li>
 </ul><p>Changes to function signatures:</p>
-<ul><li>The <code>path</code> argument to <code><a href="../reference/capture_requests.html">capture_requests()</a></code> and <code><a href="../reference/capture_requests.html">start_capturing()</a></code> has been removed; instead set the mock path explicitly with <code><a href="../reference/mockPaths.html">.mockPaths()</a></code> or use <code>with_mock_path()</code>.</li>
+<ul><li>The <code>path</code> argument to <code><a href="../reference/capture_requests.html">capture_requests()</a></code> and <code><a href="../reference/capture_requests.html">start_capturing()</a></code> has been removed; instead set the mock path explicitly with <code><a href="../reference/mockPaths.html">.mockPaths()</a></code> or use <code><a href="../reference/with_mock_dir.html">with_mock_dir()</a></code>.</li>
 <li>Internal function <code><a href="../reference/save_response.html">save_response()</a></code> requires a <code>file</code> path argument because <code>httr2_response</code> objects do not contain their <code>request</code>, which is needed to construct the mock file path</li>
 <li>Internal function <code><a href="../reference/build_mock_url.html">build_mock_url()</a></code> no longer accepts a string URL as an input; it only accepts <code>request</code> objects</li>
 </ul></div>

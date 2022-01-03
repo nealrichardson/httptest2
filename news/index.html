@@ -88,8 +88,6 @@
 <li>Redacting functions are applied to both the <code>httr2_response</code> and <code>httr2_request</code> objects, the latter in order to be able to alter the URL/mock file path being written. You do not need separate “redactors” and “requesters”.</li>
 <li>
 <code>expect_header()</code> has been renamed to <code><a href="../reference/expect_request_header.html">expect_request_header()</a></code> and takes headers to match by argument name rather than a single string “Header: value”. This allows more flexibility in matching headers, plus the ability to match multiple headers. It also no longer uses <code><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning()</a></code> to extract the headers, so test failures are cleaner.</li>
-<li>
-<code>expect_json_equivalent()</code> has been renamed to <code><a href="../reference/expect_json_equal.html">expect_json_equal()</a></code> to match testthat 3.0’s convention.</li>
 <li>The failure message when an unexpected request is made is more clear and is distinguished from other “errors”. Expected mock file paths are more clearly shown when appropriate, and they are no longer included in the message itself that you would assert in <code><a href="../reference/expect_verb.html">expect_GET()</a></code>, <code><a href="../reference/expect_verb.html">expect_POST()</a></code>, et al.</li>
 <li>All <code><a href="https://rdrr.io/r/base/options.html" class="external-link">options()</a></code> have been renamed to match the package name (e.g. <code>options(httptest2.verbose)</code>)</li>
 <li>With <code>options(httptest2.verbose = TRUE)</code>, messages are printed in more places; messages about when a package redactor is called are now only printed if the option is set.</li>
@@ -99,6 +97,8 @@
 </li>
 <li><code>with_fake_http()</code></li>
 <li><code>public()</code></li>
+<li>
+<code>expect_json_equivalent()</code> (just use <code>testthat::expect_equal(list_as_map = TRUE)</code>)</li>
 <li>
 <code>skip_if_disconnected()</code> (just use <code><a href="https://testthat.r-lib.org/reference/skip.html" class="external-link">testthat::skip_if_offline()</a></code>)</li>
 <li>

@@ -43,9 +43,6 @@
     <loc>https://enpiar.com/httptest2/reference/change_state.html</loc>
   </url>
   <url>
-    <loc>https://enpiar.com/httptest2/reference/expect_json_equal.html</loc>
-  </url>
-  <url>
     <loc>https://enpiar.com/httptest2/reference/expect_request_header.html</loc>
   </url>
   <url>

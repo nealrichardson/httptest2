@@ -119,10 +119,8 @@ is made within one of the test contexts. They catch the error or message
 raised by the mocked HTTP service and check that the request URL and optional
 body match the expectation. <code><a href="expect_verb.html">expect_no_request()</a></code> is the inverse of those: it
 asserts that no error or message from a mocked HTTP service is raised.
-<code><a href="expect_request_header.html">expect_request_header()</a></code> asserts that an HTTP request, mocked or not, contains a
-request header. <code><a href="expect_json_equal.html">expect_json_equal()</a></code> checks that two R objects would
-generate equivalent JSON, taking into account how JSON objects are unordered
-whereas R named lists are ordered.</p>
+<code><a href="expect_request_header.html">expect_request_header()</a></code> asserts that an HTTP request, mocked or not,
+contains a request header.</p>
 <p>For an overview of testing with <code>httptest2</code>, see <code><a href="../articles/httptest2.html">vignette("httptest2")</a></code>.</p>
 <p>When recording requests, by default <code>httptest2</code> looks for and redacts the
 standard ways that auth credentials are passed in requests. This prevents you

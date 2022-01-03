@@ -47,7 +47,6 @@ reference:
   contents:
   - expect_verb
   - expect_request_header
-  - expect_json_equal
 - title: Vignettes
   contents:
   - start_vignette

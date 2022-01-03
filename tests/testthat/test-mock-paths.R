@@ -27,9 +27,10 @@ with_mock_api({
     obj <- request("api/object1/") %>%
       req_url_query(a = 1) %>%
       req_perform()
-    expect_json_equal(
+    expect_equal(
       resp_body_json(obj),
-      list(query = list(a = 1), mocked = "yes")
+      list(query = list(a = 1), mocked = "yes"),
+      list_as_map = TRUE
     )
   })
   test_that("There is no api/object2/ mock", {
@@ -41,9 +42,10 @@ with_mock_api({
     obj <- request("api/object1/") %>%
       req_url_query(a = 1) %>%
       req_perform()
-    expect_json_equal(
+    expect_equal(
       resp_body_json(obj),
-      list(query = list(a = 1), mocked = "twice")
+      list(query = list(a = 1), mocked = "twice"),
+      list_as_map = TRUE
     )
   })
   test_that("Now there is an api/object2/ mock", {
@@ -63,9 +65,10 @@ with_mock_api({
     obj <- request("api/object1/") %>%
       req_url_query(a = 1) %>%
       req_perform()
-    expect_json_equal(
+    expect_equal(
       resp_body_json(obj),
-      list(query = list(a = 1), mocked = "yes")
+      list(query = list(a = 1), mocked = "yes"),
+      list_as_map = TRUE
     )
     expect_GET(request("api/object2/") %>% req_perform())
   })

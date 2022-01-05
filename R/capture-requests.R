@@ -155,13 +155,16 @@ save_response <- function(response, file, simplify = TRUE) {
     if (is.raw(response$body) && ct %in% text_types && length(response$body)) {
       cont <- resp_body_string(response)
       response$body <- substitute(charToRaw(cont))
-    } else if (inherits(response$body, "httr_path")) {
+    } else if (inherits(response$body, c("httr2_path", "httr_path"))) {
       # Copy real file and substitute the response$content "path".
       downloaded_file <- paste0(dst_file, "-FILE")
       file.copy(response$body, downloaded_file)
       file <- paste0(file, "-FILE")
+      # As of httr2 0.1.1, the class is called httr_path, but future-proof in
+      # case of future standardization
+      # https://github.com/r-lib/httr2/issues/99
       response$body <- substitute(structure(find_mock_file(file),
-        class = "httr_path"
+        class = c("httr2_path", "httr_path")
       ))
     }
 

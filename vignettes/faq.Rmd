@@ -99,16 +99,16 @@ res <- with_mock_dir("my_mock_dir", {
     fn_to_be_mocked()
 })
 if (post_process) {
-    fname <- list.files ("my_mock_dir",
-                         full.names = TRUE,
-                         recursive = TRUE)
+    fname <- list.files("my_mock_dir",
+                        full.names = TRUE,
+                        recursive = TRUE)
     # insert code to select appropriate single response file
 
-    x <- xml2::read_html (fname)
-    nodes_all <- rvest::html_nodes (x, "td")
+    x <- xml2::read_html(fname)
+    nodes_all <- rvest::html_nodes(x, "td")
     # code to reduce to a small sample of all nodes, for example:
-    nodes_sample <- nodes_all [1:10]
-    writeLines (as.character (nodes_sample), fname)
+    nodes_sample <- nodes_all[1:10]
+    writeLines(as.character(nodes_sample), fname)
 }
 ```
 

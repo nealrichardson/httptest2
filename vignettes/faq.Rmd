@@ -88,3 +88,28 @@ app.crunch.io/
 │   └── users.json
 └── api.json
 ```
+
+## Some of my mock responses are huge. Can I make them smaller?
+
+Yes, you can. You should always check the sizes of mock response files, and reduce any overly large files to a minimal practical size necessary to pass tests. As long as mock responses contain the minimal expected data to pass tests, they can and should be reduced as much as possible. Although it is possible to manually edit files to remove unnecessary data, it is far better to write scripts as part of a test suite to "post process" response files to reduce their sizes. An easy workflow is to modify test files along the lines of the following example, which presumes the response to be a HTML file, with tests applied to the nodes of the HTML document.
+
+```r
+post_process <- !dir.exists("my_mock_dir")
+res <- with_mock_dir("my_mock_dir", {
+    fn_to_be_mocked()
+})
+if (post_process) {
+    fname <- list.files("my_mock_dir",
+                        full.names = TRUE,
+                        recursive = TRUE)
+    # insert code to select appropriate single response file
+
+    x <- xml2::read_html(fname)
+    nodes_all <- rvest::html_nodes(x, "td")
+    # code to reduce to a small sample of all nodes, for example:
+    nodes_sample <- nodes_all[1:10]
+    writeLines(as.character(nodes_sample), fname)
+}
+```
+
+Tests must pass both when initially generating the mock results, in which case the tests will be applied to the full response, and when using the mock responses, in which case the tests will be applied only to the post-processed sub-set of the full response. Tests need to be written to ensure that they pass in both cases.

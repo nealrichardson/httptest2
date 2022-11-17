@@ -76,7 +76,7 @@ start_capturing <- function(simplify = TRUE) {
   req_tracer <- substitute(
     {
       # Get the value returned from the function, and sanitize it
-      redactor <- get_current_redactor()
+      redactor <- httptest2::get_current_redactor()
       if (exists("mock_resp") && !is.null(mock_resp)) {
         # We're mocking and returning early
         resp <- mock_resp
@@ -90,9 +90,9 @@ start_capturing <- function(simplify = TRUE) {
           call. = FALSE
         )
       } else {
-        save_response(
+        httptest2::save_response(
           redactor(resp),
-          file = build_mock_url(redactor(req)),
+          file = httptest2:::build_mock_url(redactor(req)),
           simplify = simplify
         )
       }

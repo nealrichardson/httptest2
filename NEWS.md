@@ -1,4 +1,4 @@
-# httptest2 0.0.0.9000
+# httptest2 0.1.0
 
 Initial port of `httptest` to work on top of `httr2`. All APIs preserved except:
 

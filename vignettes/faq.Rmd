@@ -42,7 +42,7 @@ You may also be able to economize on other parts of the file paths. If you've re
 
 Finally, if you have your tests inside a `tests/testthat/` directory, and your fixture files inside that, you can save 9 characters by moving the fixtures up to `tests/` and setting `.mockPaths("../")`.
 
-# Why are mocks stored as text files?
+## Why are mocks stored as text files?
 
 Plain-text files have several nice features, particularly relative to storing serialized (binary) R objects. You can more easily confirm that your mocks look correct, and you can more easily maintain them without having to re-record them. When you do edit them, text files are more easily handled by version-control systems like Git. Plain-text files can also have comments, so you can make notes as to why a certain fixture exists, what a particular value means, and so on, which will help the users of your package—and your future self!
 

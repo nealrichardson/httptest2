@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">httptest2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9000</span>
       </span>
     </div>
 
@@ -82,7 +82,10 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.0.0.9000" id="httptest2-0009000">httptest2 0.0.0.9000<a class="anchor" aria-label="anchor" href="#httptest2-0009000"></a></h2>
+<h2 class="page-header" data-toc-text="0.1.0.9000" id="httptest2-0109000">httptest2 0.1.0.9000<a class="anchor" aria-label="anchor" href="#httptest2-0109000"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.1.0" id="httptest2-010">httptest2 0.1.0<small>2022-01-10</small><a class="anchor" aria-label="anchor" href="#httptest2-010"></a></h2>
 <p>Initial port of <code>httptest</code> to work on top of <code>httr2</code>. All APIs preserved except:</p>
 <ul><li>Mock file hashes and error messages for requests with multipart forms or file uploads have changed. Aside from this, all mock files and file paths recorded by <code>httptest</code> using <code>httr</code> will work with <code>httptest2</code> and return valid <code>httr2_response</code> objects when loaded.</li>
 <li>Redacting functions are applied to both the <code>httr2_response</code> and <code>httr2_request</code> objects, the latter in order to be able to alter the URL/mock file path being written. You do not need separate “redactors” and “requesters”.</li>

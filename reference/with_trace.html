@@ -35,7 +35,7 @@
   <a href="../reference/">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -87,33 +87,46 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">with_trace</span><span class="op">(</span>
-  <span class="va">x</span>,
-  where <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-topenv.html" class="external-link">topenv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
-  print <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"httptest2.debug.trace"</span>, <span class="cn">FALSE</span><span class="op">)</span>,
-  <span class="va">...</span>,
-  <span class="va">expr</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">with_trace</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  where <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-topenv.html" class="external-link">topenv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  print <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"httptest2.debug.trace"</span>, <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  <span class="va">expr</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>Name of function to trace. See <code><a href="https://rdrr.io/r/base/trace.html" class="external-link">base::trace()</a></code>.</p></dd>
+
+
 <dt>where</dt>
 <dd><p>where to look for the function to be traced.</p></dd>
+
+
 <dt>print</dt>
 <dd><p>Logical: print a message every time the traced function is hit?
 Default is <code>FALSE</code>; note that in <code>trace</code>, the default is <code>TRUE</code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Additional arguments to pass to <code>trace</code>. At minimum, must include
 either <code>tracer</code> or <code>exit</code>.</p></dd>
+
+
 <dt>expr</dt>
 <dd><p>Code to run inside the context</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>The result of <code>expr</code></p>
+    
+
+<p>The result of <code>expr</code></p>
+
+
     </div>
 
   </div>
@@ -128,7 +141,7 @@ either <code>tracer</code> or <code>exit</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

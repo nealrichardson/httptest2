@@ -53,7 +53,7 @@
   <a href="../reference/">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -103,7 +103,8 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>httptest: A Test Environment for HTTP Requests in R</h1>
+      <h1 data-toc-skip>httptest: A Test Environment for HTTP Requests
+in R</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/nealrichardson/httptest2/blob/HEAD/vignettes/httptest2.Rmd" class="external-link"><code>vignettes/httptest2.Rmd</code></a></small>
@@ -113,86 +114,138 @@
 
     
     
-<p>Testing code and packages that communicate with remote servers can be painful. Dealing with authentication, bootstrapping server state, cleaning up objects that may get created during the test run, network flakiness, and other complications can make testing seem too costly to bother with. But it doesn’t need to be that hard. The <code>httptest2</code> package lets you test R code that constructs API requests and handles their responses, all without requiring access to the remote service during the test run. This makes tests easy to write and fast to run.</p>
-<p>This vignette covers some of the core features of the <code>httptest2</code> package, focusing on how to mock HTTP responses, how to make other assertions about requests, and how to record real requests for future use as mocks. Note that <code>httptest2</code> requires the <code>testthat</code> package, and it follows the testing conventions and interfaces defined there, extending them with some additional wrappers and expectations. If you’re not familiar with <code>testthat</code>, see the <a href="https://r-pkgs.org/tests.html" class="external-link">“Testing” chapter</a> chapter of Hadley Wickham’s <em>R Packages</em> book.</p>
-<p><code>httptest2</code> is designed for use with packages that rely on the <a href="https://httr2.r-lib.org/" class="external-link"><code>httr2</code></a> requests library—it is a bridge between <code>httr2</code> and <code>testthat</code>. If you’re using <a href="https://httr.r-lib.org/" class="external-link"><code>httr</code></a>, use <a href="https://enpiar.com/r/httptest/" class="external-link"><code>httptest</code></a>, on which this package is based.</p>
+<p>Testing code and packages that communicate with remote servers can be
+painful. Dealing with authentication, bootstrapping server state,
+cleaning up objects that may get created during the test run, network
+flakiness, and other complications can make testing seem too costly to
+bother with. But it doesn’t need to be that hard. The
+<code>httptest2</code> package lets you test R code that constructs API
+requests and handles their responses, all without requiring access to
+the remote service during the test run. This makes tests easy to write
+and fast to run.</p>
+<p>This vignette covers some of the core features of the
+<code>httptest2</code> package, focusing on how to mock HTTP responses,
+how to make other assertions about requests, and how to record real
+requests for future use as mocks. Note that <code>httptest2</code>
+requires the <code>testthat</code> package, and it follows the testing
+conventions and interfaces defined there, extending them with some
+additional wrappers and expectations. If you’re not familiar with
+<code>testthat</code>, see the <a href="https://r-pkgs.org/tests.html" class="external-link">“Testing” chapter</a> chapter of
+Hadley Wickham’s <em>R Packages</em> book.</p>
+<p><code>httptest2</code> is designed for use with packages that rely on
+the <a href="https://httr2.r-lib.org/" class="external-link"><code>httr2</code></a> requests
+library—it is a bridge between <code>httr2</code> and
+<code>testthat</code>. If you’re using <a href="https://httr.r-lib.org/" class="external-link"><code>httr</code></a>, use <a href="https://enpiar.com/r/httptest/" class="external-link"><code>httptest</code></a>, on
+which this package is based.</p>
 <div class="section level2">
 <h2 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
-<p>First, we need to add <code>httptest2</code> to our package test suite. Once you’ve configured your package to use <code>testthat</code> (<code>usethis::use_testthat()</code> is one way), run <code><a href="../reference/use_httptest2.html">httptest2::use_httptest2()</a></code>. This adds <code>httptest2</code> to your package <code>DESCRIPTION</code> and makes sure it is loaded in your test setup code.</p>
-<p><code>httptest2</code> provides several contexts, which are “with”-style functions that you wrap around other code you want to execute.</p>
+<p>First, we need to add <code>httptest2</code> to our package test
+suite. Once you’ve configured your package to use <code>testthat</code>
+(<code>usethis::use_testthat()</code> is one way), run
+<code><a href="../reference/use_httptest2.html">httptest2::use_httptest2()</a></code>. This adds
+<code>httptest2</code> to your package <code>DESCRIPTION</code> and
+makes sure it is loaded in your test setup code.</p>
+<p><code>httptest2</code> provides several contexts, which are
+“with”-style functions that you wrap around other code you want to
+execute.</p>
 <ul>
 <li>
-<code><a href="../reference/without_internet.html">without_internet()</a></code>: any <code>httr2</code> request performed will raise an informative error</li>
+<code><a href="../reference/without_internet.html">without_internet()</a></code>: any <code>httr2</code> request
+performed will raise an informative error</li>
 <li>
-<code><a href="../reference/with_mock_api.html">with_mock_api()</a></code>: requests will look for an associated mock file to return instead of making a real request; if none found, it will raise an informative error</li>
+<code><a href="../reference/with_mock_api.html">with_mock_api()</a></code>: requests will look for an associated
+mock file to return instead of making a real request; if none found, it
+will raise an informative error</li>
 <li>
-<code><a href="../reference/capture_requests.html">capture_requests()</a></code>: real requests will be saved to mock files so that <code><a href="../reference/with_mock_api.html">with_mock_api()</a></code> can load them</li>
+<code><a href="../reference/capture_requests.html">capture_requests()</a></code>: real requests will be saved to mock
+files so that <code><a href="../reference/with_mock_api.html">with_mock_api()</a></code> can load them</li>
 <li>
-<code><a href="../reference/with_mock_dir.html">with_mock_dir()</a></code>: wrapper around <code><a href="../reference/capture_requests.html">capture_requests()</a></code> and <code><a href="../reference/with_mock_api.html">with_mock_api()</a></code>, switching between them based on the existence of the given directory. If it exists, <code><a href="../reference/with_mock_api.html">with_mock_api()</a></code> will use it; if not, real requests will be made and responses will be recorded into it so that subsequent runs will use them as mocks. To re-record real responses, delete the directory.</li>
+<code><a href="../reference/with_mock_dir.html">with_mock_dir()</a></code>: wrapper around
+<code><a href="../reference/capture_requests.html">capture_requests()</a></code> and <code><a href="../reference/with_mock_api.html">with_mock_api()</a></code>,
+switching between them based on the existence of the given directory. If
+it exists, <code><a href="../reference/with_mock_api.html">with_mock_api()</a></code> will use it; if not, real
+requests will be made and responses will be recorded into it so that
+subsequent runs will use them as mocks. To re-record real responses,
+delete the directory.</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="basic-tests-from-a-live-server">Basic tests from a live server<a class="anchor" aria-label="anchor" href="#basic-tests-from-a-live-server"></a>
 </h2>
-<p>A good place to start is with a small number of end-to-end tests: things that you can run against the real API to confirm that the whole workflow functions correctly. To do this, we’ll use the <code><a href="../reference/with_mock_dir.html">with_mock_dir()</a></code> context.</p>
-<p>Let’s suppose we’re making a package from the first example from the <code>httr2</code> vignette on <a href="https://httr2.r-lib.org/articles/wrapping-apis.html" class="external-link">wrapping APIs</a>, which wraps the <a href="https://fakerapi.it/en" class="external-link">faker API</a>:</p>
+<p>A good place to start is with a small number of end-to-end tests:
+things that you can run against the real API to confirm that the whole
+workflow functions correctly. To do this, we’ll use the
+<code><a href="../reference/with_mock_dir.html">with_mock_dir()</a></code> context.</p>
+<p>Let’s suppose we’re making a package from the first example from the
+<code>httr2</code> vignette on <a href="https://httr2.r-lib.org/articles/wrapping-apis.html" class="external-link">wrapping
+APIs</a>, which wraps the <a href="https://fakerapi.it/en" class="external-link">faker
+API</a>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">faker_person</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">gender</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">birthday_start</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">birthday_end</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">quantity</span> <span class="op">=</span> <span class="fl">1</span>, <span class="va">locale</span> <span class="op">=</span> <span class="st">"en_US"</span>, <span class="va">seed</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu">faker</span><span class="op">(</span>
-    <span class="st">"persons"</span>,
-    gender <span class="op">=</span> <span class="va">gender</span>,
-    birthday_start <span class="op">=</span> <span class="va">birthday_start</span>,
-    birthday_end <span class="op">=</span> <span class="va">birthday_end</span>,
-    quantity <span class="op">=</span> <span class="va">quantity</span>,
-    locale <span class="op">=</span> <span class="va">locale</span>,
-    seed <span class="op">=</span> <span class="va">seed</span>
-  <span class="op">)</span>
-<span class="op">}</span>
-
-<span class="va">faker</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">resource</span>, <span class="va">...</span>, <span class="va">quantity</span> <span class="op">=</span> <span class="fl">1</span>, <span class="va">locale</span> <span class="op">=</span> <span class="st">"en_US"</span>, <span class="va">seed</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-    <span class="va">...</span>,
-    quantity <span class="op">=</span> <span class="va">quantity</span>,
-    locale <span class="op">=</span> <span class="va">locale</span>,
-    seed <span class="op">=</span> <span class="va">seed</span>
-  <span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">)</span>
-
-  <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"https://fakerapi.it/api/v1"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_url.html" class="external-link">req_url_path_append</a></span><span class="op">(</span><span class="va">resource</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_url.html" class="external-link">req_url_query</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="va">params</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_user_agent.html" class="external-link">req_user_agent</a></span><span class="op">(</span><span class="st">"my_package_name (http://my.package.web.site)"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://httr2.r-lib.org/reference/resp_body_raw.html" class="external-link">resp_body_json</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
-<p>We could add a test file at <code>tests/testthat/test-person.R</code> in our package and put this test in it:</p>
+<code class="sourceCode R"><span><span class="va">faker_person</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">gender</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">birthday_start</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">birthday_end</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">quantity</span> <span class="op">=</span> <span class="fl">1</span>, <span class="va">locale</span> <span class="op">=</span> <span class="st">"en_US"</span>, <span class="va">seed</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">faker</span><span class="op">(</span></span>
+<span>    <span class="st">"persons"</span>,</span>
+<span>    gender <span class="op">=</span> <span class="va">gender</span>,</span>
+<span>    birthday_start <span class="op">=</span> <span class="va">birthday_start</span>,</span>
+<span>    birthday_end <span class="op">=</span> <span class="va">birthday_end</span>,</span>
+<span>    quantity <span class="op">=</span> <span class="va">quantity</span>,</span>
+<span>    locale <span class="op">=</span> <span class="va">locale</span>,</span>
+<span>    seed <span class="op">=</span> <span class="va">seed</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">faker</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">resource</span>, <span class="va">...</span>, <span class="va">quantity</span> <span class="op">=</span> <span class="fl">1</span>, <span class="va">locale</span> <span class="op">=</span> <span class="st">"en_US"</span>, <span class="va">seed</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="va">...</span>,</span>
+<span>    quantity <span class="op">=</span> <span class="va">quantity</span>,</span>
+<span>    locale <span class="op">=</span> <span class="va">locale</span>,</span>
+<span>    seed <span class="op">=</span> <span class="va">seed</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"https://fakerapi.it/api/v1"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_url.html" class="external-link">req_url_path_append</a></span><span class="op">(</span><span class="va">resource</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_url.html" class="external-link">req_url_query</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="va">params</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_user_agent.html" class="external-link">req_user_agent</a></span><span class="op">(</span><span class="st">"my_package_name (http://my.package.web.site)"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/resp_body_raw.html" class="external-link">resp_body_json</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>We could add a test file at <code>tests/testthat/test-person.R</code>
+in our package and put this test in it:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"We can get people"</span>, <span class="op">{</span>
-  <span class="fu"><a href="https://testthat.r-lib.org/reference/expect_length.html" class="external-link">expect_length</a></span><span class="op">(</span><span class="fu">faker_person</span><span class="op">(</span><span class="st">"female"</span>, quantity <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span></code></pre></div>
-<p>If we run that test, it will make a live API call and return a response containing 2 fake people. Every time we run it, it will make an API request, and if there is no network connection, or the API happens to be down, the test will fail.</p>
-<p>Instead, let’s wrap this test in <code><a href="../reference/with_mock_dir.html">with_mock_dir()</a></code> so that we can record that response the first time we run it and then load it as a mock every time after.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"We can get people"</span>, <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/expect_length.html" class="external-link">expect_length</a></span><span class="op">(</span><span class="fu">faker_person</span><span class="op">(</span><span class="st">"female"</span>, quantity <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<p>If we run that test, it will make a live API call and return a
+response containing 2 fake people. Every time we run it, it will make an
+API request, and if there is no network connection, or the API happens
+to be down, the test will fail.</p>
+<p>Instead, let’s wrap this test in <code><a href="../reference/with_mock_dir.html">with_mock_dir()</a></code> so that
+we can record that response the first time we run it and then load it as
+a mock every time after.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/with_mock_dir.html">with_mock_dir</a></span><span class="op">(</span><span class="st">"person"</span>, <span class="op">{</span>
-  <span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"We can get people"</span>, <span class="op">{</span>
-    <span class="fu"><a href="https://testthat.r-lib.org/reference/expect_length.html" class="external-link">expect_length</a></span><span class="op">(</span><span class="fu">faker_person</span><span class="op">(</span><span class="st">"female"</span>, quantity <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>
-  <span class="op">}</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span></code></pre></div>
-<p>To illustrate how that works, let’s run that again outside of the test and with some verbose messages turned on.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/with_mock_dir.html">with_mock_dir</a></span><span class="op">(</span><span class="st">"person"</span>, <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"We can get people"</span>, <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://testthat.r-lib.org/reference/expect_length.html" class="external-link">expect_length</a></span><span class="op">(</span><span class="fu">faker_person</span><span class="op">(</span><span class="st">"female"</span>, quantity <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<p>To illustrate how that works, let’s run that again outside of the
+test and with some verbose messages turned on.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>httptest2.verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/with_mock_dir.html">with_mock_dir</a></span><span class="op">(</span><span class="st">"person"</span>, <span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">peeps</span> <span class="op">&lt;-</span> <span class="fu">faker_person</span><span class="op">(</span><span class="st">"female"</span>, quantity <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span>
-
-<span class="co">## Recording responses to tests/testthat/person</span>
-<span class="co">## Writing /Users/you/fakerpkg/tests/testthat/person/fakerapi.it/api/v1/persons-fdcc43.json</span>
-<span class="co">##    user  system elapsed</span>
-<span class="co">##   0.022   0.003   0.611</span></code></pre></div>
-<p>Because <code>tests/testthat/person</code> does not exist, it makes a real request, which takes around 600 milliseconds. And now if we look at the file system, we see a new file</p>
-<pre><code><span class="va">tests</span><span class="op">/</span><span class="va">testthat</span><span class="op">/</span><span class="va">person</span><span class="op">/</span><span class="va">fakerapi.it</span><span class="op">/</span><span class="va">api</span><span class="op">/</span><span class="va">v1</span><span class="op">/</span><span class="va">persons</span><span class="op">-</span><span class="va">fdcc43.json</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>httptest2.verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/with_mock_dir.html">with_mock_dir</a></span><span class="op">(</span><span class="st">"person"</span>, <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">peeps</span> <span class="op">&lt;-</span> <span class="fu">faker_person</span><span class="op">(</span><span class="st">"female"</span>, quantity <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Recording responses to tests/testthat/person</span></span>
+<span><span class="co">## Writing /Users/you/fakerpkg/tests/testthat/person/fakerapi.it/api/v1/persons-fdcc43.json</span></span>
+<span><span class="co">##    user  system elapsed</span></span>
+<span><span class="co">##   0.022   0.003   0.611</span></span></code></pre></div>
+<p>Because <code>tests/testthat/person</code> does not exist, it makes a
+real request, which takes around 600 milliseconds. And now if we look at
+the file system, we see a new file</p>
+<pre><code><span><span class="va">tests</span><span class="op">/</span><span class="va">testthat</span><span class="op">/</span><span class="va">person</span><span class="op">/</span><span class="va">fakerapi.it</span><span class="op">/</span><span class="va">api</span><span class="op">/</span><span class="va">v1</span><span class="op">/</span><span class="va">persons</span><span class="op">-</span><span class="va">fdcc43.json</span></span></code></pre>
 <p>which contains the JSON response body from our request:</p>
 <pre><code>{
     "status": "OK",
@@ -211,162 +264,251 @@
         ...
     ]
 }</code></pre>
-<p>Note how the file path matches the request URL. Requests are translated to mock file paths according to several rules that incorporate the request method, URL, query parameters, and body. First, the request protocol is removed from the URL. Second, if the request URL contains a query string, it will be popped off, hashed by <code><a href="https://rdrr.io/pkg/digest/man/digest.html" class="external-link">digest::digest()</a></code>, and the first six characters appended to the file being read. Third, request bodies are similarly hashed and appended. Finally, if a request method other than GET is used it will be appended to the end of the end of the file name.</p>
-<p>If you want to know what request was made, you can run the code inside <code><a href="../reference/without_internet.html">without_internet()</a></code>, and the error message will tell you:</p>
+<p>Note how the file path matches the request URL. Requests are
+translated to mock file paths according to several rules that
+incorporate the request method, URL, query parameters, and body. First,
+the request protocol is removed from the URL. Second, if the request URL
+contains a query string, it will be popped off, hashed by
+<code><a href="https://rdrr.io/pkg/digest/man/digest.html" class="external-link">digest::digest()</a></code>, and the first six characters appended to
+the file being read. Third, request bodies are similarly hashed and
+appended. Finally, if a request method other than GET is used it will be
+appended to the end of the end of the file name.</p>
+<p>If you want to know what request was made, you can run the code
+inside <code><a href="../reference/without_internet.html">without_internet()</a></code>, and the error message will tell
+you:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/without_internet.html">without_internet</a></span><span class="op">(</span><span class="op">{</span>
-  <span class="fu">faker_person</span><span class="op">(</span><span class="st">"female"</span>, quantity <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span>
-
-<span class="co">## Error: An unexpected request was made:</span>
-<span class="co">## GET https://fakerapi.it/api/v1/persons?_gender=female&amp;_quantity=2&amp;_locale=en_US</span>
-<span class="co">## Run `rlang::last_error()` to see where the error occurred.</span></code></pre></div>
-<p>Back to <code><a href="../reference/with_mock_dir.html">with_mock_dir()</a></code>: the next time we run the same code, we’ll see that it loads the mock file.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/without_internet.html">without_internet</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="fu">faker_person</span><span class="op">(</span><span class="st">"female"</span>, quantity <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Error: An unexpected request was made:</span></span>
+<span><span class="co">## GET https://fakerapi.it/api/v1/persons?_gender=female&amp;_quantity=2&amp;_locale=en_US</span></span>
+<span><span class="co">## Run `rlang::last_error()` to see where the error occurred.</span></span></code></pre></div>
+<p>Back to <code><a href="../reference/with_mock_dir.html">with_mock_dir()</a></code>: the next time we run the same
+code, we’ll see that it loads the mock file.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/with_mock_dir.html">with_mock_dir</a></span><span class="op">(</span><span class="st">"person"</span>, <span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">peeps2</span> <span class="op">&lt;-</span> <span class="fu">faker_person</span><span class="op">(</span><span class="st">"female"</span>, quantity <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span>
-
-<span class="co">## Using mocks found in tests/testthat/person</span>
-<span class="co">## Reading /Users/you/fakerpkg/tests/testthat/person/fakerapi.it/api/v1/persons-fdcc43.json</span>
-<span class="co">##    user  system elapsed</span>
-<span class="co">##   0.011   0.000   0.011</span></code></pre></div>
-<p>Because the <code>person</code> directory exists now, <code><a href="../reference/with_mock_dir.html">with_mock_dir()</a></code> uses the previously recorded mocks, matches our exact query with the one we did before, and returns it instantly, without making a network connection. We can see that it is using the previously recorded response because the result is identical—with the faker API, you get different data back for every request.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/with_mock_dir.html">with_mock_dir</a></span><span class="op">(</span><span class="st">"person"</span>, <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">peeps2</span> <span class="op">&lt;-</span> <span class="fu">faker_person</span><span class="op">(</span><span class="st">"female"</span>, quantity <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Using mocks found in tests/testthat/person</span></span>
+<span><span class="co">## Reading /Users/you/fakerpkg/tests/testthat/person/fakerapi.it/api/v1/persons-fdcc43.json</span></span>
+<span><span class="co">##    user  system elapsed</span></span>
+<span><span class="co">##   0.011   0.000   0.011</span></span></code></pre></div>
+<p>Because the <code>person</code> directory exists now,
+<code><a href="../reference/with_mock_dir.html">with_mock_dir()</a></code> uses the previously recorded mocks, matches
+our exact query with the one we did before, and returns it instantly,
+without making a network connection. We can see that it is using the
+previously recorded response because the result is identical—with the
+faker API, you get different data back for every request.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">peeps</span>, <span class="va">peeps2</span><span class="op">)</span>
-
-<span class="co">## [1] TRUE</span></code></pre></div>
-<p>Note that none of the test code inside <code><a href="../reference/with_mock_dir.html">with_mock_dir()</a></code> looks any different from how you’d write it if you were testing against a live server using just <code>testthat</code>. The goal is to make your tests just as natural to write as if you were using your package normally.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">peeps</span>, <span class="va">peeps2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## [1] TRUE</span></span></code></pre></div>
+<p>Note that none of the test code inside <code><a href="../reference/with_mock_dir.html">with_mock_dir()</a></code>
+looks any different from how you’d write it if you were testing against
+a live server using just <code>testthat</code>. The goal is to make your
+tests just as natural to write as if you were using your package
+normally.</p>
 <blockquote>
-<p>Do your recorded responses contain sensitive information? Are they unnecessarily large? See <code><a href="../articles/redacting.html">vignette("redacting", package = "httptest2")</a></code> for how to trim and sanitize recorded mocks.</p>
+<p>Do your recorded responses contain sensitive information? Are they
+unnecessarily large? See
+<code><a href="../articles/redacting.html">vignette("redacting", package = "httptest2")</a></code> for how to
+trim and sanitize recorded mocks.</p>
 </blockquote>
 </div>
 <div class="section level2">
 <h2 id="going-deeper">Going deeper<a class="anchor" aria-label="anchor" href="#going-deeper"></a>
 </h2>
-<p><code><a href="../reference/with_mock_dir.html">with_mock_dir()</a></code> is convenient to use, but you probably don’t want all of your tests to be based on real requests. Among the reasons:</p>
+<p><code><a href="../reference/with_mock_dir.html">with_mock_dir()</a></code> is convenient to use, but you probably
+don’t want all of your tests to be based on real requests. Among the
+reasons:</p>
 <ul>
-<li>Some API responses contain way more content than is necessary to test your R code around them: 100 records when 2 will suffice, include metadata that you don’t care about and can’t meaningfully assert things about, and so on. In the interest of minimally reproducible examples, and of making tests readable, it often makes sense to take an actual API response and delete a lot of its content, or even to fabricate one entirely.</li>
-<li>It’s good to keep an API mock fixed so you know exactly what is in it. If you re-recorded a Twitter API response of, say, the most recent 10 tweets with <code>#rstats</code>, the specific content will change every time you record it, so your tests can’t say much about what is in the response without having to rewrite them every time too.</li>
-<li>Some conditions (rate limiting, server errors, etc.) are difficult to test with real responses, but if you can manually create a API mock with, say, a 503 response status code and test how your code handles it, you can have confidence of how your package will respond when that rare event happens with the real API.</li>
-<li>Re-recording all responses can make for a huge code diff, which can blow up your repository size and make code review harder.</li>
+<li>Some API responses contain way more content than is necessary to
+test your R code around them: 100 records when 2 will suffice, include
+metadata that you don’t care about and can’t meaningfully assert things
+about, and so on. In the interest of minimally reproducible examples,
+and of making tests readable, it often makes sense to take an actual API
+response and delete a lot of its content, or even to fabricate one
+entirely.</li>
+<li>It’s good to keep an API mock fixed so you know exactly what is in
+it. If you re-recorded a Twitter API response of, say, the most recent
+10 tweets with <code>#rstats</code>, the specific content will change
+every time you record it, so your tests can’t say much about what is in
+the response without having to rewrite them every time too.</li>
+<li>Some conditions (rate limiting, server errors, etc.) are difficult
+to test with real responses, but if you can manually create a API mock
+with, say, a 503 response status code and test how your code handles it,
+you can have confidence of how your package will respond when that rare
+event happens with the real API.</li>
+<li>Re-recording all responses can make for a huge code diff, which can
+blow up your repository size and make code review harder.</li>
 </ul>
-<p>Moreover, we generally don’t need to test what the server does with our requests. We’re responsible for testing the R code on either side: (1) given some inputs, does my code make the correct HTTP request(s); and (2) does my code correctly handle the types of responses that the server can return? We often don’t need to make real requests to test that.</p>
-<p>Sometimes it is more clear what you’re testing if you focus only on the requests. One case is when the response itself isn’t that interesting or doesn’t tell you that the request did the correct thing. For example, if you’re testing a POST request that alters the state of something on the server and returns 204 No Content status on success, nothing in the response itself (which would be stored in the mock file) tells you that the request you made was shaped correctly—the response has no content. A more transparent, readable test would just assert that the POST request was made to the right URL and had the expected request body.</p>
-<p>Another case where you might want to focus just on the request, without recording real API responses, is when you don’t actually want to make the requests. Perhaps you’re testing a function that would call <code>DELETE</code> on some resource. Or, to make it concrete, suppose you were testing a function that sends a tweet: you probably don’t want to send a real test tweet out into the world.</p>
-<p>Here’s a function that would send a tweet using the Twitter API. Consulting the <a href="https://developer.twitter.com/en/docs/twitter-api/tweets/manage-tweets/api-reference/post-tweets" class="external-link">API docs</a>, it looks like this is the request we’d make:</p>
+<p>Moreover, we generally don’t need to test what the server does with
+our requests. We’re responsible for testing the R code on either side:
+(1) given some inputs, does my code make the correct HTTP request(s);
+and (2) does my code correctly handle the types of responses that the
+server can return? We often don’t need to make real requests to test
+that.</p>
+<p>Sometimes it is more clear what you’re testing if you focus only on
+the requests. One case is when the response itself isn’t that
+interesting or doesn’t tell you that the request did the correct thing.
+For example, if you’re testing a POST request that alters the state of
+something on the server and returns 204 No Content status on success,
+nothing in the response itself (which would be stored in the mock file)
+tells you that the request you made was shaped correctly—the response
+has no content. A more transparent, readable test would just assert that
+the POST request was made to the right URL and had the expected request
+body.</p>
+<p>Another case where you might want to focus just on the request,
+without recording real API responses, is when you don’t actually want to
+make the requests. Perhaps you’re testing a function that would call
+<code>DELETE</code> on some resource. Or, to make it concrete, suppose
+you were testing a function that sends a tweet: you probably don’t want
+to send a real test tweet out into the world.</p>
+<p>Here’s a function that would send a tweet using the Twitter API.
+Consulting the <a href="https://developer.twitter.com/en/docs/twitter-api/tweets/manage-tweets/api-reference/post-tweets" class="external-link">API
+docs</a>, it looks like this is the request we’d make:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">send_tweet</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">text</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"https://api.twitter.com/2/tweets"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_method.html" class="external-link">req_method</a></span><span class="op">(</span><span class="st">"POST"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_body.html" class="external-link">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">text</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span>
-
-  <span class="fu"><a href="https://httr2.r-lib.org/reference/resp_body_raw.html" class="external-link">resp_body_json</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span><span class="op">$</span><span class="va">data</span>
-<span class="op">}</span></code></pre></div>
-<p>Of course, this is overly simplified. According to the docs, there are lots more arguments you would want to add, and also your real function would need to apply your OAuth token. If you were really writing this function (or broader package), you’d solve that. For the purposes of illustration here, let’s assume that’s taken care of.</p>
-<p>How do we test this without making a real request? First, let’s run the function inside <code><a href="../reference/without_internet.html">without_internet()</a></code> so we can see what request it makes:</p>
+<code class="sourceCode R"><span><span class="va">send_tweet</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">text</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"https://api.twitter.com/2/tweets"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_method.html" class="external-link">req_method</a></span><span class="op">(</span><span class="st">"POST"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_body.html" class="external-link">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">text</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://httr2.r-lib.org/reference/resp_body_raw.html" class="external-link">resp_body_json</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>Of course, this is overly simplified. According to the docs, there
+are lots more arguments you would want to add, and also your real
+function would need to apply your OAuth token. If you were really
+writing this function (or broader package), you’d solve that. For the
+purposes of illustration here, let’s assume that’s taken care of.</p>
+<p>How do we test this without making a real request? First, let’s run
+the function inside <code><a href="../reference/without_internet.html">without_internet()</a></code> so we can see what
+request it makes:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/without_internet.html">without_internet</a></span><span class="op">(</span><span class="op">{</span>
-  <span class="fu">send_tweet</span><span class="op">(</span><span class="st">"Hello world!"</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span>
-
-<span class="co">## Error: An unexpected request was made:</span>
-<span class="co">## POST https://api.twitter.com/2/tweets {"text":"Hello world!"}</span>
-<span class="co">## Run `rlang::last_error()` to see where the error occurred.</span></code></pre></div>
-<p>That looks right according to the API documentation. We can now turn this into a test that asserts we’re making the correct request, using <code><a href="../reference/expect_verb.html">expect_POST()</a></code>.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/without_internet.html">without_internet</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="fu">send_tweet</span><span class="op">(</span><span class="st">"Hello world!"</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Error: An unexpected request was made:</span></span>
+<span><span class="co">## POST https://api.twitter.com/2/tweets {"text":"Hello world!"}</span></span>
+<span><span class="co">## Run `rlang::last_error()` to see where the error occurred.</span></span></code></pre></div>
+<p>That looks right according to the API documentation. We can now turn
+this into a test that asserts we’re making the correct request, using
+<code><a href="../reference/expect_verb.html">expect_POST()</a></code>.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/without_internet.html">without_internet</a></span><span class="op">(</span><span class="op">{</span>
-  <span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"We can send a tweet"</span>, <span class="op">{</span>
-    <span class="fu"><a href="../reference/expect_verb.html">expect_POST</a></span><span class="op">(</span>
-      <span class="fu">send_tweet</span><span class="op">(</span><span class="st">"Hello world!"</span><span class="op">)</span>,
-      <span class="st">'https://api.twitter.com/2/tweets'</span>,
-      <span class="st">'{"text":"Hello world!"}'</span>
-    <span class="op">)</span>
-  <span class="op">}</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span>
-
-<span class="co">## Test passed 🌈</span></code></pre></div>
-<p><code><a href="../reference/expect_verb.html">expect_POST()</a></code> (and the other <code>expect_VERB</code> functions) look for the request method, URL, and body, just as they are printed in the error message if the request is not caught by <code><a href="../reference/expect_verb.html">expect_POST()</a></code>.</p>
-<p>If the test fails because the request that is made doesn’t match what we expected, it looks like this:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/without_internet.html">without_internet</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"We can send a tweet"</span>, <span class="op">{</span></span>
+<span>    <span class="fu"><a href="../reference/expect_verb.html">expect_POST</a></span><span class="op">(</span></span>
+<span>      <span class="fu">send_tweet</span><span class="op">(</span><span class="st">"Hello world!"</span><span class="op">)</span>,</span>
+<span>      <span class="st">'https://api.twitter.com/2/tweets'</span>,</span>
+<span>      <span class="st">'{"text":"Hello world!"}'</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Test passed 🌈</span></span></code></pre></div>
+<p><code><a href="../reference/expect_verb.html">expect_POST()</a></code> (and the other <code>expect_VERB</code>
+functions) look for the request method, URL, and body, just as they are
+printed in the error message if the request is not caught by
+<code><a href="../reference/expect_verb.html">expect_POST()</a></code>.</p>
+<p>If the test fails because the request that is made doesn’t match what
+we expected, it looks like this:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/without_internet.html">without_internet</a></span><span class="op">(</span><span class="op">{</span>
-  <span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"We can send a tweet"</span>, <span class="op">{</span>
-    <span class="fu"><a href="../reference/expect_verb.html">expect_POST</a></span><span class="op">(</span>
-      <span class="fu">send_tweet</span><span class="op">(</span><span class="st">"Goodbye world!"</span><span class="op">)</span>,
-      <span class="st">'https://api.twitter.com/2/tweets'</span>,
-      <span class="st">'{"text":"Hello world!"}'</span>
-    <span class="op">)</span>
-  <span class="op">}</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span>
-
-<span class="co">## ── Failure (Line 3): We can send a tweet ───────────────────────────────────────</span>
-<span class="co">## An unexpected request was made:</span>
-<span class="co">##   Actual:   POST https://api.twitter.com/2/tweets {"text":"Goodbye world!"}</span>
-<span class="co">##   Expected: POST https://api.twitter.com/2/tweets {"text":"Hello world!"}</span></code></pre></div>
-<p>Next, suppose we wanted to test how our code handles the API response. In our example, we aren’t doing much, just extracting the “data” element from the response, but in practice there could be much more involved code to turn API responses into objects that make intuitive sense to R users.</p>
-<p>We can still set up this test without making a real request by creating a mock based on the API documentation, which includes a sample response. To start, let’s switch from <code><a href="../reference/without_internet.html">without_internet()</a></code> to <code><a href="../reference/with_mock_api.html">with_mock_api()</a></code> and re-run the function:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/without_internet.html">without_internet</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"We can send a tweet"</span>, <span class="op">{</span></span>
+<span>    <span class="fu"><a href="../reference/expect_verb.html">expect_POST</a></span><span class="op">(</span></span>
+<span>      <span class="fu">send_tweet</span><span class="op">(</span><span class="st">"Goodbye world!"</span><span class="op">)</span>,</span>
+<span>      <span class="st">'https://api.twitter.com/2/tweets'</span>,</span>
+<span>      <span class="st">'{"text":"Hello world!"}'</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## ── Failure (Line 3): We can send a tweet ───────────────────────────────────────</span></span>
+<span><span class="co">## An unexpected request was made:</span></span>
+<span><span class="co">##   Actual:   POST https://api.twitter.com/2/tweets {"text":"Goodbye world!"}</span></span>
+<span><span class="co">##   Expected: POST https://api.twitter.com/2/tweets {"text":"Hello world!"}</span></span></code></pre></div>
+<p>Next, suppose we wanted to test how our code handles the API
+response. In our example, we aren’t doing much, just extracting the
+“data” element from the response, but in practice there could be much
+more involved code to turn API responses into objects that make
+intuitive sense to R users.</p>
+<p>We can still set up this test without making a real request by
+creating a mock based on the API documentation, which includes a sample
+response. To start, let’s switch from <code><a href="../reference/without_internet.html">without_internet()</a></code> to
+<code><a href="../reference/with_mock_api.html">with_mock_api()</a></code> and re-run the function:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/with_mock_api.html">with_mock_api</a></span><span class="op">(</span><span class="op">{</span>
-  <span class="fu">send_tweet</span><span class="op">(</span><span class="st">"Hello world!"</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span>
-
-<span class="co">## Error: An unexpected request was made:</span>
-<span class="co">## POST https://api.twitter.com/2/tweets {"text":"Hello world!"}</span>
-<span class="co">## Expected mock file: api.twitter.com/2/tweets-8d6065-POST.*</span>
-<span class="co">## Run `rlang::last_error()` to see where the error occurred.</span></code></pre></div>
-<p>We got the same error message before, but there is an extra line telling us what mock file it was looking to load. If we take the JSON example response from the API documentation and put it in that location, <code><a href="../reference/with_mock_api.html">with_mock_api()</a></code> will load it.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/with_mock_api.html">with_mock_api</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="fu">send_tweet</span><span class="op">(</span><span class="st">"Hello world!"</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Error: An unexpected request was made:</span></span>
+<span><span class="co">## POST https://api.twitter.com/2/tweets {"text":"Hello world!"}</span></span>
+<span><span class="co">## Expected mock file: api.twitter.com/2/tweets-8d6065-POST.*</span></span>
+<span><span class="co">## Run `rlang::last_error()` to see where the error occurred.</span></span></code></pre></div>
+<p>We got the same error message before, but there is an extra line
+telling us what mock file it was looking to load. If we take the JSON
+example response from the API documentation and put it in that location,
+<code><a href="../reference/with_mock_api.html">with_mock_api()</a></code> will load it.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="st">"tests/testthat/api.twitter.com/2"</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">'{
-  "data": {
-    "id": "1445880548472328192",
-    "text": "Hello world!"
-  }
-}'</span>, file <span class="op">=</span> <span class="st">"tests/testthat/api.twitter.com/2/tweets-8d6065-POST.json"</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/with_mock_api.html">with_mock_api</a></span><span class="op">(</span><span class="op">{</span>
-  <span class="fu">send_tweet</span><span class="op">(</span><span class="st">"Hello world!"</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span>
-
-<span class="co">## $id</span>
-<span class="co">## [1] "1445880548472328192"</span>
-<span class="co">##</span>
-<span class="co">## $text</span>
-<span class="co">## [1] "Hello world!"</span>
-<span class="co">##</span></code></pre></div>
-<p>Now we can test that we can make that request and the mock response is loaded:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="st">"tests/testthat/api.twitter.com/2"</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">'{</span></span>
+<span><span class="st">  "data": {</span></span>
+<span><span class="st">    "id": "1445880548472328192",</span></span>
+<span><span class="st">    "text": "Hello world!"</span></span>
+<span><span class="st">  }</span></span>
+<span><span class="st">}'</span>, file <span class="op">=</span> <span class="st">"tests/testthat/api.twitter.com/2/tweets-8d6065-POST.json"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/with_mock_api.html">with_mock_api</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="fu">send_tweet</span><span class="op">(</span><span class="st">"Hello world!"</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## $id</span></span>
+<span><span class="co">## [1] "1445880548472328192"</span></span>
+<span><span class="co">##</span></span>
+<span><span class="co">## $text</span></span>
+<span><span class="co">## [1] "Hello world!"</span></span>
+<span><span class="co">##</span></span></code></pre></div>
+<p>Now we can test that we can make that request and the mock response
+is loaded:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/with_mock_api.html">with_mock_api</a></span><span class="op">(</span><span class="op">{</span>
-  <span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"We can send a tweet"</span>, <span class="op">{</span>
-    <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html" class="external-link">expect_equal</a></span><span class="op">(</span>
-      <span class="fu">send_tweet</span><span class="op">(</span><span class="st">"Hello world!"</span><span class="op">)</span><span class="op">$</span><span class="va">text</span>,
-      <span class="st">"Hello world!"</span>
-    <span class="op">)</span>
-  <span class="op">}</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span>
-
-<span class="co">## Test passed 🥇</span></code></pre></div>
-<p>Because requests made in <code><a href="../reference/with_mock_api.html">with_mock_api()</a></code> that don’t find a corresponding mock file raise the same error as <code><a href="../reference/without_internet.html">without_internet()</a></code>, we can combine mock tests and tests that assert that a request would be made:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/with_mock_api.html">with_mock_api</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"We can send a tweet"</span>, <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html" class="external-link">expect_equal</a></span><span class="op">(</span></span>
+<span>      <span class="fu">send_tweet</span><span class="op">(</span><span class="st">"Hello world!"</span><span class="op">)</span><span class="op">$</span><span class="va">text</span>,</span>
+<span>      <span class="st">"Hello world!"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Test passed 🥇</span></span></code></pre></div>
+<p>Because requests made in <code><a href="../reference/with_mock_api.html">with_mock_api()</a></code> that don’t find
+a corresponding mock file raise the same error as
+<code><a href="../reference/without_internet.html">without_internet()</a></code>, we can combine mock tests and tests
+that assert that a request would be made:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/with_mock_api.html">with_mock_api</a></span><span class="op">(</span><span class="op">{</span>
-  <span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"We can send a tweet"</span>, <span class="op">{</span>
-    <span class="co"># This one has a mock file now</span>
-    <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html" class="external-link">expect_equal</a></span><span class="op">(</span>
-      <span class="fu">send_tweet</span><span class="op">(</span><span class="st">"Hello world!"</span><span class="op">)</span><span class="op">$</span><span class="va">text</span>,
-      <span class="st">"Hello world!"</span>
-    <span class="op">)</span>
-    <span class="co"># This one does not</span>
-    <span class="fu"><a href="../reference/expect_verb.html">expect_POST</a></span><span class="op">(</span>
-      <span class="fu">send_tweet</span><span class="op">(</span><span class="st">"Goodbye world!"</span><span class="op">)</span>,
-      <span class="st">'https://api.twitter.com/2/tweets'</span>,
-      <span class="st">'{"text":"Goodbye world!"}'</span>
-    <span class="op">)</span>
-  <span class="op">}</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span>
-
-<span class="co">## Test passed 🌈</span></code></pre></div>
-<p>For more examples of cases to test like this, see the <a href="https://enpiar.com/r/httptest/articles/httptest.html" class="external-link"><code>httptest</code> vignette</a> and <a href="https://enpiar.com/2017/06/21/7-hard-testing-problems-made-easy-by-httptest/" class="external-link">this blog post</a>.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/with_mock_api.html">with_mock_api</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"We can send a tweet"</span>, <span class="op">{</span></span>
+<span>    <span class="co"># This one has a mock file now</span></span>
+<span>    <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html" class="external-link">expect_equal</a></span><span class="op">(</span></span>
+<span>      <span class="fu">send_tweet</span><span class="op">(</span><span class="st">"Hello world!"</span><span class="op">)</span><span class="op">$</span><span class="va">text</span>,</span>
+<span>      <span class="st">"Hello world!"</span></span>
+<span>    <span class="op">)</span></span>
+<span>    <span class="co"># This one does not</span></span>
+<span>    <span class="fu"><a href="../reference/expect_verb.html">expect_POST</a></span><span class="op">(</span></span>
+<span>      <span class="fu">send_tweet</span><span class="op">(</span><span class="st">"Goodbye world!"</span><span class="op">)</span>,</span>
+<span>      <span class="st">'https://api.twitter.com/2/tweets'</span>,</span>
+<span>      <span class="st">'{"text":"Goodbye world!"}'</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Test passed 🌈</span></span></code></pre></div>
+<p>For more examples of cases to test like this, see the <a href="https://enpiar.com/r/httptest/articles/httptest.html" class="external-link"><code>httptest</code>
+vignette</a> and <a href="https://enpiar.com/2017/06/21/7-hard-testing-problems-made-easy-by-httptest/" class="external-link">this
+blog post</a>.</p>
 </div>
   </div>
 
@@ -387,7 +529,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

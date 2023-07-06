@@ -53,7 +53,7 @@
   <a href="../reference/">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -116,31 +116,96 @@
 <div class="section level2">
 <h2 id="where-are-my-mocks-recorded">Where are my mocks recorded?<a class="anchor" aria-label="anchor" href="#where-are-my-mocks-recorded"></a>
 </h2>
-<p>By default, <code><a href="../reference/with_mock_api.html">with_mock_api()</a></code> will look for and <code><a href="../reference/capture_requests.html">capture_requests()</a></code> will write mocks to your package’s <code>tests/testthat</code> directory, or else the current working directory if that path does not exist. If you want to look in or write to other places, call <code><a href="../reference/mockPaths.html">.mockPaths()</a></code> to add directories to the search path.</p>
-<p>If you’re running <code><a href="../reference/capture_requests.html">capture_requests()</a></code> within a test suite in an installed package, or if you’re running interactively from a different directory, the working directory may not be the same as your code repository. If you aren’t sure where the files are going, set <code>options(httptest2.verbose = TRUE)</code>, and it will message the absolute path of the files as it writes them.</p>
-<p>To change where files are being written or read from, use <code><a href="../reference/mockPaths.html">.mockPaths()</a></code> (like <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">base::.libPaths()</a></code>) to specify a different directory.</p>
+<p>By default, <code><a href="../reference/with_mock_api.html">with_mock_api()</a></code> will look for and
+<code><a href="../reference/capture_requests.html">capture_requests()</a></code> will write mocks to your package’s
+<code>tests/testthat</code> directory, or else the current working
+directory if that path does not exist. If you want to look in or write
+to other places, call <code><a href="../reference/mockPaths.html">.mockPaths()</a></code> to add directories to
+the search path.</p>
+<p>If you’re running <code><a href="../reference/capture_requests.html">capture_requests()</a></code> within a test suite
+in an installed package, or if you’re running interactively from a
+different directory, the working directory may not be the same as your
+code repository. If you aren’t sure where the files are going, set
+<code>options(httptest2.verbose = TRUE)</code>, and it will message the
+absolute path of the files as it writes them.</p>
+<p>To change where files are being written or read from, use
+<code><a href="../reference/mockPaths.html">.mockPaths()</a></code> (like <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">base::.libPaths()</a></code>) to
+specify a different directory.</p>
 </div>
 <div class="section level2">
 <h2 id="how-do-i-fix-non-portable-file-paths">How do I fix “non-portable file paths”?<a class="anchor" aria-label="anchor" href="#how-do-i-fix-non-portable-file-paths"></a>
 </h2>
-<p>If you see this error in <code>R CMD build</code> or <code>R CMD check</code>, it means that there are file paths are longer than 100 characters, which can sometimes happen when you record requests. <code>httptest</code> preserves the URL structure of mocks in file paths to improve the readability and maintainability of your tests, as well as to make visible the properties of your API. Indeed, the file-system tree view of the mock files gives a visual representation of your API. This value comes with a tradeoff: sometimes URLs can be long, and R doesn’t like that.</p>
-<p>Depending on how long your URLs are, there are a few ways to save on characters without compromising readability of your code and tests.</p>
-<p>A good way to cut long file paths is by using a redactor: a function that alters the content of your requests and responses before mapping them to mock files. For example, if all of your API endpoints sit beneath <code>https://language.googleapis.com/v1/</code>, you could:</p>
+<p>If you see this error in <code>R CMD build</code> or
+<code>R CMD check</code>, it means that there are file paths are longer
+than 100 characters, which can sometimes happen when you record
+requests. <code>httptest</code> preserves the URL structure of mocks in
+file paths to improve the readability and maintainability of your tests,
+as well as to make visible the properties of your API. Indeed, the
+file-system tree view of the mock files gives a visual representation of
+your API. This value comes with a tradeoff: sometimes URLs can be long,
+and R doesn’t like that.</p>
+<p>Depending on how long your URLs are, there are a few ways to save on
+characters without compromising readability of your code and tests.</p>
+<p>A good way to cut long file paths is by using a redactor: a function
+that alters the content of your requests and responses before mapping
+them to mock files. For example, if all of your API endpoints sit
+beneath <code>https://language.googleapis.com/v1/</code>, you could:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/set_redactor.html">set_redactor</a></span><span class="op">(</span><span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="../reference/gsub_response.html">gsub_response</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"https\\://language.googleapis.com/v1/"</span>, <span class="st">"api/"</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span></code></pre></div>
-<p>This will replace that string in all parts of the mock file that is saved, including in the file path that is written–that is, paths will start with “api/” rather than “language.googleapis.com/v1/”, saving you (in this case) 23 characters. The function will also be called when loading mocks in <code><a href="../reference/with_mock_api.html">with_mock_api()</a></code> so that the shortened file paths are found.</p>
-<p>You can also provide this function in <code>inst/httptest2/redact.R</code>, and any time your package is loaded (as when you run tests or build vignettes, or when anyone else uses your package in <em>their</em> package), this function will be called automatically. See <code><a href="../articles/redacting.html">vignette("redacting")</a></code> for more.</p>
-<p>You may also be able to economize on other parts of the file paths. If you’ve recorded requests and your file paths contain long ids like “1495480537a3c1bf58486b7e544ce83d”, depending on how you access the API in your code, you may be able to simply replace that id with something shorter, like “1”. The mocks are just files, disconnected from a real server and API, so you can rename them and munge them as needed.</p>
-<p>Finally, if you have your tests inside a <code>tests/testthat/</code> directory, and your fixture files inside that, you can save 9 characters by moving the fixtures up to <code>tests/</code> and setting <code>.mockPaths("../")</code>.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/set_redactor.html">set_redactor</a></span><span class="op">(</span><span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/gsub_response.html">gsub_response</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"https\\://language.googleapis.com/v1/"</span>, <span class="st">"api/"</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<p>This will replace that string in all parts of the mock file that is
+saved, including in the file path that is written–that is, paths will
+start with “api/” rather than “language.googleapis.com/v1/”, saving you
+(in this case) 23 characters. The function will also be called when
+loading mocks in <code><a href="../reference/with_mock_api.html">with_mock_api()</a></code> so that the shortened file
+paths are found.</p>
+<p>You can also provide this function in
+<code>inst/httptest2/redact.R</code>, and any time your package is
+loaded (as when you run tests or build vignettes, or when anyone else
+uses your package in <em>their</em> package), this function will be
+called automatically. See <code><a href="../articles/redacting.html">vignette("redacting")</a></code> for
+more.</p>
+<p>You may also be able to economize on other parts of the file paths.
+If you’ve recorded requests and your file paths contain long ids like
+“1495480537a3c1bf58486b7e544ce83d”, depending on how you access the API
+in your code, you may be able to simply replace that id with something
+shorter, like “1”. The mocks are just files, disconnected from a real
+server and API, so you can rename them and munge them as needed.</p>
+<p>Finally, if you have your tests inside a <code>tests/testthat/</code>
+directory, and your fixture files inside that, you can save 9 characters
+by moving the fixtures up to <code>tests/</code> and setting
+<code>.mockPaths("../")</code>.</p>
 </div>
-<div class="section level1">
-<h1 id="why-are-mocks-stored-as-text-files">Why are mocks stored as text files?<a class="anchor" aria-label="anchor" href="#why-are-mocks-stored-as-text-files"></a>
-</h1>
-<p>Plain-text files have several nice features, particularly relative to storing serialized (binary) R objects. You can more easily confirm that your mocks look correct, and you can more easily maintain them without having to re-record them. When you do edit them, text files are more easily handled by version-control systems like Git. Plain-text files can also have comments, so you can make notes as to why a certain fixture exists, what a particular value means, and so on, which will help the users of your package—and your future self!</p>
-<p>By having mocks in human-readable text files, you can also more easily extend your code. APIs are living things that evolve over time, and your code that communicates with an API needs to be able to change with them. If the API adds an additional attribute to an object, no big deal: just touch up the mocks. In addition, you can future-proof your code against that kind of API change by tweaking a fixture file. In <a href="https://github.com/Crunch-io/rcrunch/blob/49cf2526c0c54d05550b6401e0b97a0beeaa1640/inst/app.crunch.io/api/datasets/1.json#L34" class="external-link">this example</a> from the <code>crunch</code> package, an extra, nonsense attribute was added to the JSON just to ensure that the code doesn’t break if there are new, unknown features added to the API response. That way, if the API grows new features, people who are using your package don’t get errors if they haven’t upgraded to the latest release that recognizes the new feature.</p>
-<p>If you’re responsible for the API as well as the R client code that communicates with it, the plain-text mocks can be a valuable source of documentation. Indeed, the file-system tree view of the mock files gives a visual representation of your API. For example, in the <a href="https://crunch.io/r/crunch/" class="external-link">crunch</a> package, the mocks show an API of catalogs that contain entities that may contain other subdocuments:</p>
+<div class="section level2">
+<h2 id="why-are-mocks-stored-as-text-files">Why are mocks stored as text files?<a class="anchor" aria-label="anchor" href="#why-are-mocks-stored-as-text-files"></a>
+</h2>
+<p>Plain-text files have several nice features, particularly relative to
+storing serialized (binary) R objects. You can more easily confirm that
+your mocks look correct, and you can more easily maintain them without
+having to re-record them. When you do edit them, text files are more
+easily handled by version-control systems like Git. Plain-text files can
+also have comments, so you can make notes as to why a certain fixture
+exists, what a particular value means, and so on, which will help the
+users of your package—and your future self!</p>
+<p>By having mocks in human-readable text files, you can also more
+easily extend your code. APIs are living things that evolve over time,
+and your code that communicates with an API needs to be able to change
+with them. If the API adds an additional attribute to an object, no big
+deal: just touch up the mocks. In addition, you can future-proof your
+code against that kind of API change by tweaking a fixture file. In <a href="https://github.com/Crunch-io/rcrunch/blob/49cf2526c0c54d05550b6401e0b97a0beeaa1640/inst/app.crunch.io/api/datasets/1.json#L34" class="external-link">this
+example</a> from the <code>crunch</code> package, an extra, nonsense
+attribute was added to the JSON just to ensure that the code doesn’t
+break if there are new, unknown features added to the API response. That
+way, if the API grows new features, people who are using your package
+don’t get errors if they haven’t upgraded to the latest release that
+recognizes the new feature.</p>
+<p>If you’re responsible for the API as well as the R client code that
+communicates with it, the plain-text mocks can be a valuable source of
+documentation. Indeed, the file-system tree view of the mock files gives
+a visual representation of your API. For example, in the <a href="https://crunch.io/r/crunch/" class="external-link">crunch</a> package, the mocks show an
+API of catalogs that contain entities that may contain other
+subdocuments:</p>
 <pre><code>app.crunch.io/
 ├── api
 │   ├── accounts
@@ -197,7 +262,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

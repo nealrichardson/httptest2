@@ -39,7 +39,7 @@ does."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathj
   <a href="../reference/">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -95,21 +95,24 @@ does.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">with_mock_api</span><span class="op">(</span><span class="va">expr</span><span class="op">)</span>
-
-<span class="fu">use_mock_api</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">stop_mocking</span><span class="op">(</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">with_mock_api</span><span class="op">(</span><span class="va">expr</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">use_mock_api</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">stop_mocking</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>expr</dt>
 <dd><p>Code to run inside the mock context</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>with_mock_api()</code> returns the result of <code>expr</code>. <code>use_mock_api()</code> and <code>stop_mocking()</code> return nothing.</p>
+    
+
+<p><code>with_mock_api()</code> returns the result of <code>expr</code>. <code>use_mock_api()</code> and <code>stop_mocking()</code> return nothing.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -126,25 +129,69 @@ want as long as you set the appropriate location with <code><a href="mockPaths.h
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://httr2.r-lib.org" class="external-link">httr2</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">with_mock_api</span><span class="op">(</span><span class="op">{</span></span>
-<span class="r-in">  <span class="co"># There are no mocks recorded in this example, so catch this request with</span></span>
-<span class="r-in">  <span class="co"># expect_GET()</span></span>
-<span class="r-in">  <span class="fu"><a href="expect_verb.html">expect_GET</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"http://httpbin.org/get"</span><span class="op">)</span> <span class="op"><a href="https://httr2.r-lib.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="st">"http://httpbin.org/get"</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in">  <span class="co"># For examples with mocks, see the tests and vignettes</span></span>
-<span class="r-in"><span class="op">}</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">&lt;error/httptest2_request&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> An unexpected request was made:</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://httr2.r-lib.org" class="external-link">httr2</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">with_mock_api</span><span class="op">(</span><span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="co"># There are no mocks recorded in this example, so catch this request with</span></span></span>
+<span class="r-in"><span>  <span class="co"># expect_GET()</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="expect_verb.html">expect_GET</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"http://httpbin.org/get"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"http://httpbin.org/get"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># For examples with mocks, see the tests and vignettes</span></span></span>
+<span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-weight: bold;">&lt;error/httptest2_request&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in </span><span style="color: #5555FF; font-weight: bold;">`stop_request()`</span><span style="font-weight: bold;">:</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> An unexpected request was made:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GET http://httpbin.org/get</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected mock file: httpbin.org/get.*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Backtrace:</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  1. </span>pkgdown::deploy_to_branch(new_process = FALSE)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 38. </span>httr2::req_perform(.)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 39. </span>httptest2:::mock(req)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 40. </span>httptest2:::stop_request(req)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">     </span>▆</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  1. </span>├─<span style="font-weight: bold;">pkgdown</span>::deploy_to_branch(new_process = FALSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  2. </span>│ <span style="color: #949494;">└─pkgdown::build_site_github_pages(pkg, ..., clean = clean)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  3. </span>│   <span style="color: #949494;">└─pkgdown::build_site(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  4. </span>│     <span style="color: #949494;">└─pkgdown:::build_site_local(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  5. </span>│       <span style="color: #949494;">└─pkgdown::build_reference(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  6. </span>│         <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">purrr</span><span style="color: #949494;">::map(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  7. </span>│           <span style="color: #949494;">└─purrr:::map_("list", .x, .f, ..., .progress = .progress)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  8. </span>│             <span style="color: #949494;">├─purrr:::with_indexed_errors(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  9. </span>│             <span style="color: #949494;">│ └─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::withCallingHandlers(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 10. </span>│             <span style="color: #949494;">├─</span><span style="color: #949494; font-weight: bold;">purrr</span><span style="color: #949494;">:::call_with_cleanup(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 11. </span>│             <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">pkgdown</span><span style="color: #949494;"> (local) .f(.x[[i]], ...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 12. </span>│               <span style="color: #949494;">├─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::withCallingHandlers(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 13. </span>│               <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">pkgdown</span><span style="color: #949494;">:::data_reference_topic(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 14. </span>│                 <span style="color: #949494;">└─pkgdown:::run_examples(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 15. </span>│                   <span style="color: #949494;">└─pkgdown:::highlight_examples(code, topic, env = env)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 16. </span>│                     <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">downlit</span><span style="color: #949494;">::evaluate_and_highlight(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 17. </span>│                       <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">evaluate</span><span style="color: #949494;">::evaluate(code, child_env(env), new_device = TRUE, output_handler = output_handler)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 18. </span>│                         <span style="color: #949494;">└─evaluate:::evaluate_call(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 19. </span>│                           <span style="color: #949494;">├─evaluate (local) timing_fn(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 20. </span>│                           <span style="color: #949494;">├─evaluate (local) handle(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 21. </span>│                           <span style="color: #949494;">│ └─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::try(f, silent = TRUE)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 22. </span>│                           <span style="color: #949494;">│   └─base::tryCatch(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 23. </span>│                           <span style="color: #949494;">│     └─base (local) tryCatchList(expr, classes, parentenv, handlers)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 24. </span>│                           <span style="color: #949494;">│       └─base (local) tryCatchOne(expr, names, parentenv, handlers[[1L]])</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 25. </span>│                           <span style="color: #949494;">│         └─base (local) doTryCatch(return(expr), name, parentenv, handler)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 26. </span>│                           <span style="color: #949494;">├─base::withCallingHandlers(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 27. </span>│                           <span style="color: #949494;">├─base::withVisible(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 28. </span>│                           <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">evaluate</span><span style="color: #949494;">:::eval_with_user_handlers(expr, envir, enclos, user_handlers)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 29. </span>│                             <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::eval(expr, envir, enclos)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 30. </span>│                               <span style="color: #949494;">└─base::eval(expr, envir, enclos)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 31. </span>│                                 <span style="color: #949494;">├─httptest2::with_mock_api(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 32. </span>│                                 <span style="color: #949494;">│ └─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::eval.parent(expr)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 33. </span>│                                 <span style="color: #949494;">│   └─base::eval(expr, p)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 34. </span>│                                 <span style="color: #949494;">├─httptest2::expect_GET(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 35. </span>│                                 <span style="color: #949494;">│ └─httptest2:::expect_request(object, "GET ", url, " ", ...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 36. </span>│                                 <span style="color: #949494;">│   ├─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::withCallingHandlers(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 37. </span>│                                 <span style="color: #949494;">│   └─</span><span style="color: #949494; font-weight: bold;">testthat</span><span style="color: #949494;">::expect_error(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 38. </span>│                                 <span style="color: #949494;">│     └─testthat:::quasi_capture(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 39. </span>│                                 <span style="color: #949494;">│       ├─testthat (local) .capture(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 40. </span>│                                 <span style="color: #949494;">│       │ └─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::withCallingHandlers(...)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 41. </span>│                                 <span style="color: #949494;">│       └─</span><span style="color: #949494; font-weight: bold;">rlang</span><span style="color: #949494;">::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 42. </span>│                                 <span style="color: #949494;">└─request("http://httpbin.org/get") %&gt;% req_perform()</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 43. </span>└─httr2::req_perform(.)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 44. </span>  └─httptest2 (local) mock(req)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 45. </span>    └─<span style="color: #5555FF; font-weight: bold;">httptest2:::stop_request(</span>req<span style="color: #5555FF; font-weight: bold;">)</span></span>
 </code></pre></div>
     </div>
   </div>
@@ -159,7 +206,7 @@ want as long as you set the appropriate location with <code><a href="mockPaths.h
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

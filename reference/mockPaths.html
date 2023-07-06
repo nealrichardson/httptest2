@@ -39,7 +39,7 @@ path."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathj
   <a href="../reference/">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -95,7 +95,7 @@ path.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">.mockPaths</span><span class="op">(</span><span class="va">new</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.mockPaths</span><span class="op">(</span><span class="va">new</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -103,10 +103,13 @@ path.</p>
     <dl><dt>new</dt>
 <dd><p>Either a character vector of path(s) to add, or <code>NULL</code> to reset
 to the default.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>If <code>new</code> is omitted, the function returns the current search paths, a
+    
+
+<p>If <code>new</code> is omitted, the function returns the current search paths, a
 a character vector. If <code>new</code> is provided, the updated value will be returned
 invisibly.</p>
     </div>
@@ -123,14 +126,14 @@ of searching in the current working directory, you can set the option
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">.mockPaths</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpORoBN0/file2af95c19562e" "."                               </span>
-<span class="r-in"><span class="fu">.mockPaths</span><span class="op">(</span><span class="st">"/var/somewhere/else"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">.mockPaths</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/var/somewhere/else"              "/tmp/RtmpORoBN0/file2af95c19562e"</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">.mockPaths</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpAfo9zl/file163f101009c9" "."                               </span>
+<span class="r-in"><span><span class="fu">.mockPaths</span><span class="op">(</span><span class="st">"/var/somewhere/else"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">.mockPaths</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/var/somewhere/else"              "/tmp/RtmpAfo9zl/file163f101009c9"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3] "."                               </span>
-<span class="r-in"><span class="fu">.mockPaths</span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">.mockPaths</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">.mockPaths</span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">.mockPaths</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "."</span>
 </code></pre></div>
     </div>
@@ -146,7 +149,7 @@ of searching in the current working directory, you can set the option
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

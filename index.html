@@ -60,7 +60,7 @@
   <a href="reference/">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -112,7 +112,7 @@
 <div class="section level1">
 <div class="page-header"><h1 id="httptest2-test-helpers-for-httr2">httptest2: Test Helpers for ‘httr2’<a class="anchor" aria-label="anchor" href="#httptest2-test-helpers-for-httr2"></a>
 </h1></div>
-
+<p><a href="https://github.com/nealrichardson/httptest2/actions" class="external-link"><img src="https://github.com/nealrichardson/httptest2/workflows/R-CMD-check/badge.svg" alt="Build Status"></a> <a href="https://app.codecov.io/gh/nealrichardson/httptest2" class="external-link"><img src="https://codecov.io/gh/nealrichardson/httptest2/branch/main/graph/badge.svg?token=PxOGymudAS" alt="codecov"></a></p>
 <p><code>httptest2</code> makes it easy to write tests for code and packages that wrap web APIs. Testing code that communicates with remote servers can otherwise be painful: things like authentication, server state, and network flakiness can make testing seem too costly to bother with. The <code>httptest2</code> package enables you to test all of the logic on the R sides of the API in your package without requiring access to the remote service.</p>
 <p>Importantly, it provides <strong>contexts</strong> that mock the network connection and tools for <strong>recording</strong> real requests for future offline use as fixtures, both in tests and in vignettes. The package also includes additional <strong>expectations</strong> to assert that HTTP requests were—or were not—made.</p>
 <p>Using these tools, you can test that code is making the intended requests and that it handles the expected responses correctly, all without depending on a connection to a remote API. The ability to save responses and load them offline also enables you to write package vignettes and other dynamic documents that can be distributed without access to a live server.</p>
@@ -122,11 +122,11 @@
 </h2>
 <p><code>httptest2</code> can be installed from CRAN with</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"httptest2"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"httptest2"</span><span class="op">)</span></span></code></pre></div>
 <p>The pre-release version of the package can be pulled from GitHub using the <a href="https://github.com/r-lib/remotes" class="external-link">remotes</a> package:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"nealrichardson/httptest2"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"nealrichardson/httptest2"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
@@ -145,6 +145,7 @@
     <div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=httptest2" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/nealrichardson/httptest2/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/nealrichardson/httptest2/issues" class="external-link">Report a bug</a></li>
 </ul>
@@ -175,13 +176,7 @@
 </ul>
 </div>
 
-<div class="dev-status">
-<h2 data-toc-skip>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://github.com/nealrichardson/httptest2/actions" class="external-link"><img src="https://github.com/nealrichardson/httptest2/workflows/R-CMD-check/badge.svg" alt="Build Status"></a></li>
-<li><a href="https://app.codecov.io/gh/nealrichardson/httptest2" class="external-link"><img src="https://codecov.io/gh/nealrichardson/httptest2/branch/main/graph/badge.svg?token=PxOGymudAS" alt="codecov"></a></li>
-</ul>
-</div>
+
 
   </div>
 </div>
@@ -194,7 +189,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

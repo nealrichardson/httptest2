@@ -41,7 +41,7 @@ for instance, looks for a request message that starts with "PUT".'><!-- mathjax 
   <a href="../reference/">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -99,27 +99,31 @@ for instance, looks for a request message that starts with "PUT".</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">expect_GET</span><span class="op">(</span><span class="va">object</span>, url <span class="op">=</span> <span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">expect_POST</span><span class="op">(</span><span class="va">object</span>, url <span class="op">=</span> <span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">expect_PATCH</span><span class="op">(</span><span class="va">object</span>, url <span class="op">=</span> <span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">expect_PUT</span><span class="op">(</span><span class="va">object</span>, url <span class="op">=</span> <span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">expect_DELETE</span><span class="op">(</span><span class="va">object</span>, url <span class="op">=</span> <span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">expect_no_request</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">expect_GET</span><span class="op">(</span><span class="va">object</span>, url <span class="op">=</span> <span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">expect_POST</span><span class="op">(</span><span class="va">object</span>, url <span class="op">=</span> <span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">expect_PATCH</span><span class="op">(</span><span class="va">object</span>, url <span class="op">=</span> <span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">expect_PUT</span><span class="op">(</span><span class="va">object</span>, url <span class="op">=</span> <span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">expect_DELETE</span><span class="op">(</span><span class="va">object</span>, url <span class="op">=</span> <span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">expect_no_request</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>Code to execute that may cause an HTTP request</p></dd>
+
+
 <dt>url</dt>
 <dd><p>character: the URL you expect a request to be made to. Default is
 an empty string, meaning that you can just assert that a request is made with
 a certain method without asserting anything further.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>character segments of a request payload you expect to be included
 in the request body, to be joined together by <code><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0()</a></code>. You may also pass
@@ -133,42 +137,45 @@ the default in <code>grepl</code>. (The rest of the arguments follow its default
 <li><p><code>useBytes</code>: Should matching be done byte-by-byte rather than
 character-by-character? Default: <code>FALSE</code></p></li>
 </ul></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>testthat</code> 'expectation'.</p>
+    
+
+<p>A <code>testthat</code> 'expectation'.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://httr2.r-lib.org" class="external-link">httr2</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="without_internet.html">without_internet</a></span><span class="op">(</span><span class="op">{</span></span>
-<span class="r-in">  <span class="fu">expect_GET</span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"http://httpbin.org/get"</span><span class="op">)</span> <span class="op"><a href="https://httr2.r-lib.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="st">"http://httpbin.org/get"</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in">  <span class="fu">expect_GET</span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"http://httpbin.org/get"</span><span class="op">)</span> <span class="op"><a href="https://httr2.r-lib.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="st">"http://httpbin.org/[a-z]+"</span>,</span>
-<span class="r-in">    fixed <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># For regular expression matching</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in">  <span class="fu">expect_PUT</span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"http://httpbin.org/put"</span><span class="op">)</span> <span class="op"><a href="https://httr2.r-lib.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">      <span class="fu"><a href="https://httr2.r-lib.org/reference/req_method.html" class="external-link">req_method</a></span><span class="op">(</span><span class="st">"PUT"</span><span class="op">)</span> <span class="op"><a href="https://httr2.r-lib.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">      <span class="fu"><a href="https://httr2.r-lib.org/reference/req_body.html" class="external-link">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://httr2.r-lib.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">      <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="st">"http://httpbin.org/put"</span>,</span>
-<span class="r-in">    <span class="st">'{"a":1}'</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in">  <span class="co"># Don't need to assert the request body, or even the URL</span></span>
-<span class="r-in">  <span class="fu">expect_PUT</span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"http://httpbin.org/put"</span><span class="op">)</span> <span class="op"><a href="https://httr2.r-lib.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">      <span class="fu"><a href="https://httr2.r-lib.org/reference/req_method.html" class="external-link">req_method</a></span><span class="op">(</span><span class="st">"PUT"</span><span class="op">)</span> <span class="op"><a href="https://httr2.r-lib.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">      <span class="fu"><a href="https://httr2.r-lib.org/reference/req_body.html" class="external-link">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://httr2.r-lib.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">      <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in">  <span class="fu">expect_no_request</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://httr2.r-lib.org" class="external-link">httr2</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="without_internet.html">without_internet</a></span><span class="op">(</span><span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="fu">expect_GET</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"http://httpbin.org/get"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"http://httpbin.org/get"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">expect_GET</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"http://httpbin.org/get"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"http://httpbin.org/[a-z]+"</span>,</span></span>
+<span class="r-in"><span>    fixed <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># For regular expression matching</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">expect_PUT</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"http://httpbin.org/put"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://httr2.r-lib.org/reference/req_method.html" class="external-link">req_method</a></span><span class="op">(</span><span class="st">"PUT"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://httr2.r-lib.org/reference/req_body.html" class="external-link">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"http://httpbin.org/put"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">'{"a":1}'</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># Don't need to assert the request body, or even the URL</span></span></span>
+<span class="r-in"><span>  <span class="fu">expect_PUT</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"http://httpbin.org/put"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://httr2.r-lib.org/reference/req_method.html" class="external-link">req_method</a></span><span class="op">(</span><span class="st">"PUT"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://httr2.r-lib.org/reference/req_body.html" class="external-link">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">expect_no_request</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -183,7 +190,7 @@ character-by-character? Default: <code>FALSE</code></p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

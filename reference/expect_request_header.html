@@ -37,7 +37,7 @@ are present in a request. It works both in the mock HTTP contexts and on
   <a href="../reference/">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -91,62 +91,71 @@ are present in a request. It works both in the mock HTTP contexts and on
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">expect_request_header</span><span class="op">(</span>
-  <span class="va">expr</span>,
-  <span class="va">...</span>,
-  fixed <span class="op">=</span> <span class="cn">FALSE</span>,
-  ignore.case <span class="op">=</span> <span class="cn">FALSE</span>,
-  perl <span class="op">=</span> <span class="cn">FALSE</span>,
-  useBytes <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">expect_request_header</span><span class="op">(</span></span>
+<span>  <span class="va">expr</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  fixed <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ignore.case <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  perl <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useBytes <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>expr</dt>
 <dd><p>Code to evaluate</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Named headers to match. Values should either be a string (length-1 character), which will be passed to <code><a href="https://testthat.r-lib.org/reference/expect_match.html" class="external-link">testthat::expect_match()</a></code>, or <code>NULL</code> to assert that the named header is not present in the request. To assert that a header is merely present in the request, without asserting anything about its contents, provide an empty string (<code>""</code>). Header names are always case-insensitive; header values will be matched using the following parameters:</p></dd>
+
+
 <dt>fixed</dt>
 <dd><p>logical.  If <code>TRUE</code>, <code>pattern</code> is a string to be
     matched as is.  Overrides all conflicting arguments.</p></dd>
+
+
 <dt>ignore.case</dt>
 <dd><p>if <code>FALSE</code>, the pattern matching is <em>case
       sensitive</em> and if <code>TRUE</code>, case is ignored during matching.</p></dd>
+
+
 <dt>perl</dt>
 <dd><p>logical.  Should Perl-compatible regexps be used?</p></dd>
+
+
 <dt>useBytes</dt>
 <dd><p>logical.  If <code>TRUE</code> the matching is done
     byte-by-byte rather than character-by-character.  See
     ‘Details’.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>The value of <code>expr</code> if there are no expectation failures</p>
+    
+
+<p>The value of <code>expr</code> if there are no expectation failures</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://httr2.r-lib.org" class="external-link">httr2</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">expect_request_header</span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"http://httpbin.org"</span><span class="op">)</span> <span class="op"><a href="https://httr2.r-lib.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_headers.html" class="external-link">req_headers</a></span><span class="op">(</span>Accept <span class="op">=</span> <span class="st">"image/png"</span><span class="op">)</span> <span class="op"><a href="https://httr2.r-lib.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span class="r-in">  accept <span class="op">=</span> <span class="st">"image/png"</span>,</span>
-<span class="r-in">  `x-fake-header` <span class="op">=</span> <span class="cn">NULL</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://httpbin.org/</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 200 OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/html</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (9593 bytes)</span>
-<span class="r-in"><span class="fu">expect_request_header</span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"http://httpbin.org"</span><span class="op">)</span> <span class="op"><a href="https://httr2.r-lib.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_headers.html" class="external-link">req_headers</a></span><span class="op">(</span>Accept <span class="op">=</span> <span class="st">"image/png"</span><span class="op">)</span> <span class="op"><a href="https://httr2.r-lib.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span class="r-in">  accept <span class="op">=</span> <span class="st">""</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://httr2.r-lib.org" class="external-link">httr2</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">expect_request_header</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"http://httpbin.org"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_headers.html" class="external-link">req_headers</a></span><span class="op">(</span>Accept <span class="op">=</span> <span class="st">"image/png"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  accept <span class="op">=</span> <span class="st">"image/png"</span>,</span></span>
+<span class="r-in"><span>  `x-fake-header` <span class="op">=</span> <span class="cn">NULL</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in req_perform(.):</span> HTTP 504 Gateway Timeout.</span>
+<span class="r-in"><span><span class="fu">expect_request_header</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"http://httpbin.org"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_headers.html" class="external-link">req_headers</a></span><span class="op">(</span>Accept <span class="op">=</span> <span class="st">"image/png"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  accept <span class="op">=</span> <span class="st">""</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://httpbin.org/</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 200 OK</span>
@@ -166,7 +175,7 @@ are present in a request. It works both in the mock HTTP contexts and on
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

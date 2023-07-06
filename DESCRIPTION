@@ -9,7 +9,7 @@ Description: Testing and documenting code that communicates with remote servers
     test fixtures. The ability to save responses and load them offline also
     enables writing vignettes and other dynamic documents that can be
     distributed without access to a live server.
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: c(
         person("Neal", "Richardson", role=c("aut", "cre"), email="neal.p.richardson@gmail.com"),
         person("Jonathan", "Keane", role="ctb", email="jkeane@gmail.com"),

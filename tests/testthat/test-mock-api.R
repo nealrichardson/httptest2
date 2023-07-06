@@ -146,14 +146,14 @@ with_mock_api({
     )
     expect_POST(
       r %>%
-        req_body_form(list(x = "A simple text string")) %>%
+        req_body_form(x = "A simple text string") %>%
         req_perform(),
       "http://httpbin.org/post",
       "x=A%20simple%20text%20string "
     )
     expect_POST(
       r %>%
-        req_body_json(list(x = "A simple text string")) %>%
+        req_body_json(data = list(x = "A simple text string")) %>%
         req_perform(),
       "http://httpbin.org/post",
       '{"x":"A simple text string"} '
@@ -170,10 +170,10 @@ with_mock_api({
 
     expect_POST(
       r %>%
-        req_body_multipart(list(
+        req_body_multipart(
           a = curl::form_file(file_to_upload),
           b = curl::form_data("strings")
-        )) %>%
+        ) %>%
         req_perform(),
       "http://httpbin.org/post",
       "Multipart form:

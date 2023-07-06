@@ -53,12 +53,7 @@ skip_on_R_older_than <- function(version) {
   }
 }
 
-# Mockable version of testthat::skip_if_offline()
-skip_if_disconnected <- function(message = paste("Offline: cannot reach", url),
-                                 url = "http://httpbin.org/") {
-  skip_on_cran()
-  if (currently_offline(url)) {
-    skip(message)
-  }
-  invisible(TRUE)
-}
+httpbin <- webfakes::local_app_process(
+  webfakes::httpbin_app(),
+  .local_envir = testthat::teardown_env()
+)

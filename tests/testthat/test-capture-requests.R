@@ -33,6 +33,7 @@ test_that("We can record a series of requests (a few ways)", {
     stop_capturing()
   })
 
+  # If these were recorded against httpbin.org, it would look like this:
   expected_files <- c(
     "httpbin.org.html", # it's HTML, and we now support that simplified
     "httpbin.org/anything.json",
@@ -44,11 +45,10 @@ test_that("We can record a series of requests (a few ways)", {
     "httpbin.org/status/202.R", # Not 200 response, so .R
     "httpbin.org/status/418.R" # Not 200 response, so .R
   )
+  # But since we don't use httpbin anymore, they're in the localhost-port dir
+  expected_files <- sub("httpbin.org", httpbin_mock_url, expected_files)
+  expect_identical(sort(dir(d, recursive = TRUE)), expected_files)
 
-  expect_identical(
-    sort(dir(d, recursive = TRUE)),
-    sub("httpbin.org", httpbin_mock_url, expected_files)
-  )
   # Test the contents of the .R files
   teapot <- source(file.path(d, httpbin_mock_url, "status", "418.R"))$value
   expect_s3_class(teapot, "httr2_response")
@@ -136,11 +136,11 @@ with_mock_api({
     capture_while_mocking(path = d2, {
       request("http://example.com/get/") %>% req_perform()
       request("api/object1/") %>% req_perform()
-      request("http://httpbin.org/status/204/") %>% req_perform()
+      request("http://httpbin.not/status/204/") %>% req_perform()
     })
     expect_setequal(
       dir(d2, recursive = TRUE),
-      c("example.com/get.json", "api/object1.json", "httpbin.org/status/204.204")
+      c("example.com/get.json", "api/object1.json", "httpbin.not/status/204.204")
     )
     expect_identical(
       readLines(file.path(d2, "example.com/get.json")),
@@ -149,15 +149,15 @@ with_mock_api({
   })
 
   test_that("Loading 204 response status recorded with simplify=TRUE", {
-    original <- request("http://httpbin.org/status/204/") %>% req_perform()
+    original <- request("http://httpbin.not/status/204/") %>% req_perform()
     expect_length(original$body, 0)
     expect_length(
-      readLines(file.path(d2, "httpbin.org/status/204.204")),
+      readLines(file.path(d2, "httpbin.not/status/204.204")),
       0
     )
     with_mock_path(d2,
       {
-        mocked <- request("http://httpbin.org/status/204/") %>% req_perform()
+        mocked <- request("http://httpbin.not/status/204/") %>% req_perform()
         expect_length(mocked$body, 0)
       },
       replace = TRUE
@@ -170,12 +170,12 @@ with_mock_api({
       capture_while_mocking(simplify = FALSE, {
         request("http://example.com/get/") %>% req_perform()
         request("api/object1/") %>% req_perform()
-        request("http://httpbin.org/status/204/") %>% req_perform()
+        request("http://httpbin.not/status/204/") %>% req_perform()
       })
     })
     expect_setequal(
       dir(d3, recursive = TRUE),
-      c("example.com/get.R", "api/object1.R", "httpbin.org/status/204.R")
+      c("example.com/get.R", "api/object1.R", "httpbin.not/status/204.R")
     )
     response <- source(file.path(d3, "example.com/get.R"))$value
     expect_s3_class(response, "httr2_response")
@@ -226,7 +226,7 @@ test_that("If the httr2 request function exits with an error, capture_requests w
       function(req) stop("Error!"),
       expect_warning(
         expect_error(
-          request("http://httpbin.org/get") %>% req_perform()
+          request("http://httpbin.not/get") %>% req_perform()
         ),
         "Request errored; no captured response file saved"
       )

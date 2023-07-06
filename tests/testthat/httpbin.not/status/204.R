@@ -1,5 +1,5 @@
 structure(list(
-  url = "http://httpbin.org/status/204", status_code = 204L,
+  url = "http://httpbin.not/status/204", status_code = 204L,
   headers = structure(list(
     `content-length` = "0", connection = "keep-alive",
     server = "meinheld/0.6.1", date = "Sat, 24 Feb 2018 00:22:11 GMT",

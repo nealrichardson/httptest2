@@ -64,11 +64,11 @@ with_mock_api({
     options(httptest2.max.print = 3)
     on.exit(options(httptest2.max.print = NULL))
     expect_PUT(
-      request("http://httpbin.org/get") %>%
+      request("http://httpbin.not/get") %>%
         req_method("PUT") %>%
         req_body_json(list(test = TRUE)) %>%
         req_perform(),
-      "http://httpbin.org/get",
+      "http://httpbin.not/get",
       '{"t '
     )
   })
@@ -117,12 +117,12 @@ with_mock_api({
 
   test_that("mock API with http:// URL, not file path", {
     expect_GET(
-      request("http://httpbin.org/get") %>% req_perform(),
-      "http://httpbin.org/get"
+      request("http://httpbin.not/get") %>% req_perform(),
+      "http://httpbin.not/get"
     )
     expect_GET(
-      request("https://httpbin.org/get") %>% req_perform(),
-      "https://httpbin.org/get"
+      request("https://httpbin.not/get") %>% req_perform(),
+      "https://httpbin.not/get"
     )
     expect_identical(
       resp_body_json(request("http://example.com/get") %>% req_perform()),
@@ -136,26 +136,26 @@ with_mock_api({
   })
 
   test_that("POST with all body types", {
-    r <- request("http://httpbin.org/post") %>% req_method("POST")
+    r <- request("http://httpbin.not/post") %>% req_method("POST")
     expect_POST(
       r %>%
         req_body_raw("A simple text string") %>%
         req_perform(),
-      "http://httpbin.org/post",
+      "http://httpbin.not/post",
       "A simple text string "
     )
     expect_POST(
       r %>%
         req_body_form(x = "A simple text string") %>%
         req_perform(),
-      "http://httpbin.org/post",
+      "http://httpbin.not/post",
       "x=A%20simple%20text%20string "
     )
     expect_POST(
       r %>%
         req_body_json(data = list(x = "A simple text string")) %>%
         req_perform(),
-      "http://httpbin.org/post",
+      "http://httpbin.not/post",
       '{"x":"A simple text string"} '
     )
     file_to_upload <- tempfile()
@@ -164,7 +164,7 @@ with_mock_api({
       r %>%
         req_body_file(file_to_upload) %>%
         req_perform(),
-      "http://httpbin.org/post",
+      "http://httpbin.not/post",
       "File: ae2b1fca515949e5d54fb22b8ed95575"
     )
 
@@ -175,7 +175,7 @@ with_mock_api({
           b = curl::form_data("strings")
         ) %>%
         req_perform(),
-      "http://httpbin.org/post",
+      "http://httpbin.not/post",
       "Multipart form:
   a = File: ae2b1fca515949e5d54fb22b8ed95575
   b = strings"

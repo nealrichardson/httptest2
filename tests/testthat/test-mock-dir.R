@@ -3,13 +3,13 @@ test_that("with_mock_dir works when the directory with mock files exists", {
   # The directory exists, so we'll read mocks from it
   dir.create(temporary_dir)
   # Put mocks in it
-  file.copy(testthat::test_path("httpbin.org"), temporary_dir, recursive = TRUE)
+  file.copy(testthat::test_path("httpbin.not"), temporary_dir, recursive = TRUE)
 
   current_mock_paths <- .mockPaths()
   with_mock_dir(temporary_dir, {
     # There's nothing on the mock paths other than our mock dir
     expect_identical(.mockPaths(), temporary_dir)
-    expect_no_request(resp <- request("http://httpbin.org/status/204") %>% req_perform())
+    expect_no_request(resp <- request("http://httpbin.not/status/204") %>% req_perform())
     # We've read from the mock
     expect_equal(resp_headers(resp)$date, "Sat, 24 Feb 2018 00:22:11 GMT")
   })

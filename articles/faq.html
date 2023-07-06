@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">httptest2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9000</span>
       </span>
     </div>
 
@@ -113,9 +113,9 @@
 
     
     
-<div class="section level3">
-<h3 id="where-are-my-mocks-recorded">Where are my mocks recorded?<a class="anchor" aria-label="anchor" href="#where-are-my-mocks-recorded"></a>
-</h3>
+<div class="section level2">
+<h2 id="where-are-my-mocks-recorded">Where are my mocks recorded?<a class="anchor" aria-label="anchor" href="#where-are-my-mocks-recorded"></a>
+</h2>
 <p>By default, <code><a href="../reference/with_mock_api.html">with_mock_api()</a></code> will look for and
 <code><a href="../reference/capture_requests.html">capture_requests()</a></code> will write mocks to your package’s
 <code>tests/testthat</code> directory, or else the current working
@@ -132,9 +132,9 @@ absolute path of the files as it writes them.</p>
 <code><a href="../reference/mockPaths.html">.mockPaths()</a></code> (like <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">base::.libPaths()</a></code>) to
 specify a different directory.</p>
 </div>
-<div class="section level3">
-<h3 id="how-do-i-fix-non-portable-file-paths">How do I fix “non-portable file paths”?<a class="anchor" aria-label="anchor" href="#how-do-i-fix-non-portable-file-paths"></a>
-</h3>
+<div class="section level2">
+<h2 id="how-do-i-fix-non-portable-file-paths">How do I fix “non-portable file paths”?<a class="anchor" aria-label="anchor" href="#how-do-i-fix-non-portable-file-paths"></a>
+</h2>
 <p>If you see this error in <code>R CMD build</code> or
 <code>R CMD check</code>, it means that there are file paths are longer
 than 100 characters, which can sometimes happen when you record

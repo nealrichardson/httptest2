@@ -1,5 +1,5 @@
 structure(list(
-  url = "http://httpbin.org/cookies", status_code = 200L,
+  url = "http://httpbin.not/cookies", status_code = 200L,
   headers = structure(list(
     connection = "keep-alive", server = "meinheld/0.6.1",
     date = "Thu, 14 Sep 2017 04:34:50 GMT", `content-type` = "application/json",
@@ -37,7 +37,7 @@ structure(list(
   ),
   request = structure(list(
     method = "GET",
-    url = "http://httpbin.org/cookies",
+    url = "http://httpbin.not/cookies",
     headers = c(Accept = "application/json, text/xml, application/xml, */*"),
     fields = NULL,
     options = list(

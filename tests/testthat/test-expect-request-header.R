@@ -142,7 +142,7 @@ without_internet({
   test_that("expect_request_header without_internet", {
     expect_GET(
       expect_request_header(
-        request("http://httpbin.org/") %>%
+        request("http://httpbin.not/") %>%
           req_headers(Accept = "image/jpeg") %>%
           req_perform(),
         Accept = "image/jpeg"
@@ -153,7 +153,7 @@ without_internet({
     expect_no_request(
       expect_failure(
         expect_request_header(
-          request("http://httpbin.org/") %>%
+          request("http://httpbin.not/") %>%
             req_headers(Accept = "image/png") %>%
             req_perform(),
           Accept = "image/jpeg"
@@ -164,16 +164,15 @@ without_internet({
 })
 
 test_that("expect_request_header works with actual network too", {
-  skip_if_disconnected()
   expect_request_header(
-    request("http://httpbin.org/") %>%
+    request(httpbin$url("/")) %>%
       req_headers(Accept = "image/jpeg") %>%
       req_perform(),
     Accept = "image/jpeg"
   )
   expect_failure(
     expect_request_header(
-      request("http://httpbin.org/") %>%
+      request(httpbin$url("/")) %>%
         req_headers(Accept = "image/png") %>%
         req_perform(),
       Accept = "image/jpeg"

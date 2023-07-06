@@ -1,4 +1,4 @@
-this_req <- request("http://httpbin.org/get") %>%
+this_req <- request("http://httpbin.not/get") %>%
   req_body_json(list(test = TRUE)) %>%
   req_method("POST")
 
@@ -11,8 +11,8 @@ with_mock_api({
       req_perform(this_req),
       paste(
         "An unexpected request was made:",
-        'POST http://httpbin.org/get {"test":true}',
-        "Expected mock file: httpbin.org/get-f171f3-POST.*",
+        'POST http://httpbin.not/get {"test":true}',
+        "Expected mock file: httpbin.not/get-f171f3-POST.*",
         sep = "\n"
       ),
       class = "httptest2_request",
@@ -58,7 +58,7 @@ with_mock_api({
     expect_no_request(rnorm(5))
     expect_failure(
       expect_no_request(
-        request("http://httpbin.org/get") %>% req_perform()
+        request("http://httpbin.not/get") %>% req_perform()
       ),
       "An unexpected request was made"
     )
@@ -75,13 +75,13 @@ without_internet({
     expect_failure(
       expect_POST(
         req_perform(this_req),
-        "http://httpbin.org/get",
+        "http://httpbin.not/get",
         '{"test":false}'
       ),
       paste(
         "An unexpected request was made:",
-        'Actual:   POST http://httpbin.org/get {"test":true}',
-        'Expected: POST http://httpbin.org/get {"test":false}',
+        'Actual:   POST http://httpbin.not/get {"test":true}',
+        'Expected: POST http://httpbin.not/get {"test":false}',
         sep = "\n  "
       ),
       fixed = TRUE
@@ -91,7 +91,7 @@ without_internet({
       req_perform(this_req),
       paste(
         "An unexpected request was made:",
-        'POST http://httpbin.org/get {"test":true}',
+        'POST http://httpbin.not/get {"test":true}',
         sep = "\n"
       ),
       class = "httptest2_request",

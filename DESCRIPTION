@@ -32,6 +32,7 @@ Suggests:
     pkgload,
     rmarkdown,
     spelling,
+    webfakes,
     xml2
 Language: en-US
 RoxygenNote: 7.1.2

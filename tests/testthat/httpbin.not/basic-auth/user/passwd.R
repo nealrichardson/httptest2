@@ -1,5 +1,5 @@
 structure(list(
-  method = "GET", url = "http://httpbin.org/basic-auth/user/passwd",
+  method = "GET", url = "http://httpbin.not/basic-auth/user/passwd",
   status_code = 200L, headers = structure(list(
     Date = "Tue, 30 Nov 2021 20:15:06 GMT",
     `Content-Type` = "application/json", `Content-Length` = "47",

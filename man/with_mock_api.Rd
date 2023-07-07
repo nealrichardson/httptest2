@@ -45,8 +45,8 @@ with_mock_api({
   # There are no mocks recorded in this example, so catch this request with
   # expect_GET()
   expect_GET(
-    request("https:/https://cran.r-project.org") \%>\% req_perform(),
-    "https://https://cran.r-project.org"
+    request("https://cran.r-project.org") \%>\% req_perform(),
+    "https://cran.r-project.org"
   )
   # For examples with mocks, see the tests and vignettes
 })

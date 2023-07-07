@@ -16,7 +16,8 @@ stop_mocking()
 \item{expr}{Code to run inside the mock context}
 }
 \value{
-\code{with_mock_api()} returns the result of \code{expr}. \code{use_mock_api()} and \code{stop_mocking()} return nothing.
+\code{with_mock_api()} returns the result of \code{expr}. \code{use_mock_api()} and
+\code{stop_mocking()} return nothing.
 }
 \description{
 In this context, HTTP requests attempt to load API response fixtures from
@@ -44,8 +45,8 @@ with_mock_api({
   # There are no mocks recorded in this example, so catch this request with
   # expect_GET()
   expect_GET(
-    request("http://httpbin.org/get") \%>\% req_perform(),
-    "http://httpbin.org/get"
+    request("https://cran.r-project.org") \%>\% req_perform(),
+    "https://cran.r-project.org"
   )
   # For examples with mocks, see the tests and vignettes
 })

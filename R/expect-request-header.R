@@ -5,12 +5,18 @@
 #' "live" HTTP requests.
 #'
 #' @param expr Code to evaluate
-#' @param ... Named headers to match. Values should either be a string (length-1 character), which will be passed to [testthat::expect_match()], or `NULL` to assert that the named header is not present in the request. To assert that a header is merely present in the request, without asserting anything about its contents, provide an empty string (`""`). Header names are always case-insensitive; header values will be matched using the following parameters:
+#' @param ... Named headers to match. Values should either be a string (length-1
+#' character), which will be passed to [testthat::expect_match()], or `NULL` to
+#' assert that the named header is not present in the request. To assert that a
+#' header is merely present in the request, without asserting anything about its
+#' contents, provide an empty string (`""`). Header names are always
+#' case-insensitive; header values will be matched using the following
+#' parameters:
 #' @inheritParams base::grepl
 #' @return The value of `expr` if there are no expectation failures
 #' @importFrom testthat expect_null expect_match
 #' @importFrom rlang is_string
-#' @examplesIf !httptest2:::currently_offline()
+#' @examplesIf FALSE
 #'
 #' library(httr2)
 #' expect_request_header(

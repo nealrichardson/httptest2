@@ -19,7 +19,8 @@
 #' want as long as you set the appropriate location with [.mockPaths()].
 #'
 #' @param expr Code to run inside the mock context
-#' @return `with_mock_api()` returns the result of `expr`. `use_mock_api()` and `stop_mocking()` return nothing.
+#' @return `with_mock_api()` returns the result of `expr`. `use_mock_api()` and
+#'  `stop_mocking()` return nothing.
 #' @export
 #' @examples
 #' library(httr2)
@@ -27,8 +28,8 @@
 #'   # There are no mocks recorded in this example, so catch this request with
 #'   # expect_GET()
 #'   expect_GET(
-#'     request("http://httpbin.org/get") %>% req_perform(),
-#'     "http://httpbin.org/get"
+#'     request("https://cran.r-project.org") %>% req_perform(),
+#'     "https://cran.r-project.org"
 #'   )
 #'   # For examples with mocks, see the tests and vignettes
 #' })

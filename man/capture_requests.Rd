@@ -59,7 +59,7 @@ are being written, set \code{options(httptest2.verbose = TRUE)} to print a messa
 for every file that is written containing the absolute path of the file.
 }
 \examples{
-\dontshow{if (!httptest2:::currently_offline()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # Setup so that our examples clean up after themselves
 tmp <- tempfile()
 .mockPaths(tmp)

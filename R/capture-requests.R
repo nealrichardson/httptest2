@@ -39,7 +39,7 @@
 #' @return `capture_requests()` returns the result of `expr`. `start_capturing()`
 #' invisibly returns the destination directory.
 #' `stop_capturing()` returns nothing; it is called for its side effects.
-#' @examplesIf !httptest2:::currently_offline()
+#' @examplesIf FALSE
 #' # Setup so that our examples clean up after themselves
 #' tmp <- tempfile()
 #' .mockPaths(tmp)

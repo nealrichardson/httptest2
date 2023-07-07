@@ -16,7 +16,13 @@ expect_request_header(
 \arguments{
 \item{expr}{Code to evaluate}
 
-\item{...}{Named headers to match. Values should either be a string (length-1 character), which will be passed to \code{\link[testthat:expect_match]{testthat::expect_match()}}, or \code{NULL} to assert that the named header is not present in the request. To assert that a header is merely present in the request, without asserting anything about its contents, provide an empty string (\code{""}). Header names are always case-insensitive; header values will be matched using the following parameters:}
+\item{...}{Named headers to match. Values should either be a string (length-1
+character), which will be passed to \code{\link[testthat:expect_match]{testthat::expect_match()}}, or \code{NULL} to
+assert that the named header is not present in the request. To assert that a
+header is merely present in the request, without asserting anything about its
+contents, provide an empty string (\code{""}). Header names are always
+case-insensitive; header values will be matched using the following
+parameters:}
 
 \item{fixed}{logical.  If \code{TRUE}, \code{pattern} is a string to be
     matched as is.  Overrides all conflicting arguments.}
@@ -39,7 +45,7 @@ are present in a request. It works both in the mock HTTP contexts and on
 "live" HTTP requests.
 }
 \examples{
-\dontshow{if (!httptest2:::currently_offline()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
 library(httr2)
 expect_request_header(

@@ -47,7 +47,7 @@ header_apply <- function(response, headers, FUN, ...) {
 within_body_text <- function(response, FUN) {
   # This could be applied to a httr2_request object;
   # only do work on a httr2_response
-  if (inherits(response, "httr2_response")) {
+  if (inherits(response, "httr2_response") && length(response$body)) {
     old <- resp_body_string(response)
     new <- FUN(old)
     response$body <- charToRaw(new)

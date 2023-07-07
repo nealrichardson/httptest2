@@ -170,6 +170,18 @@ with_mock_api({
   })
 })
 
+test_that("gsub_response handles empty response bodies (#20)", {
+  with_redactor(
+    function(resp) gsub_response(resp, "status", "code"),
+    capture_requests({
+      # Prior to the fix, the redactor errored here on retrieving an empty body
+      r <- request(httpbin$url("/status/204")) %>% req_perform()
+    })
+  )
+  # Nothing here
+  expect_length(r$body, 0)
+})
+
 test_that("chain_redactors", {
   f1 <- function(x) x * 4
   f2 <- ~ sum(c(., 3))

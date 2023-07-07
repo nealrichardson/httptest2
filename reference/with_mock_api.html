@@ -112,7 +112,8 @@ does.</p>
     <h2>Value</h2>
     
 
-<p><code>with_mock_api()</code> returns the result of <code>expr</code>. <code>use_mock_api()</code> and <code>stop_mocking()</code> return nothing.</p>
+<p><code>with_mock_api()</code> returns the result of <code>expr</code>. <code>use_mock_api()</code> and
+<code>stop_mocking()</code> return nothing.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -134,16 +135,16 @@ want as long as you set the appropriate location with <code><a href="mockPaths.h
 <span class="r-in"><span>  <span class="co"># There are no mocks recorded in this example, so catch this request with</span></span></span>
 <span class="r-in"><span>  <span class="co"># expect_GET()</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="expect_verb.html">expect_GET</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"http://httpbin.org/get"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"http://httpbin.org/get"</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"https://cran.r-project.org"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"https://cran.r-project.org"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># For examples with mocks, see the tests and vignettes</span></span></span>
 <span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-weight: bold;">&lt;error/httptest2_request&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in </span><span style="color: #5555FF; font-weight: bold;">`stop_request()`</span><span style="font-weight: bold;">:</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> An unexpected request was made:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GET http://httpbin.org/get</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected mock file: httpbin.org/get.*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GET https://cran.r-project.org</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected mock file: cran.r-project.org.*</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Backtrace:</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">     </span>▆</span>
@@ -188,7 +189,7 @@ want as long as you set the appropriate location with <code><a href="mockPaths.h
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 39. </span>│                                 <span style="color: #949494;">│       ├─testthat (local) .capture(...)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 40. </span>│                                 <span style="color: #949494;">│       │ └─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::withCallingHandlers(...)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 41. </span>│                                 <span style="color: #949494;">│       └─</span><span style="color: #949494; font-weight: bold;">rlang</span><span style="color: #949494;">::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 42. </span>│                                 <span style="color: #949494;">└─request("http://httpbin.org/get") %&gt;% req_perform()</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 42. </span>│                                 <span style="color: #949494;">└─request("https://cran.r-project.org") %&gt;% req_perform()</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 43. </span>└─httr2::req_perform(.)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 44. </span>  └─httptest2 (local) mock(req)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 45. </span>    └─<span style="color: #5555FF; font-weight: bold;">httptest2:::stop_request(</span>req<span style="color: #5555FF; font-weight: bold;">)</span></span>

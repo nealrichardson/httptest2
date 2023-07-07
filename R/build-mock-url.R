@@ -90,10 +90,7 @@ get_string_request_body <- function(req) {
       ), collapse = "\n  ")
       # add a newline at the end too
       b <- paste0(b, "\n")
-    } else if (inherits(req$body$data, c("httr2_path", "httr_path"))) {
-      # As of httr2 0.1.1, the class is called httr_path, but future-proof in
-      # case of future standardization
-      # https://github.com/r-lib/httr2/issues/99
+    } else if (inherits(req$body$data, "httr2_path")) {
       b <- paste("File:", digest(req$body$data, serialize = FALSE, file = TRUE))
     }
   }

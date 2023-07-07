@@ -130,11 +130,7 @@ load_response <- function(file, req) {
     response(
       url = req$url,
       method = req$method,
-      status_code = 204L,
-      # httr2's default for response() is body = NULL
-      # but all real requests seem to have body = raw(n)
-      # https://github.com/r-lib/httr2/issues/100
-      body = raw(0L)
+      status_code = 204L
     )
   } else {
     stop("Unsupported mock file extension: ", ext, call. = FALSE)

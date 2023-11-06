@@ -25,7 +25,7 @@ with_mock_api({
       request("api/NOTAFILE/") %>%
         req_url_query(a = 1) %>%
         req_perform(),
-      "api/NOTAFILE/?a=1"
+      "/api/NOTAFILE/?a=1"
     )
   })
   test_that("POST method reads from correct file", {

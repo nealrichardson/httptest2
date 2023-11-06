@@ -82,5 +82,5 @@ expect_request_header <- function(expr,
     }
   }
 
-  httr2::with_mock(header_mocker, expr)
+  with_mock(header_mocker, expr)
 }

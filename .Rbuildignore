@@ -13,3 +13,4 @@
 ^pkgdown$
 ^pkgdown.sh$
 ^\.github$
+^httptest2\.Rproj$

@@ -84,3 +84,11 @@ expect_request_header <- function(expr,
 
   with_mock(header_mocker, expr)
 }
+
+with_mock <- function(mock, code) {
+  if (httr2_1.0.0) {
+    httr2::with_mocked_responses(mock, code)
+  } else {
+    httr2::with_mock(mock, code)
+  }
+}

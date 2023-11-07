@@ -121,7 +121,7 @@ load_response <- function(file, req) {
   } else if (ext %in% names(EXT_TO_CONTENT_TYPE)) {
     response(
       url = req$url,
-      method = req$method,
+      method = get_request_method(req),
       headers = list(`Content-Type` = EXT_TO_CONTENT_TYPE[[ext]]),
       status_code = 200L,
       body = readBin(file, "raw", n = file.size(file))
@@ -129,7 +129,7 @@ load_response <- function(file, req) {
   } else if (ext == "204") {
     response(
       url = req$url,
-      method = req$method,
+      method = get_request_method(req),
       status_code = 204L
     )
   } else {

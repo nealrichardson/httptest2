@@ -138,6 +138,9 @@ load_response <- function(file, req) {
 }
 
 adapt_httr_response <- function(resp) {
+  # Restore httr2 1.0.0 cache
+  resp$cache <- new.env(parent = emptyenv())
+  
   if (inherits(resp, "httr2_response")) {
     return(resp)
   }

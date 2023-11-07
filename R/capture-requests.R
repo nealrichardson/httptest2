@@ -164,6 +164,8 @@ save_response <- function(response, file, simplify = TRUE) {
         class = "httr2_path"
       ))
     }
+    # Needed for httr2 1.0.0
+    response$cache <- quote(new.env(parent = emptyenv()))
 
     f <- file(dst_file, "wb", encoding = "UTF-8")
     on.exit(close(f))

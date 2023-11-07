@@ -1,4 +1,4 @@
-# httptest2 0.1.0.9000
+# httptest2 1.0.0
 
 * `capture_requests()` can be used without loading `library(httptest2)` (#22, @kforner)
 * `gsub_response()` safely redacts responses with an empty body (#28)

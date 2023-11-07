@@ -54,4 +54,4 @@
 #' @docType package
 #' @importFrom httr2 req_perform request
 #' @keywords internal
-NULL
+"_PACKAGE"

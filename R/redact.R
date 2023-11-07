@@ -101,7 +101,7 @@ gsub_response <- function(response, pattern, replacement, ...) {
 #' to `function (response) redact_headers(response, "X-Custom-Header")`. This
 #' allows you to do
 #' `set_redactor(~ redact_headers(., "X-Custom-Header"))`.
-#' @param expr Partial expression to turn into a function
+#' @param fmla Partial expression (a `formula`) to turn into a function
 #' @return A `function`.
 #' @rdname as-redactor
 #' @importFrom stats terms

@@ -3,6 +3,7 @@
 \docType{package}
 \name{httptest2}
 \alias{httptest2}
+\alias{httptest2-package}
 \title{\code{httptest2}: A Test Environment for HTTP Requests}
 \description{
 The \code{httptest2} package lets you test R code that wraps an API without
@@ -55,5 +56,24 @@ computers, use these recorded responses, allowing the document to regenerate
 without a network connection or API credentials. To record fresh API
 responses, delete the subfolder of cached responses and re-run. See
 \code{vignette("vignettes")} for more discussion and links to examples.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://enpiar.com/httptest2/}
+  \item \url{https://github.com/nealrichardson/httptest2}
+  \item Report bugs at \url{https://github.com/nealrichardson/httptest2/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Neal Richardson \email{neal.p.richardson@gmail.com} (\href{https://orcid.org/0009-0002-7992-3520}{ORCID})
+
+Other contributors:
+\itemize{
+  \item Jonathan Keane \email{jkeane@gmail.com} [contributor]
+  \item Maëlle Salmon \email{maelle.salmon@yahoo.se} (\href{https://orcid.org/0000-0002-2815-0399}{ORCID}) [contributor]
+}
+
 }
 \keyword{internal}

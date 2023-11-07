@@ -2,8 +2,8 @@
 
 * `capture_requests()` can be used without loading `library(httptest2)` (#22, @kforner)
 * `gsub_response()` safely redacts responses with an empty body (#28)
+* httr2 compatibility: workarounds for issues in `httr2 < 0.2` have been removed, and adaptations for `httr2 >= 1.0` added
 * Tests and examples no longer use `httpbin.org`
-* Workarounds for issues in `httr2 < 0.2` have been removed
 
 # httptest2 0.1.0
 

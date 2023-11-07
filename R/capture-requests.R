@@ -92,7 +92,7 @@ start_capturing <- function(simplify = TRUE) {
       } else {
         httptest2::save_response(
           redactor(resp),
-          file = httptest2:::build_mock_url(redactor(req)),
+          file = httptest2::build_mock_url(redactor(req)),
           simplify = simplify
         )
       }

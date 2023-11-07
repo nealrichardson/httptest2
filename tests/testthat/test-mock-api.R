@@ -1,12 +1,12 @@
 with_mock_api({
   test_that("Can load an object and file extension is added", {
-    a <- request("api/") %>% req_perform()
-    expect_identical(resp_body_json(a), list(value = "api/object1/"))
+    a <- request("https://test.api/") %>% req_perform()
+    expect_identical(resp_body_json(a), list(value = "https://test.api/object1/"))
     b <- request(resp_body_json(a)$value) %>% req_perform()
     expect_identical(resp_body_json(b), list(object = TRUE))
   })
   test_that("GET with query", {
-    obj <- request("api/object1/") %>%
+    obj <- request("https://test.api/object1/") %>%
       req_url_query(a = 1) %>%
       req_perform()
     expect_equal(
@@ -16,24 +16,27 @@ with_mock_api({
     )
   })
   test_that("GET with special characters", {
-    a <- request("api/x(y='1',z='2')") %>% req_perform()
+    a <- request("https://test.api/x(y='1',z='2')") %>% req_perform()
     expect_identical(resp_body_json(a), list(object = TRUE))
   })
   test_that("GET files that don't exist errors", {
-    expect_GET(request("api/NOTAFILE/") %>% req_perform(), "api/NOTAFILE/")
     expect_GET(
-      request("api/NOTAFILE/") %>%
+      request("https://test.api/NOTAFILE/") %>% req_perform(), 
+      "https://test.api/NOTAFILE/"
+    )
+    expect_GET(
+      request("https://test.api/NOTAFILE/") %>%
         req_url_query(a = 1) %>%
         req_perform(),
-      if (httr2_1.0.0) "/api/NOTAFILE/?a=1" else "api/NOTAFILE/?a=1"
+      "https://test.api/NOTAFILE/?a=1"
     )
   })
   test_that("POST method reads from correct file", {
-    b <- request("api/object1") %>%
+    b <- request("https://test.api/object1") %>%
       req_method("POST") %>%
       req_perform()
     expect_identical(resp_body_json(b), list(method = "POST"))
-    b2 <- request("api/object1") %>%
+    b2 <- request("https://test.api/object1") %>%
       req_method("POST") %>%
       req_headers(
         Accept = "application/json",
@@ -43,7 +46,7 @@ with_mock_api({
     expect_identical(resp_body_json(b2), list(method = "POST"))
   })
   test_that("Request body is appended to mock file path", {
-    p <- request("api/object1") %>%
+    p <- request("https://test.api/object1") %>%
       req_body_raw('{"a":1}', type = "application/json") %>%
       req_headers(
         Accept = "application/json"
@@ -51,7 +54,7 @@ with_mock_api({
       req_perform()
     expect_identical(resp_body_json(p), list(content = TRUE))
     expect_error(
-      request("api/object1") %>%
+      request("https://test.api/object1") %>%
         req_body_raw('{"b":2}', type = "application/json") %>%
         req_headers(
           Accept = "application/json"
@@ -74,44 +77,44 @@ with_mock_api({
   })
   test_that("Request body and query", {
     expect_PATCH(
-      request("api/object2?d=1") %>%
+      request("https://test.api/object2?d=1") %>%
         req_method("PATCH") %>%
         req_body_json(list(arg = 45)) %>%
         req_perform(),
-      'api/object2?d=1 {"arg":45}'
+      'https://test.api/object2?d=1 {"arg":45}'
     )
   })
   test_that("Other verbs error too", {
     expect_PUT(
-      request("api/") %>%
+      request("https://test.api/") %>%
         req_method("PUT") %>%
         req_perform(),
-      "api/"
+      "https://test.api/"
     )
     expect_PATCH(
-      request("api/") %>%
+      request("https://test.api/") %>%
         req_method("PATCH") %>%
         req_perform(),
-      "api/"
+      "https://test.api/"
     )
     expect_POST(
-      request("api/") %>%
+      request("https://test.api/") %>%
         req_method("POST") %>%
         req_perform(),
-      "api/"
+      "https://test.api/"
     )
     expect_POST(
-      request("api/") %>%
+      request("https://test.api/") %>%
         req_body_raw('{"arg":true}') %>%
         req_perform(),
-      "api/",
+      "https://test.api/",
       '{"arg":true}'
     )
     expect_DELETE(
-      request("api/") %>%
+      request("https://test.api/") %>%
         req_method("DELETE") %>%
         req_perform(),
-      "api/"
+      "https://test.api/"
     )
   })
 
@@ -242,7 +245,7 @@ test_that("load_response invalid extension handling", {
 
 test_that("mock_request code paths are covered (outside of trace)", {
   expect_s3_class(
-    mock_request(list(method = "GET", url = "api/")),
+    mock_request(list(method = "GET", url = "https://test.api/")),
     "httr2_response"
   )
   expect_s3_class(

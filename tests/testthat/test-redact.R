@@ -3,18 +3,18 @@ d <- tempfile()
 with_mock_api({
   # Auth headers aren't recorded
   capture_while_mocking(simplify = FALSE, path = d, {
-    a <- request("api/") %>%
+    a <- request("https://test.api/") %>%
       req_headers(`Authorization` = "Bearer token") %>%
       req_perform()
   })
   test_that("The mock file does not have the request headers", {
     # In httr2, response objects do not include the request,
     # so by construction there won't be request headers
-    expect_false(any(grepl("Bearer token", readLines(file.path(d, "api.R")))))
+    expect_false(any(grepl("Bearer token", readLines(file.path(d, "test.api.R")))))
   })
   test_that("And the redacted .R mock can be loaded", {
     with_mock_path(d, {
-      b <- request("api/") %>%
+      b <- request("https://test.api/") %>%
         req_headers(`Authorization` = "Bearer token") %>%
         req_perform()
     })
@@ -131,17 +131,17 @@ with_mock_api({
     expect_identical(resp_body_json(r), list(loaded = TRUE))
   })
 
-  a <- request("api/") %>%
+  a <- request("https://test.api/") %>%
     req_headers(`Authorization` = "Bearer token") %>%
     req_perform()
   test_that("gsub_response", {
     asub <- gsub_response(a, "api", "OTHER")
-    expect_identical(asub$url, "OTHER/")
-    expect_identical(resp_body_json(asub), list(value = "OTHER/object1/"))
+    expect_identical(asub$url, "https://test.OTHER/")
+    expect_identical(resp_body_json(asub), list(value = "https://test.OTHER/object1/"))
   })
   test_that("as.redactor", {
     a2 <- prepare_redactor(~ gsub_response(., "api", "OTHER"))(a)
-    expect_identical(resp_body_json(a2), list(value = "OTHER/object1/"))
+    expect_identical(resp_body_json(a2), list(value = "https://test.OTHER/object1/"))
   })
 
   loc <- request("http://httpbin.not/response-headers") %>%

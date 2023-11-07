@@ -1,19 +1,19 @@
 with_mock_api({
   test_that("expect_request_header with mock API", {
     expect_request_header(
-      request("api/object1/") %>%
+      request("https://test.api/object1/") %>%
         req_headers(Accept = "image/jpeg") %>%
         req_perform(),
       accept = "image/jpeg"
     )
     expect_request_header(
-      request("api/object1/") %>%
+      request("https://test.api/object1/") %>%
         req_headers(Accept = "image/jpeg", `X-Stuff` = "more") %>%
         req_perform(),
       accept = ""
     )
     expect_request_header(
-      request("api/object1/") %>%
+      request("https://test.api/object1/") %>%
         req_headers(Accept = "image/jpeg", `X-Stuff` = "more") %>%
         req_perform(),
       Accept = "image/jpeg",
@@ -22,7 +22,7 @@ with_mock_api({
     )
     expect_failure(
       expect_request_header(
-        request("api/object1/") %>%
+        request("https://test.api/object1/") %>%
           req_headers(Accept = "image/png") %>%
           req_perform(),
         accept = "image/jpeg"
@@ -31,7 +31,7 @@ with_mock_api({
     )
     expect_failure(
       expect_request_header(
-        request("api/object1/") %>%
+        request("https://test.api/object1/") %>%
           req_headers(Accept = "image/png") %>%
           req_perform(),
         accept = NULL
@@ -42,14 +42,14 @@ with_mock_api({
 
   test_that("Args passed to expect_match", {
     expect_request_header(
-      request("api/object1/") %>%
+      request("https://test.api/object1/") %>%
         req_headers(Accept = "image/jpeg") %>%
         req_perform(),
       accept = "image.*"
     )
     expect_failure(
       expect_request_header(
-        request("api/object1/") %>%
+        request("https://test.api/object1/") %>%
           req_headers(Accept = "image/jpeg") %>%
           req_perform(),
         accept = "image.*",
@@ -57,7 +57,7 @@ with_mock_api({
       )
     )
     expect_request_header(
-      request("api/object1/") %>%
+      request("https://test.api/object1/") %>%
         req_headers(Accept = "image/jpeg") %>%
         req_perform(),
       accept = "IMAGE",
@@ -65,21 +65,21 @@ with_mock_api({
     )
     expect_failure(
       expect_request_header(
-        request("api/object1/") %>%
+        request("https://test.api/object1/") %>%
           req_headers(Accept = "image/jpeg") %>%
           req_perform(),
         accept = "IMAGE"
       )
     )
     expect_request_header(
-      request("api/object1/") %>%
+      request("https://test.api/object1/") %>%
         req_headers(Accept = "image/jpeg") %>%
         req_perform(),
       accept = "image.*",
       perl = TRUE
     )
     expect_request_header(
-      request("api/object1/") %>%
+      request("https://test.api/object1/") %>%
         req_headers(Accept = "image/jpeg") %>%
         req_perform(),
       accept = "image",
@@ -90,7 +90,7 @@ with_mock_api({
   test_that("Input validation", {
     expect_error(
       expect_request_header(
-        request("api/object1/") %>%
+        request("https://test.api/object1/") %>%
           req_headers(Accept = "image/png") %>%
           req_perform()
       ),
@@ -98,7 +98,7 @@ with_mock_api({
     )
     expect_error(
       expect_request_header(
-        request("api/object1/") %>%
+        request("https://test.api/object1/") %>%
           req_headers(Accept = "image/png") %>%
           req_perform(),
         "image/png"
@@ -107,7 +107,7 @@ with_mock_api({
     )
     expect_error(
       expect_request_header(
-        request("api/object1/") %>%
+        request("https://test.api/object1/") %>%
           req_headers(Accept = "image/png") %>%
           req_perform(),
         accept = "image/png",
@@ -117,7 +117,7 @@ with_mock_api({
     )
     expect_error(
       expect_request_header(
-        request("api/object1/") %>%
+        request("https://test.api/object1/") %>%
           req_headers(Accept = "image/png") %>%
           req_perform(),
         accept = c("image", "/png")
@@ -127,7 +127,7 @@ with_mock_api({
     )
     expect_error(
       expect_request_header(
-        request("api/object1/") %>%
+        request("https://test.api/object1/") %>%
           req_headers(Accept = "image/png") %>%
           req_perform(),
         accept = c(12, 34)

@@ -135,12 +135,12 @@ with_mock_api({
   test_that("Recording requests even with the mock API", {
     capture_while_mocking(path = d2, {
       request("http://example.com/get/") %>% req_perform()
-      request("api/object1/") %>% req_perform()
+      request("https://test.api/object1/") %>% req_perform()
       request("http://httpbin.not/status/204/") %>% req_perform()
     })
     expect_setequal(
       dir(d2, recursive = TRUE),
-      c("example.com/get.json", "api/object1.json", "httpbin.not/status/204.204")
+      c("example.com/get.json", "test.api/object1.json", "httpbin.not/status/204.204")
     )
     expect_identical(
       readLines(file.path(d2, "example.com/get.json")),
@@ -169,13 +169,13 @@ with_mock_api({
     with_mock_path(d3, {
       capture_while_mocking(simplify = FALSE, {
         request("http://example.com/get/") %>% req_perform()
-        request("api/object1/") %>% req_perform()
+        request("https://test.api/object1/") %>% req_perform()
         request("http://httpbin.not/status/204/") %>% req_perform()
       })
     })
     expect_setequal(
       dir(d3, recursive = TRUE),
-      c("example.com/get.R", "api/object1.R", "httpbin.not/status/204.R")
+      c("example.com/get.R", "test.api/object1.R", "httpbin.not/status/204.R")
     )
     response <- source(file.path(d3, "example.com/get.R"))$value
     expect_s3_class(response, "httr2_response")

@@ -22,14 +22,14 @@ with_mock_api({
 
   test_that("Request body and query are appended to the mock path", {
     expect_error(
-      request("api/object2?d=1") %>%
+      request("https://test.api/object2?d=1") %>%
         req_method("PATCH") %>%
         req_body_json(list(arg = 45)) %>%
         req_perform(),
       paste(
         "An unexpected request was made:",
-        'PATCH api/object2?d=1 {"arg":45}',
-        "Expected mock file: api/object2-899b0e-3d8d62-PATCH.*",
+        'PATCH https://test.api/object2?d=1 {"arg":45}',
+        "Expected mock file: test.api/object2-899b0e-3d8d62-PATCH.*",
         sep = "\n"
       ),
       class = "httptest2_request",

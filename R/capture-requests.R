@@ -126,10 +126,14 @@ save_response <- function(response, file, simplify = TRUE) {
   ct <- resp_content_type(response)
   status <- resp_status(response)
   if (simplify && status == 200 && ct %in% names(CONTENT_TYPE_TO_EXT)) {
-    cont <- resp_body_string(response)
-    if (ct == "application/json") {
-      # Prettify
-      cont <- prettify(cont)
+    if (length(response$body)) {
+      cont <- resp_body_string(response)
+      if (ct == "application/json") {
+        # Prettify
+        cont <- prettify(cont)
+      }
+    } else {
+      cont <- character()
     }
     dst_file <- paste(dst_file, CONTENT_TYPE_TO_EXT[[ct]], sep = ".")
     cat_wb(cont, file = dst_file)

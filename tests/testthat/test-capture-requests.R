@@ -53,6 +53,7 @@ test_that("We can record a series of requests (a few ways)", {
   teapot <- source(file.path(d, httpbin_mock_url, "status", "418.R"))$value
   expect_s3_class(teapot, "httr2_response")
   expect_identical(resp_status(teapot), 418L)
+  expect_false("request" %in% names(teapot))
   # Make sure that our .html file has HTML
   expect_true(any(grepl(
     "</body>",

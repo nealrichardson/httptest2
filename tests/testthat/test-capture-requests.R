@@ -43,7 +43,7 @@ test_that("We can record a series of requests (a few ways)", {
     "httpbin.org/image/webp.R-FILE", # The `write_disk` location
     "httpbin.org/put-PUT.json", # Not a GET, but returns 200
     "httpbin.org/response-headers-ac4928.json",
-    "httpbin.org/status/200.txt", # 200 response, so .txt
+    "httpbin.org/status/200.txt", # empty 200 response "text/plain", so .txt
     "httpbin.org/status/202.R", # Not 200 response, so .R
     "httpbin.org/status/418.R" # Not 200 response, so .R
   )

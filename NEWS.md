@@ -1,6 +1,7 @@
 # httptest2 1.0.0.9000
 
 * `request` is now removed when saving `httr2_response` objects. In earlier versions of `httr2`, requests were not included in responses, but in httr2 1.0.0, [they were added](https://github.com/r-lib/httr2/pull/359) in order to improve error messages. *If you recorded any responses with httr2 >= 1.0 and httptest2 prior to this version, you may have leaked auth secrets: this would happen if your requests included auth information (as in an `Authentication` header), and the response was saved in a .R file, not simplified to .json or other response-body-only formats. Please inspect your recorded responses and invalidate any tokens that were exposed.*
+* `save_response` now works with `simplify = TRUE` and empty body responses (#37, @jmaspons)
 
 # httptest2 1.0.0
 

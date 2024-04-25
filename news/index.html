@@ -86,6 +86,8 @@
 <ul><li>
 <code>request</code> is now removed when saving <code>httr2_response</code> objects. In earlier versions of <code>httr2</code>, requests were not included in responses, but in httr2 1.0.0, <a href="https://github.com/r-lib/httr2/pull/359" class="external-link">they were added</a> in order to improve error messages. <em>If you recorded any responses with httr2 &gt;= 1.0 and httptest2 prior to this version, you may have leaked auth secrets: this would happen if your requests included auth information (as in an <code>Authentication</code> header), and the response was saved in a .R file, not simplified to .json or other response-body-only formats. Please inspect your recorded responses and invalidate any tokens that were exposed.</em>
 </li>
+<li>
+<code><a href="../reference/save_response.html">save_response()</a></code> now works with <code>simplify = TRUE</code> when the response body is empty (<a href="https://github.com/nealrichardson/httptest2/issues/37" class="external-link">#37</a>, <a href="https://github.com/jmaspons" class="external-link">@jmaspons</a>)</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.0.0" id="httptest2-100">httptest2 1.0.0<small>2023-11-07</small><a class="anchor" aria-label="anchor" href="#httptest2-100"></a></h2>

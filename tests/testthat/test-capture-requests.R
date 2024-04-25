@@ -30,6 +30,7 @@ test_that("We can record a series of requests (a few ways)", {
     r7 <<- request(httpbin$url("/image/webp")) %>%
       req_perform(path = webp_file)
     r8 <<- request(httpbin$url("/status/202")) %>% req_perform()
+    r9 <<- request(httpbin$url("/status/200")) %>% req_perform()
     stop_capturing()
   })
 
@@ -42,6 +43,7 @@ test_that("We can record a series of requests (a few ways)", {
     "httpbin.org/image/webp.R-FILE", # The `write_disk` location
     "httpbin.org/put-PUT.json", # Not a GET, but returns 200
     "httpbin.org/response-headers-ac4928.json",
+    "httpbin.org/status/200.txt", # 200 response, so .txt
     "httpbin.org/status/202.R", # Not 200 response, so .R
     "httpbin.org/status/418.R" # Not 200 response, so .R
   )
@@ -91,6 +93,7 @@ test_that("We can then load the mocks it stores", {
       m7 <- request(httpbin$url("/image/webp")) %>%
         req_perform(path = mock_webp_file)
       m8 <- request(httpbin$url("/status/202")) %>% req_perform()
+      m9 <- request(httpbin$url("/status/200")) %>% req_perform()
     })
   })
   expect_identical(resp_body_json(m1), resp_body_json(r1))
@@ -108,6 +111,9 @@ test_that("We can then load the mocks it stores", {
   expect_identical(resp_body_json(m6), content_r6)
   expect_identical(resp_body_raw(m7), content_r7)
   expect_equal(resp_status(m8), 202)
+  expect_equal(resp_status(m9), 200)
+  expect_equal(resp_content_type(m9), "text/plain")
+  expect_false(resp_has_body(m9))
 })
 
 test_that("write_disk mocks can be reloaded even if the mock directory moves", {

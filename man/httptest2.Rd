@@ -2,8 +2,8 @@
 % Please edit documentation in R/httptest2.R
 \docType{package}
 \name{httptest2}
-\alias{httptest2}
 \alias{httptest2-package}
+\alias{httptest2}
 \title{\code{httptest2}: A Test Environment for HTTP Requests}
 \description{
 The \code{httptest2} package lets you test R code that wraps an API without

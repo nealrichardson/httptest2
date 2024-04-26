@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">httptest2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
@@ -82,7 +82,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.0.0.9000" id="httptest2-1009000">httptest2 1.0.0.9000<a class="anchor" aria-label="anchor" href="#httptest2-1009000"></a></h2>
+<h2 class="page-header" data-toc-text="1.1.0" id="httptest2-110">httptest2 1.1.0<a class="anchor" aria-label="anchor" href="#httptest2-110"></a></h2>
 <ul><li>
 <code>request</code> is now removed when saving <code>httr2_response</code> objects. In earlier versions of <code>httr2</code>, requests were not included in responses, but in httr2 1.0.0, <a href="https://github.com/r-lib/httr2/pull/359" class="external-link">they were added</a> in order to improve error messages. <em>If you recorded any responses with httr2 &gt;= 1.0 and httptest2 prior to this version, you may have leaked auth secrets: this would happen if your requests included auth information (as in an <code>Authentication</code> header), and the response was saved in a .R file, not simplified to .json or other response-body-only formats. Please inspect your recorded responses and invalidate any tokens that were exposed.</em>
 </li>

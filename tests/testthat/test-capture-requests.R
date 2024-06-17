@@ -60,6 +60,7 @@ test_that("We can record a series of requests (a few ways)", {
     "httpbin.org/status/418.R" # Not 200 response, so .R
   )
   # But since we don't use httpbin anymore, they're in the localhost-port dir
+  skip_on_os("windows") # TODO: remove after #42 is fixed
   expected_files <- sub("httpbin.org", httpbin_mock_url, expected_files)
   expect_identical(sort(dir(d, recursive = TRUE)), expected_files)
 

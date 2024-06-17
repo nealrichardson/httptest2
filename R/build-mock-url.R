@@ -79,7 +79,7 @@ get_string_request_body <- function(req) {
         if (inherits(x, "form_file")) {
           # hash the file contents
           paste("File:", digest(x$path, serialize = FALSE, file = TRUE))
-        } else if (inherits(x, "form_data")){
+        } else if (inherits(x, "form_data")) {
           rawToChar(x$value)
         } else {
           # assume string

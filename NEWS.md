@@ -1,6 +1,6 @@
 # httptest2 1.1.0.9000
 
-* `build_mock_url()` now works with multipart body request containing strings (#40, @jmaspons)
+* `build_mock_url()` now works with multipart body request containing character strings or raw data (#40, @jmaspons)
 
 # httptest2 1.1.0
 

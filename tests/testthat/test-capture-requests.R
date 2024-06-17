@@ -37,7 +37,8 @@ test_that("We can record a series of requests (a few ways)", {
       req_body_multipart(
         file = curl::form_file(file_path),
         string = "some text",
-        form_data = curl::form_data("form data")
+        form_data = curl::form_data("form data"),
+        raw_data = charToRaw("raw data")
       ) %>%
       req_method("POST") %>%
       req_perform()
@@ -51,7 +52,7 @@ test_that("We can record a series of requests (a few ways)", {
     "httpbin.org/get.json",
     "httpbin.org/image/webp.R", # Not a simplifiable format, so .R
     "httpbin.org/image/webp.R-FILE", # The `write_disk` location
-    "httpbin.org/post-40b03d-POST.json",
+    "httpbin.org/post-4f024d-POST.json",
     "httpbin.org/put-PUT.json", # Not a GET, but returns 200
     "httpbin.org/response-headers-ac4928.json",
     "httpbin.org/status/200.txt", # empty 200 response "text/plain", so .txt
@@ -109,7 +110,8 @@ test_that("We can then load the mocks it stores", {
         req_body_multipart(
           file = curl::form_file(file_path),
           string = "some text",
-          form_data = curl::form_data("form data")
+          form_data = curl::form_data("form data"),
+          raw_data = charToRaw("raw data")
         ) %>%
         req_method("POST") %>%
         req_perform()

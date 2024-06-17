@@ -82,7 +82,7 @@ get_string_request_body <- function(req) {
         } else if (inherits(x, "form_data")) {
           rawToChar(x$value)
         } else {
-          # assume string
+          # assume character string or raw
           x
         }
       })

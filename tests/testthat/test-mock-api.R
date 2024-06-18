@@ -175,13 +175,17 @@ with_mock_api({
       r %>%
         req_body_multipart(
           a = curl::form_file(file_to_upload),
-          b = curl::form_data("strings")
+          b = curl::form_data("strings"),
+          c = "some text",
+          d = charToRaw("raw data")
         ) %>%
         req_perform(),
       "http://httpbin.not/post",
       "Multipart form:
   a = File: ae2b1fca515949e5d54fb22b8ed95575
-  b = strings"
+  b = strings
+  c = some text
+  d = as.raw(c(0x72, 0x61, 0x77, 0x20, 0x64, 0x61, 0x74, 0x61))"
     )
   })
 

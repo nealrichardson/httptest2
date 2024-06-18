@@ -2,7 +2,7 @@ d <- tempfile()
 dl_file <- tempfile()
 webp_file <- tempfile()
 file_path <- tempfile()
-writeLines(letters[1:6], file_path)
+cat(letters[1:6], file = file_path)
 
 # The webfake URL will be something like 127.0.0.1:port, and port may vary
 # so the mock paths will be different every time it runs
@@ -52,7 +52,7 @@ test_that("We can record a series of requests (a few ways)", {
     "httpbin.org/get.json",
     "httpbin.org/image/webp.R", # Not a simplifiable format, so .R
     "httpbin.org/image/webp.R-FILE", # The `write_disk` location
-    "httpbin.org/post-4f024d-POST.json",
+    "httpbin.org/post-48db67-POST.json",
     "httpbin.org/put-PUT.json", # Not a GET, but returns 200
     "httpbin.org/response-headers-ac4928.json",
     "httpbin.org/status/200.txt", # empty 200 response "text/plain", so .txt

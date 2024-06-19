@@ -1,6 +1,8 @@
 d <- tempfile()
 dl_file <- tempfile()
 webp_file <- tempfile()
+file_path <- tempfile()
+cat(letters[1:6], file = file_path)
 
 # The webfake URL will be something like 127.0.0.1:port, and port may vary
 # so the mock paths will be different every time it runs
@@ -31,6 +33,15 @@ test_that("We can record a series of requests (a few ways)", {
       req_perform(path = webp_file)
     r8 <<- request(httpbin$url("/status/202")) %>% req_perform()
     r9 <<- request(httpbin$url("/status/200")) %>% req_perform()
+    r10 <<- request(httpbin$url("/post")) %>%
+      req_body_multipart(
+        file = curl::form_file(file_path),
+        string = "some text",
+        form_data = curl::form_data("form data"),
+        raw_data = charToRaw("raw data")
+      ) %>%
+      req_method("POST") %>%
+      req_perform()
     stop_capturing()
   })
 
@@ -41,6 +52,7 @@ test_that("We can record a series of requests (a few ways)", {
     "httpbin.org/get.json",
     "httpbin.org/image/webp.R", # Not a simplifiable format, so .R
     "httpbin.org/image/webp.R-FILE", # The `write_disk` location
+    "httpbin.org/post-48db67-POST.json",
     "httpbin.org/put-PUT.json", # Not a GET, but returns 200
     "httpbin.org/response-headers-ac4928.json",
     "httpbin.org/status/200.txt", # empty 200 response "text/plain", so .txt
@@ -94,6 +106,15 @@ test_that("We can then load the mocks it stores", {
         req_perform(path = mock_webp_file)
       m8 <- request(httpbin$url("/status/202")) %>% req_perform()
       m9 <- request(httpbin$url("/status/200")) %>% req_perform()
+      m10 <- request(httpbin$url("/post")) %>%
+        req_body_multipart(
+          file = curl::form_file(file_path),
+          string = "some text",
+          form_data = curl::form_data("form data"),
+          raw_data = charToRaw("raw data")
+        ) %>%
+        req_method("POST") %>%
+        req_perform()
     })
   })
   expect_identical(resp_body_json(m1), resp_body_json(r1))
@@ -114,6 +135,7 @@ test_that("We can then load the mocks it stores", {
   expect_equal(resp_status(m9), 200)
   expect_equal(resp_content_type(m9), "text/plain")
   expect_false(resp_has_body(m9))
+  expect_identical(resp_body_json(m10), resp_body_json(r10))
 })
 
 test_that("write_disk mocks can be reloaded even if the mock directory moves", {

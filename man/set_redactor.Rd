@@ -42,7 +42,7 @@ vignettes), the function will be used automatically.
 }
 \examples{
 # Shorten UUIDs in response body/URLs to their first 6 digits:
-set_redactor(function(resp) gsub_response(resp, "([0-9a-f]{6}[0-9a-f]{26}", "\\\\1"))
+set_redactor(function(resp) gsub_response(resp, "([0-9a-f]{6})[0-9a-f]{26}", "\\\\1"))
 # Restore the default
 set_redactor(redact_cookies)
 }

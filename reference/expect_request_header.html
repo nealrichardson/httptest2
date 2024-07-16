@@ -11,7 +11,7 @@ are present in a request. It works both in the mock HTTP contexts and on
 
   gtag('config', 'UA-104182925-1');
 </script></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-reference-topic">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -39,7 +39,7 @@ are present in a request. It works both in the mock HTTP contexts and on
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
@@ -61,26 +61,26 @@ are present in a request. It works both in the mock HTTP contexts and on
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/nealrichardson/httptest2" class="external-link">
     <span class="fa fa-github fa-lg"></span>
-     
+
   </a>
 </li>
 <li>
   <a href="https://enpiar.com" class="external-link">
     <span class="fa fa-home fa-lg"></span>
-     
+
   </a>
 </li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Test that an HTTP request is made with a header</h1>
-    <small class="dont-index">Source: <a href="https://github.com/nealrichardson/httptest2/blob/HEAD/R/expect-request-header.R" class="external-link"><code>R/expect-request-header.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/nealrichardson/httptest2/blob/main/R/expect-request-header.R" class="external-link"><code>R/expect-request-header.R</code></a></small>
     <div class="hidden name"><code>expect_request_header.Rd</code></div>
     </div>
 
@@ -103,11 +103,13 @@ are present in a request. It works both in the mock HTTP contexts and on
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>expr</dt>
+
+
+<dl><dt id="arg-expr">expr<a class="anchor" aria-label="anchor" href="#arg-expr"></a></dt>
 <dd><p>Code to evaluate</p></dd>
 
 
-<dt>...</dt>
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Named headers to match. Values should either be a string (length-1
 character), which will be passed to <code><a href="https://testthat.r-lib.org/reference/expect_match.html" class="external-link">testthat::expect_match()</a></code>, or <code>NULL</code> to
 assert that the named header is not present in the request. To assert that a
@@ -117,21 +119,21 @@ case-insensitive; header values will be matched using the following
 parameters:</p></dd>
 
 
-<dt>fixed</dt>
+<dt id="arg-fixed">fixed<a class="anchor" aria-label="anchor" href="#arg-fixed"></a></dt>
 <dd><p>logical.  If <code>TRUE</code>, <code>pattern</code> is a string to be
     matched as is.  Overrides all conflicting arguments.</p></dd>
 
 
-<dt>ignore.case</dt>
+<dt id="arg-ignore-case">ignore.case<a class="anchor" aria-label="anchor" href="#arg-ignore-case"></a></dt>
 <dd><p>if <code>FALSE</code>, the pattern matching is <em>case
       sensitive</em> and if <code>TRUE</code>, case is ignored during matching.</p></dd>
 
 
-<dt>perl</dt>
+<dt id="arg-perl">perl<a class="anchor" aria-label="anchor" href="#arg-perl"></a></dt>
 <dd><p>logical.  Should Perl-compatible regexps be used?</p></dd>
 
 
-<dt>useBytes</dt>
+<dt id="arg-usebytes">useBytes<a class="anchor" aria-label="anchor" href="#arg-usebytes"></a></dt>
 <dd><p>logical.  If <code>TRUE</code> the matching is done
     byte-by-byte rather than character-by-character.  See
     ‘Details’.</p></dd>
@@ -139,9 +141,7 @@ parameters:</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>The value of <code>expr</code> if there are no expectation failures</p>
+    <p>The value of <code>expr</code> if there are no expectation failures</p>
     </div>
 
     <div id="ref-examples">
@@ -177,15 +177,15 @@ parameters:</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 

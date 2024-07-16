@@ -12,7 +12,7 @@ responses that capture_requests() saves."><!-- mathjax --><script src="https://c
 
   gtag('config', 'UA-104182925-1');
 </script></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-reference-topic">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -40,7 +40,7 @@ responses that capture_requests() saves."><!-- mathjax --><script src="https://c
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
@@ -62,26 +62,26 @@ responses that capture_requests() saves."><!-- mathjax --><script src="https://c
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/nealrichardson/httptest2" class="external-link">
     <span class="fa fa-github fa-lg"></span>
-     
+
   </a>
 </li>
 <li>
   <a href="https://enpiar.com" class="external-link">
     <span class="fa fa-home fa-lg"></span>
-     
+
   </a>
 </li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Remove sensitive content from HTTP responses</h1>
-    <small class="dont-index">Source: <a href="https://github.com/nealrichardson/httptest2/blob/HEAD/R/redact.R" class="external-link"><code>R/redact.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/nealrichardson/httptest2/blob/main/R/redact.R" class="external-link"><code>R/redact.R</code></a></small>
     <div class="hidden name"><code>redact.Rd</code></div>
     </div>
 
@@ -102,16 +102,18 @@ responses that <code><a href="capture_requests.html">capture_requests()</a></cod
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>response</dt>
+
+
+<dl><dt id="arg-response">response<a class="anchor" aria-label="anchor" href="#arg-response"></a></dt>
 <dd><p>An <code>httr2_response</code> or <code>httr2_request</code> object to sanitize.</p></dd>
 
 
-<dt>headers</dt>
+<dt id="arg-headers">headers<a class="anchor" aria-label="anchor" href="#arg-headers"></a></dt>
 <dd><p>For <code>redact_headers()</code>, a character vector of header names to
 sanitize.</p></dd>
 
 
-<dt>FUN</dt>
+<dt id="arg-fun">FUN<a class="anchor" aria-label="anchor" href="#arg-fun"></a></dt>
 <dd><p>For <code>within_body_text()</code>, a function that takes as its argument a
 character vector and returns a modified version of that. This function will
 be applied to the text of the response's body.</p></dd>
@@ -119,12 +121,8 @@ be applied to the text of the response's body.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>All redacting functions return a well-formed <code>httr2_response</code></p>
-
-
-<p>or <code>httr2_request</code> object.</p>
+    <p>All redacting functions return a well-formed <code>httr2_response</code>
+or <code>httr2_request</code> object.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -153,15 +151,15 @@ and manages the parsing of the raw (binary) data in the <code>httr_response</cod
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 

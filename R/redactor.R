@@ -30,7 +30,7 @@
 #' @seealso For further details on how to redact responses, see `vignette("redacting", package = "httptest2")`.
 #' @examples
 #' # Shorten UUIDs in response body/URLs to their first 6 digits:
-#' set_redactor(function(resp) gsub_response(resp, "([0-9a-f]{6}[0-9a-f]{26}", "\\1"))
+#' set_redactor(function(resp) gsub_response(resp, "([0-9a-f]{6})[0-9a-f]{26}", "\\1"))
 #' # Restore the default
 #' set_redactor(redact_cookies)
 set_redactor <- function(FUN) {

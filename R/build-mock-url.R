@@ -68,34 +68,44 @@ build_mock_url <- function(req) {
 }
 
 get_string_request_body <- function(req) {
+  # TODO: if you refactor this in the future, you can now use req$body$type
+  # to determine the body type, and req_get_body() to get the actual body that
+  # will be sent to the server.
+
   # Returns a string if the request has a body, NULL otherwise
   body_apply <- utils::getFromNamespace("req_body_apply", "httr2")
   req <- body_apply(req)
 
+  # empty/raw/string/json/form
   b <- request_postfields(req)
-  if (is.null(b)) {
-    if (length(req$fields)) {
-      b <- lapply(req$fields, function(x) {
-        if (inherits(x, "form_file")) {
-          # hash the file contents
-          paste("File:", digest(x$path, serialize = FALSE, file = TRUE))
-        } else if (inherits(x, "form_data")) {
-          rawToChar(x$value)
-        } else {
-          # assume character string or raw
-          x
-        }
-      })
-      b <- paste(c(
-        "Multipart form:",
-        paste(names(b), b, sep = " = ")
-      ), collapse = "\n  ")
-      # add a newline at the end too
-      b <- paste0(b, "\n")
-    } else if (inherits(req$body$data, "httr2_path")) {
-      b <- paste("File:", digest(req$body$data, serialize = FALSE, file = TRUE))
-    }
+  if (!is.null(b)) {
+    return(b)
   }
+
+  if (length(req$fields)) {
+    # multipart
+    b <- lapply(req$fields, function(x) {
+      if (inherits(x, "form_file")) {
+        # hash the file contents
+        paste("File:", digest(x$path, serialize = FALSE, file = TRUE))
+      } else if (inherits(x, "form_data")) {
+        rawToChar(x$value)
+      } else {
+        # assume character string or raw
+        x
+      }
+    })
+    b <- paste(c(
+      "Multipart form:",
+      paste(names(b), b, sep = " = ")
+    ), collapse = "\n  ")
+    # add a newline at the end too
+    b <- paste0(b, "\n")
+  } else if (identical(req$body$type, "file") || inherits(req$body$data, "httr2_path")) {
+    # file
+    b <- paste("File:", digest(req$body$data, serialize = FALSE, file = TRUE))
+  }
+
   b
 }
 

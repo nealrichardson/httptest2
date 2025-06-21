@@ -68,54 +68,54 @@ build_mock_url <- function(req) {
 }
 
 get_string_request_body <- function(req) {
+  # Returns a string if the request has a body, NULL otherwise
+
+  # Grab this function from httr2: it's stuff that happens before the request
+  # is made
+  body_apply <- utils::getFromNamespace("req_body_apply", "httr2")
+  req <- body_apply(req)
+
   # TODO: if you refactor this in the future, you can now use req$body$type
   # to determine the body type, and req_get_body() to get the actual body that
   # will be sent to the server.
 
-  # Returns a string if the request has a body, NULL otherwise
-  body_apply <- utils::getFromNamespace("req_body_apply", "httr2")
-  req <- body_apply(req)
-
-  # empty/raw/string/json/form
-  b <- request_postfields(req)
-  if (!is.null(b)) {
-    return(b)
+  # type: raw/string/json/form
+  postfields <- req[["options"]][["postfields"]]
+  if (length(postfields) > 0) {
+    # Check length this way because it may be NULL or length 0 raw vector
+    return(rawToChar(postfields))
   }
 
+  # type: multipart
   if (length(req$fields)) {
-    # multipart
-    b <- lapply(req$fields, function(x) {
-      if (inherits(x, "form_file")) {
-        # hash the file contents
-        paste("File:", digest(x$path, serialize = FALSE, file = TRUE))
-      } else if (inherits(x, "form_data")) {
-        rawToChar(x$value)
-      } else {
-        # assume character string or raw
-        x
-      }
-    })
-    b <- paste(c(
-      "Multipart form:",
-      paste(names(b), b, sep = " = ")
-    ), collapse = "\n  ")
-    # add a newline at the end too
-    b <- paste0(b, "\n")
-  } else if (identical(req$body$type, "file") || inherits(req$body$data, "httr2_path")) {
-    # file
-    b <- paste("File:", digest(req$body$data, serialize = FALSE, file = TRUE))
+    # Iterate over the fields and create a string representation
+    fields <- lapply(req$fields, get_string_from_multipart_field)
+    # Then concatenate them
+    fields <- paste(names(fields), fields, sep = " = ")
+    fields <- paste(c("Multipart form:", fields), collapse = "\n  ")
+    # Add a newline at the end too
+    return(paste0(fields, "\n"))
   }
 
-  b
+  # type: file
+  bod <- req$body
+  if (identical(bod$type, "file") || inherits(bod$data, "httr2_path")) {
+    return(paste("File:", digest(bod$data, serialize = FALSE, file = TRUE)))
+  }
+
+  # type: empty
+  NULL
 }
 
-request_postfields <- function(req) {
-  b <- req[["options"]][["postfields"]]
-  if (length(b) > 0) {
-    # Check length this way because b may be NULL or length 0 raw vector
-    return(rawToChar(b))
+get_string_from_multipart_field <- function(field) {
+  if (inherits(field, "form_file")) {
+    # hash the file contents
+    paste("File:", digest(field$path, serialize = FALSE, file = TRUE))
+  } else if (inherits(field, "form_data")) {
+    rawToChar(field$value)
   } else {
-    return(NULL)
+    # assume character string or raw
+    field
   }
 }
 

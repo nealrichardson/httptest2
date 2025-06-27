@@ -9,7 +9,7 @@ test:
 	export NOT_CRAN=true && R -s -e 'library(testthat); setwd(file.path(.libPaths()[1], "httptest2", "tests")); system.time(test_check("httptest2", filter="${file}", reporter=ifelse(nchar("${r}"), "${r}", "summary")))'
 
 deps:
-	R -s -e 'install.packages(c("codetools", "testthat", "devtools", "roxygen2", "knitr"), repo="http://cran.at.r-project.org", lib=ifelse(nchar(Sys.getenv("R_LIB")), Sys.getenv("R_LIB"), .libPaths()[1]))'
+	R -s -e 'options(repos="http://cran.at.r-project.org"); install.packages("pak"); pak::local_install(".", dependencies = TRUE)'
 
 build: doc
 	R CMD build .

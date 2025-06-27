@@ -179,7 +179,7 @@ Note that none of the test code inside `with_mock_dir()` looks any different fro
 `with_mock_dir()` is convenient to use, but you probably don't want all of your tests to be based on real requests. Among the reasons:
 
 * Some API responses contain way more content than is necessary to test your R code around them: 100 records when 2 will suffice, include metadata that you don't care about and can't meaningfully assert things about, and so on. In the interest of minimally reproducible examples, and of making tests readable, it often makes sense to take an actual API response and delete a lot of its content, or even to fabricate one entirely.
-* It's good to keep an API mock fixed so you know exactly what is in it. If you re-recorded a Twitter API response of, say, the most recent 10 tweets with `#rstats`, the specific content will change every time you record it, so your tests can't say much about what is in the response without having to rewrite them every time too.
+* It's good to keep an API mock fixed so you know exactly what is in it. If you re-recorded a API response of, say, the most recent 10 messages in a discussion forum, the specific content will change every time you record it, so your tests can't say much about what is in the response without having to rewrite them every time too.
 * Some conditions (rate limiting, server errors, etc.) are difficult to test with real responses, but if you can manually create a API mock with, say, a 503 response status code and test how your code handles it, you can have confidence of how your package will respond when that rare event happens with the real API.
 * Re-recording all responses can make for a huge code diff, which can blow up your repository size and make code review harder.
 
@@ -189,7 +189,8 @@ Sometimes it is more clear what you're testing if you focus only on the requests
 
 Another case where you might want to focus just on the request, without recording real API responses, is when you don't actually want to make the requests. Perhaps you're testing a function that would call `DELETE` on some resource. Or, to make it concrete, suppose you were testing a function that sends a tweet: you probably don't want to send a real test tweet out into the world.
 
-Here's a function that would send a tweet using the Twitter API. Consulting the [API docs](https://developer.twitter.com/en/docs/twitter-api/tweets/manage-tweets/api-reference/post-tweets), it looks like this is the request we'd make:
+For example, let's imagine a world where Twitter still exists.
+Here's a function that would send a tweet using the Twitter API. Consulting the API docs, it looks like this is the request we'd make:
 
 ```r
 send_tweet <- function(text) {

@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">httptest2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.0</span>
       </span>
     </div>
 
@@ -189,11 +189,10 @@ the state of anything on the server, so every time you make the same
 request (at least within your current session), you get the same
 response.</p>
 <p>Sometimes, though, the purpose of your code is to alter server state:
-you are creating a database entry, sending a tweet, or other similar
-action. Suppose you are querying the Twitter API, and you first search
-for the <code>#rstats</code> hashtag, then you send a tweet with that
-hashtag, and finally you repeat your search. You’d expect the second
-search to contain the tweet you just sent.</p>
+you are creating a database entry, sending a message, or other similar
+action. If you do a search query, then modify the database, and then
+search again, you’d expect the second search to contain the update you
+just sent.</p>
 <p>To make this work, before any code chunk that will alter server
 state, call <code><a href="../reference/change_state.html">change_state()</a></code>:</p>
 <pre><code>`​``{r, include=FALSE}

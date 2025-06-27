@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">httptest2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.0</span>
       </span>
     </div>
 
@@ -218,11 +218,10 @@ redactors on any part of the response object, not just the headers and
 cookies. A redactor is just a function that takes a response as input
 and returns a response object, so anything is possible if you write a
 custom redactor.</p>
-<p>For example, in the <a href="https://www.pivotaltracker.com/help/api" class="external-link">API for Pivotal
-Tracker</a>, the agile project management tool, the Pivotal project id
-is built into many of its URLs. As a result, it would appear in mock
-file paths you record. The id is also often included in the response
-body.</p>
+<p>For example, in the API for Pivotal Tracker, the now-defunct agile
+project management tool, the Pivotal project id is built into many of
+its URLs. As a result, it would appear in mock file paths you record.
+The id is also often included in the response body.</p>
 <p>We’d rather not have that information leak in our test fixtures, so
 in the <a href="https://enpiar.com/r/pivotaltrackR/" class="external-link">pivotaltrackR</a>
 package, which wraps this API, we need to tell

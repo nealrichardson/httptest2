@@ -24,10 +24,10 @@ contents, provide an empty string (\code{""}). Header names are always
 case-insensitive; header values will be matched using the following
 parameters:}
 
-\item{fixed}{logical.  If \code{TRUE}, \code{pattern} is a string to be
+\item{fixed}{logical. If \code{TRUE}, \code{pattern} is a string to be
     matched as is.  Overrides all conflicting arguments.}
 
-\item{ignore.case}{if \code{FALSE}, the pattern matching is \emph{case
+\item{ignore.case}{logical. if \code{FALSE}, the pattern matching is \emph{case
       sensitive} and if \code{TRUE}, case is ignored during matching.}
 
 \item{perl}{logical.  Should Perl-compatible regexps be used?}

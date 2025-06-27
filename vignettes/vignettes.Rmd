@@ -41,7 +41,7 @@ Note that these code chunks have `include=FALSE`. This prevents them from being 
 
 If all your vignette does is query an API to get data from it, `start_vignette()` is all you need. Your actions don't change the state of anything on the server, so every time you make the same request (at least within your current session), you get the same response.
 
-Sometimes, though, the purpose of your code is to alter server state: you are creating a database entry, sending a tweet, or other similar action. Suppose you are querying the Twitter API, and you first search for the `#rstats` hashtag, then you send a tweet with that hashtag, and finally you repeat your search. You'd expect the second search to contain the tweet you just sent.
+Sometimes, though, the purpose of your code is to alter server state: you are creating a database entry, sending a message, or other similar action. If you do a search query, then modify the database, and then search again, you'd expect the second search to contain the update you just sent.
 
 To make this work, before any code chunk that will alter server state, call `change_state()`:
 

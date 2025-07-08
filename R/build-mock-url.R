@@ -75,9 +75,7 @@ get_string_request_body <- function(req) {
   body_apply <- utils::getFromNamespace("req_body_apply", "httr2")
   req <- body_apply(req)
 
-  # TODO: if you refactor this in the future, you can now use req$body$type
-  # to determine the body type, and req_get_body() to get the actual body that
-  # will be sent to the server.
+  # TODO: if you refactor use httr2::req_get_body_type() and httr2::req_get_body()
 
   # type: raw/string/json/form
   postfields <- req[["options"]][["postfields"]]

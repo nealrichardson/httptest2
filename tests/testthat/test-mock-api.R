@@ -1,7 +1,10 @@
 with_mock_api({
   test_that("Can load an object and file extension is added", {
     a <- request("https://test.api/") %>% req_perform()
-    expect_identical(resp_body_json(a), list(value = "https://test.api/object1/"))
+    expect_identical(
+      resp_body_json(a),
+      list(value = "https://test.api/object1/")
+    )
     b <- request(resp_body_json(a)$value) %>% req_perform()
     expect_identical(resp_body_json(b), list(object = TRUE))
   })
@@ -21,7 +24,7 @@ with_mock_api({
   })
   test_that("GET files that don't exist errors", {
     expect_GET(
-      request("https://test.api/NOTAFILE/") %>% req_perform(), 
+      request("https://test.api/NOTAFILE/") %>% req_perform(),
       "https://test.api/NOTAFILE/"
     )
     expect_GET(
@@ -190,20 +193,28 @@ with_mock_api({
   })
 
   test_that("Regular expressions in expect_VERB", {
-    expect_GET(request("http://example.com/1234/abcd/") %>% req_perform(),
+    expect_GET(
+      request("http://example.com/1234/abcd/") %>% req_perform(),
       "http://example.com/[0-9]{4}/[a-z]{4}/",
       fixed = FALSE
     )
-    expect_GET(request("http://example.com/1234/abcd/") %>% req_perform(),
+    expect_GET(
+      request("http://example.com/1234/abcd/") %>% req_perform(),
       "http://EXAMPLE.com/[0-9]{4}/[a-z]{4}/",
       fixed = FALSE,
       ignore.case = TRUE
     )
-    expect_POST(request("http://example.com/1234/abcd/") %>% req_method("POST") %>% req_perform(),
+    expect_POST(
+      request("http://example.com/1234/abcd/") %>%
+        req_method("POST") %>%
+        req_perform(),
       "http://example.com/[0-9]{4}/[a-z]{4}/",
       fixed = FALSE
     )
-    expect_DELETE(request("http://example.com/1234/abcd/") %>% req_method("DELETE") %>% req_perform(),
+    expect_DELETE(
+      request("http://example.com/1234/abcd/") %>%
+        req_method("DELETE") %>%
+        req_perform(),
       "http://example.com/[0-9]{4}/[a-z]{4}/",
       fixed = FALSE
     )
@@ -222,12 +233,16 @@ test_that("build_mock_url file path construction with character URL", {
   expect_identical(file, expect, label = "Get method with query string")
 
   # POST method
-  file <- build_mock_url(request("http://www.test.com/api/call") %>% req_method("POST"))
+  file <- build_mock_url(
+    request("http://www.test.com/api/call") %>% req_method("POST")
+  )
   expect <- "www.test.com/api/call-POST"
   expect_identical(file, expect, "POST method without query string")
 
   # POST method with query in URL
-  file <- build_mock_url(request("http://www.test.com/api/call?q=1") %>% req_method("POST"))
+  file <- build_mock_url(
+    request("http://www.test.com/api/call?q=1") %>% req_method("POST")
+  )
   expect <- "www.test.com/api/call-a3679d-POST"
   expect_identical(file, expect, "POST method with query string")
 })
@@ -249,12 +264,12 @@ test_that("load_response invalid extension handling", {
 
 test_that("mock_request code paths are covered (outside of trace)", {
   expect_s3_class(
-    mock_request(list(method = "GET", url = "https://test.api/")),
+    mock_request(request("https://test.api/")),
     "httr2_response"
   )
   expect_s3_class(
-    mock_request(list(method = "GET", url = "http://example.com/html")),
+    mock_request(request("http://example.com/html")),
     "httr2_response"
   )
-  expect_error(mock_request(list(method = "PUT", url = "api/")))
+  expect_error(mock_request(request("api/")))
 })

@@ -1,3 +1,7 @@
+# httptest2 1.2.1
+
+* Address check warnings with `httr2` 1.2
+
 # httptest2 1.2.0
 
 * `build_mock_url()` now works with multipart body requests containing character strings or raw data (#40, @jmaspons)

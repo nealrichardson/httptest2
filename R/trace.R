@@ -31,11 +31,7 @@ trace_httr2 <- function(
   quietly(trace(..., print = print, where = request))
   # And if httr2 is attached and the function is exported, trace the
   # function as the user sees it
-  if (
-    "httr2" %in%
-      names(sessionInfo()$otherPkgs) &&
-      ..1 %in% getNamespaceExports("httr2")
-  ) {
+  if ("package:httr2" %in% search() && ..1 %in% getNamespaceExports("httr2")) {
     try(quietly(trace(..., print = print, where = sys.frame())))
   }
 }

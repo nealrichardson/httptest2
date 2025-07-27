@@ -88,13 +88,8 @@ with_mock_api({
     # Slight finesse: because requests get preprocessed with the redactor too,
     # it's tricky when we're mocking and recording, so in this test we're not
     # to change the URL when determining the mock file to load
-    if (
-      !grepl(
-        "get_current_redactor()(req)",
-        unlist(tail(sys.calls(), 1)),
-        fixed = TRUE
-      )
-    ) {
+    last_call <- unlist(tail(sys.calls(), 1))
+    if (!grepl("get_current_redactor()(req)", last_call, fixed = TRUE)) {
       response$url <- "http://example.com/fakeurl"
     }
     # Proof that you can alter the response body

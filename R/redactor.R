@@ -132,10 +132,9 @@ get_current_redactor <- function() {
       # We're using the result of default_redactor(). Let's see if any
       # new packages have been loaded
       current_packages <- get_attached_packages()
+      packages_changed <- !identical(current_packages, pkgs)
       # Also, always reevaluate the default redactor if pkgload is involved
-      if (
-        "pkgload" %in% loadedNamespaces() || !identical(current_packages, pkgs)
-      ) {
+      if (packages_changed || "pkgload" %in% loadedNamespaces()) {
         # Re-evaluate
         out <- default_redactor(current_packages)
         options(httptest2.redactor = out)

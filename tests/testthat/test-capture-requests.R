@@ -256,7 +256,7 @@ with_mock_api({
 
 test_that("If the httr2 request function exits with an error, capture_requests warns", {
   capture_requests({
-    with_mock(
+    with_mocked_responses(
       function(req) stop("Error!"),
       expect_warning(
         expect_error(

@@ -84,13 +84,13 @@ expect_request_header <- function(
     }
   }
 
-  with_mock(header_mocker, expr)
+  with_mocked_responses(header_mocker, expr)
 }
 
-with_mock <- function(mock, code) {
+with_mocked_responses <- function(mock, code) {
   if (httr2_1.0.0) {
     utils::getFromNamespace("with_mocked_responses", "httr2")(mock, code)
   } else {
-    httr2::with_mock(mock, code)
+    utils::getFromNamespace("with_mock", "httr2")(mock, code)
   }
 }

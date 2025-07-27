@@ -32,7 +32,7 @@
 #'   )
 #' })
 #' @export
-without_internet <- function(expr) with_mock(stop_request, expr)
+without_internet <- function(expr) with_mocked_responses(stop_request, expr)
 
 #' @rdname without_internet
 #' @export

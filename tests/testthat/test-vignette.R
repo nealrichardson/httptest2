@@ -1,4 +1,6 @@
-we_are_recording <- function() inherits(httr2:::req_perform, "functionWithTrace")
+we_are_recording <- function() {
+  inherits(httr2:::req_perform, "functionWithTrace")
+}
 we_are_mocking <- function() !is.null(getOption("httr2_mock"))
 path <- tempfile()
 

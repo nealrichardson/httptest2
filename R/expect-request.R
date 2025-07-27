@@ -93,12 +93,14 @@ expect_no_request <- function(object, ...) {
 }
 
 #' @importFrom testthat expect_error fail
-expect_request <- function(object,
-                           ...,
-                           fixed = TRUE,
-                           ignore.case = FALSE,
-                           perl = FALSE,
-                           useBytes = FALSE) {
+expect_request <- function(
+  object,
+  ...,
+  fixed = TRUE,
+  ignore.case = FALSE,
+  perl = FALSE,
+  useBytes = FALSE
+) {
   # PUT/POST/PATCH with no body may have trailing whitespace, so trim it
   expected <- sub(" +$", "", paste0(...))
   withCallingHandlers(
@@ -117,9 +119,12 @@ expect_request <- function(object,
         fail(paste0(
           "An unexpected request was made:\n  Actual:   ",
           e$message,
-          "\n  Expected: ", expected
+          "\n  Expected: ",
+          expected
         ))
-      } else if (inherits(e, "expectation_failure") && grepl("did not throw", e$message)) {
+      } else if (
+        inherits(e, "expectation_failure") && grepl("did not throw", e$message)
+      ) {
         # This is what expect_error() says (under testthat 3e) when there is no error
         fail("No request was made")
       } else {

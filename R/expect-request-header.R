@@ -33,12 +33,14 @@
 #'   accept = ""
 #' )
 #' @export
-expect_request_header <- function(expr,
-                                  ...,
-                                  fixed = FALSE,
-                                  ignore.case = FALSE,
-                                  perl = FALSE,
-                                  useBytes = FALSE) {
+expect_request_header <- function(
+  expr,
+  ...,
+  fixed = FALSE,
+  ignore.case = FALSE,
+  perl = FALSE,
+  useBytes = FALSE
+) {
   expected <- list(...)
   if (length(expected) == 0) {
     stop("No headers provided")

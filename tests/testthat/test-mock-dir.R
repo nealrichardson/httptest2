@@ -9,7 +9,9 @@ test_that("with_mock_dir works when the directory with mock files exists", {
   with_mock_dir(temporary_dir, {
     # There's nothing on the mock paths other than our mock dir
     expect_identical(.mockPaths(), temporary_dir)
-    expect_no_request(resp <- request("http://httpbin.not/status/204") %>% req_perform())
+    expect_no_request(
+      resp <- request("http://httpbin.not/status/204") %>% req_perform()
+    )
     # We've read from the mock
     expect_equal(resp_headers(resp)$date, "Sat, 24 Feb 2018 00:22:11 GMT")
   })

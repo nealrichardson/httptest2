@@ -10,19 +10,28 @@
 #' @return The result of `expr`
 #' @export
 #' @keywords internal
-with_trace <- function(x, where = topenv(parent.frame()), print = getOption("httptest2.debug.trace", FALSE), ..., expr) {
+with_trace <- function(
+  x,
+  where = topenv(parent.frame()),
+  print = getOption("httptest2.debug.trace", FALSE),
+  ...,
+  expr
+) {
   quietly(trace(x, print = print, where = where, ...))
   on.exit(safe_untrace(x, where = where))
   eval.parent(expr)
 }
 
 #' @importFrom utils sessionInfo
-trace_httr2 <- function(..., print = getOption("httptest2.debug.trace", FALSE)) {
+trace_httr2 <- function(
+  ...,
+  print = getOption("httptest2.debug.trace", FALSE)
+) {
   # Trace it as seen from within httr2
   quietly(trace(..., print = print, where = request))
   # And if httr2 is attached and the function is exported, trace the
   # function as the user sees it
-  if ("httr2" %in% names(sessionInfo()$otherPkgs) && ..1 %in% getNamespaceExports("httr2")) {
+  if ("package:httr2" %in% search() && ..1 %in% getNamespaceExports("httr2")) {
     try(quietly(trace(..., print = print, where = sys.frame())))
   }
 }

@@ -51,7 +51,10 @@ test_that("add to desc adds Suggests multiline", {
 })
 
 test_that("add to desc doesn't add if already present", {
-  expect_identical(test_add_to_desc("Suggests: httptest2", msg = NA), "httptest2")
+  expect_identical(
+    test_add_to_desc("Suggests: httptest2", msg = NA),
+    "httptest2"
+  )
   expect_identical(
     test_add_to_desc("Suggests: pkg, httptest2", msg = NA),
     "pkg, httptest2"

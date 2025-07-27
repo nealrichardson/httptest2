@@ -10,7 +10,10 @@ with_mock_api({
   test_that("The mock file does not have the request headers", {
     # In httr2, response objects do not include the request,
     # so by construction there won't be request headers
-    expect_false(any(grepl("Bearer token", readLines(file.path(d, "test.api.R")))))
+    expect_false(any(grepl(
+      "Bearer token",
+      readLines(file.path(d, "test.api.R"))
+    )))
   })
   test_that("And the redacted .R mock can be loaded", {
     with_mock_path(d, {
@@ -85,7 +88,8 @@ with_mock_api({
     # Slight finesse: because requests get preprocessed with the redactor too,
     # it's tricky when we're mocking and recording, so in this test we're not
     # to change the URL when determining the mock file to load
-    if (!grepl("get_current_redactor()(req)", unlist(tail(sys.calls(), 1)), fixed = TRUE)) {
+    last_call <- unlist(tail(sys.calls(), 1))
+    if (!grepl("get_current_redactor()(req)", last_call, fixed = TRUE)) {
       response$url <- "http://example.com/fakeurl"
     }
     # Proof that you can alter the response body
@@ -112,7 +116,10 @@ with_mock_api({
         request("http://example.com/get") %>% req_perform(),
         "http://example.com/get"
       )
-      expect_error(alt <- request("http://example.com/fakeurl") %>% req_perform(), NA)
+      expect_error(
+        alt <- request("http://example.com/fakeurl") %>% req_perform(),
+        NA
+      )
       expect_identical(resp_body_json(alt), list(changed = TRUE))
     })
   })
@@ -121,7 +128,8 @@ with_mock_api({
   test_that("Redactors are applied when making requests to alter the mock file path we're reading", {
     with_redactor(
       function(resp) gsub_response(resp, "long/url.*$", "get"),
-      r <- request("http://example.com/long/url/with/lots/of/segments") %>% req_perform()
+      r <- request("http://example.com/long/url/with/lots/of/segments") %>%
+        req_perform()
     )
     # The URL of the mock response in this case is actually the full request URL
     # because it is a JSON mock so the httr2_response object is generated
@@ -137,18 +145,25 @@ with_mock_api({
   test_that("gsub_response", {
     asub <- gsub_response(a, "api", "OTHER")
     expect_identical(asub$url, "https://test.OTHER/")
-    expect_identical(resp_body_json(asub), list(value = "https://test.OTHER/object1/"))
+    expect_identical(
+      resp_body_json(asub),
+      list(value = "https://test.OTHER/object1/")
+    )
   })
   test_that("as.redactor", {
     a2 <- prepare_redactor(~ gsub_response(., "api", "OTHER"))(a)
-    expect_identical(resp_body_json(a2), list(value = "https://test.OTHER/object1/"))
+    expect_identical(
+      resp_body_json(a2),
+      list(value = "https://test.OTHER/object1/")
+    )
   })
 
   loc <- request("http://httpbin.not/response-headers") %>%
     req_url_query(Location = "http://httpbin.not/status/201") %>%
     req_perform()
   loc_sub <- gsub_response(
-    loc, "http://httpbin.not/status/201",
+    loc,
+    "http://httpbin.not/status/201",
     "http://httpbin.not/status/404"
   )
   test_that("gsub_response touches Location header", {

@@ -152,9 +152,13 @@ save_response <- function(response, file, simplify = TRUE) {
     # so that it loads correctly but is also readable
     text_types <- c(
       "application/json",
-      "application/x-www-form-urlencoded", "application/xml",
-      "text/csv", "text/html", "text/plain",
-      "text/tab-separated-values", "text/xml"
+      "application/x-www-form-urlencoded",
+      "application/xml",
+      "text/csv",
+      "text/html",
+      "text/plain",
+      "text/tab-separated-values",
+      "text/xml"
     )
     if (is.raw(response$body) && ct %in% text_types && length(response$body)) {
       cont <- resp_body_string(response)
@@ -164,7 +168,8 @@ save_response <- function(response, file, simplify = TRUE) {
       downloaded_file <- paste0(dst_file, "-FILE")
       file.copy(response$body, downloaded_file)
       file <- paste0(file, "-FILE")
-      response$body <- substitute(structure(find_mock_file(file),
+      response$body <- substitute(structure(
+        find_mock_file(file),
         class = "httr2_path"
       ))
     }

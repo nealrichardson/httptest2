@@ -4,8 +4,10 @@ capture_while_mocking <- function(..., path) {
     tracer <- quote({
       .mockPaths <- function() getOption("httptest2.mock.paths")[-1]
     })
-    with_trace("find_mock_file",
-      where = with_mock_api, tracer = tracer,
+    with_trace(
+      "find_mock_file",
+      where = with_mock_api,
+      tracer = tracer,
       expr = capture_requests(...)
     )
   })
@@ -31,8 +33,10 @@ reset_redactors <- function() {
 
 install_testpkg <- function(pkg, lib = tempfile()) {
   dir.create(lib)
-  tools::Rcmd(c("INSTALL", "testpkg", paste0("--library=", shQuote(lib))),
-    stdout = NULL, stderr = NULL
+  tools::Rcmd(
+    c("INSTALL", "testpkg", paste0("--library=", shQuote(lib))),
+    stdout = NULL,
+    stderr = NULL
   )
   return(lib)
 }

@@ -2,36 +2,63 @@ structure(
   list(
     url = "http://httpbin.not/html",
     status_code = 200L,
-    headers = structure(list(
-      connection = "keep-alive",
-      server = "meinheld/0.6.1",
-      date = "Sat, 27 May 2017 20:08:33 GMT",
-      `content-type` = "text/html; charset=utf-8",
-      `content-length` = "3741",
-      `access-control-allow-origin` = "*",
-      `access-control-allow-credentials` = "true",
-      `x-powered-by` = "Flask",
-      `x-processed-time` = "0.000486850738525",
-      via = "1.1 vegur"
-    ), class = c("insensitive", "list")),
-    all_headers = list(
-      structure(list(status = 200L, version = "HTTP/1.1", headers = structure(list(
-        connection = "keep-alive", server = "meinheld/0.6.1",
-        date = "Sat, 27 May 2017 20:08:33 GMT", `content-type` = "text/html; charset=utf-8",
-        `content-length` = "3741", `access-control-allow-origin` = "*",
-        `access-control-allow-credentials` = "true", `x-powered-by` = "Flask",
-        `x-processed-time` = "0.000486850738525", via = "1.1 vegur"
-      ), .Names = c(
-        "connection",
-        "server", "date", "content-type", "content-length", "access-control-allow-origin",
-        "access-control-allow-credentials", "x-powered-by", "x-processed-time",
-        "via"
-      ), class = c("insensitive", "list"))), .Names = c(
-        "status",
-        "version", "headers"
-      ))
+    headers = structure(
+      list(
+        connection = "keep-alive",
+        server = "meinheld/0.6.1",
+        date = "Sat, 27 May 2017 20:08:33 GMT",
+        `content-type` = "text/html; charset=utf-8",
+        `content-length` = "3741",
+        `access-control-allow-origin` = "*",
+        `access-control-allow-credentials` = "true",
+        `x-powered-by` = "Flask",
+        `x-processed-time` = "0.000486850738525",
+        via = "1.1 vegur"
+      ),
+      class = c("insensitive", "list")
     ),
-    content = charToRaw("<!DOCTYPE html>
+    all_headers = list(
+      structure(
+        list(
+          status = 200L,
+          version = "HTTP/1.1",
+          headers = structure(
+            list(
+              connection = "keep-alive",
+              server = "meinheld/0.6.1",
+              date = "Sat, 27 May 2017 20:08:33 GMT",
+              `content-type` = "text/html; charset=utf-8",
+              `content-length` = "3741",
+              `access-control-allow-origin` = "*",
+              `access-control-allow-credentials` = "true",
+              `x-powered-by` = "Flask",
+              `x-processed-time` = "0.000486850738525",
+              via = "1.1 vegur"
+            ),
+            .Names = c(
+              "connection",
+              "server",
+              "date",
+              "content-type",
+              "content-length",
+              "access-control-allow-origin",
+              "access-control-allow-credentials",
+              "x-powered-by",
+              "x-processed-time",
+              "via"
+            ),
+            class = c("insensitive", "list")
+          )
+        ),
+        .Names = c(
+          "status",
+          "version",
+          "headers"
+        )
+      )
+    ),
+    content = charToRaw(
+      "<!DOCTYPE html>
 <html>
   <head>
     </head>
@@ -42,19 +69,26 @@ structure(
                 </p>
           </div>
   </body>
-</html>"),
+</html>"
+    ),
     date = structure(1495915713, class = c("POSIXct", "POSIXt"), tzone = "GMT"),
-    times = structure(c(0, 0.018544, 0.100954, 0.101057, 0.186309, 0.186663),
+    times = structure(
+      c(0, 0.018544, 0.100954, 0.101057, 0.186309, 0.186663),
       .Names = c(
-        "redirect", "namelookup", "connect", "pretransfer",
-        "starttransfer", "total"
+        "redirect",
+        "namelookup",
+        "connect",
+        "pretransfer",
+        "starttransfer",
+        "total"
       )
     ),
     request = structure(
       list(
         method = "GET",
         url = "http://httpbin.not/html",
-        headers = structure("application/json, text/xml, application/xml, */*",
+        headers = structure(
+          "application/json, text/xml, application/xml, */*",
           .Names = "Accept"
         ),
         fields = NULL,

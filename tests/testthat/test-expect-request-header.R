@@ -20,23 +20,21 @@ with_mock_api({
       `X-stuff` = "mo",
       `x-not-present` = NULL
     )
-    expect_failure(
+    expect_snapshot_failure(
       expect_request_header(
         request("https://test.api/object1/") %>%
           req_headers(Accept = "image/png") %>%
           req_perform(),
         accept = "image/jpeg"
-      ),
-      'Header "accept" does not match "image/jpeg"'
+      )
     )
-    expect_failure(
+    expect_snapshot_failure(
       expect_request_header(
         request("https://test.api/object1/") %>%
           req_headers(Accept = "image/png") %>%
           req_perform(),
         accept = NULL
-      ),
-      'Header "accept" is not NULL'
+      )
     )
   })
 

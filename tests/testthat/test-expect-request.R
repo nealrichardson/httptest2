@@ -40,9 +40,8 @@ with_mock_api({
   test_that("expect_VERB when no request is made", {
     suppressWarnings({
       # warnings are suppressed because of some spurious thing in testthat ... handling, will report issue
-      expect_failure(
-        expect_POST("just a string"),
-        "No request was made"
+      expect_snapshot_failure(
+        expect_POST("just a string")
       )
       # Actual errors are passed through
       expect_error(
@@ -72,20 +71,12 @@ with_mock_api({
 
 without_internet({
   test_that("expect_request without_internet", {
-    expect_failure(
+    expect_snapshot_failure(
       expect_POST(
         req_perform(this_req),
         "http://httpbin.not/get",
         '{"test":false}'
-      ),
-      paste(
-        "An unexpected request was made:",
-        'Actual:   POST http://httpbin.not/get {"test":true}',
-        'Expected: POST http://httpbin.not/get {"test":false}',
-        sep = "\n  "
-      ),
-      fixed = TRUE
-    )
+      ))
     # Error messages are different without internet (no mock file)
     expect_error(
       req_perform(this_req),

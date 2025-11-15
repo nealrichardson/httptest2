@@ -10,31 +10,29 @@ jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    name: ${{ matrix.config.os }} (R ${{ matrix.config.r }}, testthat ${{ matrix.config.testthat }})
 
     strategy:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'oldrel-1'}
-          - {os: ubuntu-latest,   r: 'oldrel-2'}
-          - {os: ubuntu-latest,   r: 'oldrel-3'}
-          - {os: ubuntu-latest,   r: 'oldrel-4'}
+          - {os: macOS-latest,    r: 'release', testthat: 'release'}
+          - {os: windows-latest,  r: 'release', testthat: 'release'}
+          - {os: ubuntu-latest,   r: 'devel', testthat: 'release', http-user-agent: 'release'}
+          - {os: ubuntu-latest,   r: 'release', testthat: 'release'}
+          - {os: ubuntu-latest,   r: 'release', testthat: 'dev'}
+          - {os: ubuntu-latest,   r: 'oldrel-1', testthat: 'release'}
+          - {os: ubuntu-latest,   r: 'oldrel-2', testthat: 'release'}
+          - {os: ubuntu-latest,   r: 'oldrel-3', testthat: 'release'}
+          - {os: ubuntu-latest,   r: 'oldrel-4', testthat: 'release'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      _R_CHECK_TESTS_NLINES_: 0
 
     steps:
-      - name: Configure git
-        if: runner.os == 'Windows'
-        run: git config --global core.autocrlf false
-
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -49,10 +47,12 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
-      - uses: r-lib/actions/check-r-package@v2
+      - name: Install dev version of testthat
+        if: matrix.config.testthat == 'dev'
+        run: pak::pkg_install("r-lib/testthat")
+        shell: Rscript {0}
 
-      - name: Test coverage
-        if: contains(matrix.config.r, 'release') && runner.os == 'macOS'
-        run: |
-          Rscript -e 'pak::pkg_install("covr")'
-          Rscript -e 'covr::codecov(token = "${{secrets.CODECOV_TOKEN}}")'
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
+          build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'

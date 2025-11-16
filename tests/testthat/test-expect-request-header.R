@@ -151,9 +151,13 @@ without_internet({
         Accept = "image/jpeg"
       )
     )
+    # Before testthat 3.3.0, this was true:
     # Because the header check fails before the stop_request() mock
     # is called, there is no GET to assert
-    expect_no_request(
+    # But after 3.3.0, the GET happens. So we use expect_GET() here like above
+    # but we have to skip on older versions
+    skip_if_not_installed("testthat", "3.3.0")
+    expect_GET(
       expect_failure(
         expect_request_header(
           request("http://httpbin.not/") %>%

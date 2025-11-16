@@ -86,6 +86,7 @@ expect_DELETE <- function(object, url = "", ...) {
 }
 
 #' @rdname expect_verb
+#' @importFrom testthat expect_no_error
 #' @export
 expect_no_request <- function(object, ...) {
   # No request means no httptest2_request error raised

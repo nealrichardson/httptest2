@@ -1,3 +1,7 @@
+# httptest2 1.2.2
+
+* Compatibility with `testthat` 3.3.0 (#60, @hadley)
+
 # httptest2 1.2.1
 
 * Address check warnings with `httr2` 1.2

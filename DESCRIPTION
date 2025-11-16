@@ -9,7 +9,7 @@ Description: Testing and documenting code that communicates with remote servers
     test fixtures. The ability to save responses and load them offline also
     enables writing vignettes and other dynamic documents that can be
     distributed without access to a live server.
-Version: 1.2.1
+Version: 1.2.2
 Authors@R: c(
         person("Neal", "Richardson", role=c("aut", "cre"), email="neal.p.richardson@gmail.com", comment=c(ORCID="0009-0002-7992-3520")),
         person("Jonathan", "Keane", role="ctb", email="jkeane@gmail.com"),
@@ -20,11 +20,11 @@ BugReports: https://github.com/nealrichardson/httptest2/issues
 License: MIT + file LICENSE
 Imports:
     digest,
-    httr2,
+    httr2 (>= 0.2.0),
     jsonlite,
     rlang,
     stats,
-    testthat,
+    testthat (>= 3.1.5),
     utils
 Suggests:
     curl,

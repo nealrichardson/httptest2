@@ -20,23 +20,26 @@ with_mock_api({
       `X-stuff` = "mo",
       `x-not-present` = NULL
     )
-    expect_failure(
+
+    # These tests have been updated for testthat >= 3.3.0
+    # Remove this skip once that has fully rolled out
+    skip_if_not_installed("testthat", "3.3.0")
+
+    expect_snapshot_failure(
       expect_request_header(
         request("https://test.api/object1/") %>%
           req_headers(Accept = "image/png") %>%
           req_perform(),
         accept = "image/jpeg"
-      ),
-      'Header "accept" does not match "image/jpeg"'
+      )
     )
-    expect_failure(
+    expect_snapshot_failure(
       expect_request_header(
         request("https://test.api/object1/") %>%
           req_headers(Accept = "image/png") %>%
           req_perform(),
         accept = NULL
-      ),
-      'Header "accept" is not NULL'
+      )
     )
   })
 
@@ -148,9 +151,13 @@ without_internet({
         Accept = "image/jpeg"
       )
     )
+    # Before testthat 3.3.0, this was true:
     # Because the header check fails before the stop_request() mock
     # is called, there is no GET to assert
-    expect_no_request(
+    # But after 3.3.0, the GET happens. So we use expect_GET() here like above
+    # but we have to skip on older versions
+    skip_if_not_installed("testthat", "3.3.0")
+    expect_GET(
       expect_failure(
         expect_request_header(
           request("http://httpbin.not/") %>%

@@ -45,7 +45,7 @@ are present in a request. It works both in the mock HTTP contexts and on
 "live" HTTP requests.
 }
 \examples{
-\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (FALSE) withAutoprint(\{ # examplesIf}
 
 library(httr2)
 expect_request_header(

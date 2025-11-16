@@ -38,19 +38,16 @@ with_mock_api({
   })
 
   test_that("expect_VERB when no request is made", {
-    suppressWarnings({
-      # warnings are suppressed because of some spurious thing in testthat ... handling, will report issue
-      expect_snapshot_failure(
-        expect_POST("just a string")
-      )
-      # Actual errors are passed through
-      expect_error(
-        expect_failure(
-          expect_POST(stop("NOTAREQUEST"))
-        ),
-        "NOTAREQUEST"
-      )
-    })
+    expect_failure(
+      expect_POST("just a string")
+    )
+    # Actual errors are passed through
+    expect_error(
+      expect_failure(
+        expect_POST(stop("NOTAREQUEST"))
+      ),
+      "NOTAREQUEST"
+    )
   })
 
   test_that("expect_no_request", {
@@ -71,12 +68,6 @@ with_mock_api({
 
 without_internet({
   test_that("expect_request without_internet", {
-    expect_snapshot_failure(
-      expect_POST(
-        req_perform(this_req),
-        "http://httpbin.not/get",
-        '{"test":false}'
-      ))
     # Error messages are different without internet (no mock file)
     expect_error(
       req_perform(this_req),
@@ -87,6 +78,17 @@ without_internet({
       ),
       class = "httptest2_request",
       fixed = TRUE
+    )
+
+    # This test has been updated for testthat >= 3.3.0
+    # Remove this skip once that has fully rolled out
+    skip_if_not_installed("testthat", "3.3.0")
+    expect_snapshot_failure(
+      expect_POST(
+        req_perform(this_req),
+        "http://httpbin.not/get",
+        '{"test":false}'
+      )
     )
   })
 })

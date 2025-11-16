@@ -1,11 +1,3 @@
-# expect_VERB when no request is made
-
-    Code
-      expect_POST("just a string")
-    Condition
-      Error:
-      ! Expected `object` to throw a error with class <httptest2_request>.
-
 # expect_request without_internet
 
     Code

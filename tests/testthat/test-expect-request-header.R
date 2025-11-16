@@ -20,6 +20,11 @@ with_mock_api({
       `X-stuff` = "mo",
       `x-not-present` = NULL
     )
+
+    # These tests have been updated for testthat >= 3.3.0
+    # Remove this skip once that has fully rolled out
+    skip_if_not_installed("testthat", "3.3.0")
+
     expect_snapshot_failure(
       expect_request_header(
         request("https://test.api/object1/") %>%

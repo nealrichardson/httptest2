@@ -1,3 +1,5 @@
+# httptest2 (development version)
+
 # httptest2 1.2.2
 
 * Compatibility with `testthat` 3.3.0 (#60, @hadley)

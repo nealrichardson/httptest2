@@ -116,9 +116,9 @@ load_response <- function(file, req) {
   ext <- tail(unlist(strsplit(file, ".", fixed = TRUE)), 1)
   if (ext == "R") {
     # It's a full "response". Source it, and if it is from httr, adapt it
-    adapt_httr_response(source(file)$value)
+    resp <- adapt_httr_response(source(file)$value)
   } else if (ext %in% names(EXT_TO_CONTENT_TYPE)) {
-    response(
+    resp <- response(
       url = req$url,
       method = get_request_method(req),
       headers = list(`Content-Type` = EXT_TO_CONTENT_TYPE[[ext]]),
@@ -126,7 +126,7 @@ load_response <- function(file, req) {
       body = readBin(file, "raw", n = file.size(file))
     )
   } else if (ext == "204") {
-    response(
+    resp <- response(
       url = req$url,
       method = get_request_method(req),
       status_code = 204L
@@ -134,6 +134,8 @@ load_response <- function(file, req) {
   } else {
     stop("Unsupported mock file extension: ", ext, call. = FALSE)
   }
+  resp$request <- req
+  resp
 }
 
 adapt_httr_response <- function(resp) {

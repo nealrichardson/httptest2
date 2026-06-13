@@ -1,4 +1,4 @@
-pandoc: 3.1.11
+pandoc: 3.8.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
@@ -6,7 +6,7 @@ articles:
   httptest2: httptest2.html
   redacting: redacting.html
   vignettes: vignettes.html
-last_built: 2025-11-16T20:32Z
+last_built: 2026-06-13T13:24Z
 urls:
   reference: https://enpiar.com/httptest2/reference
   article: https://enpiar.com/httptest2/articles

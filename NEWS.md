@@ -1,3 +1,7 @@
+# httptest2 (development version)
+
+* Reloaded mocked response objects now include the request that caused them to be loaded as `$request` (#65, @jonthegeek)
+
 # httptest2 1.2.2
 
 * Compatibility with `testthat` 3.3.0 (#60, @hadley)

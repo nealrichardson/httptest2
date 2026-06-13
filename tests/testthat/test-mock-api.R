@@ -219,6 +219,19 @@ with_mock_api({
       fixed = FALSE
     )
   })
+  test_that("Mocked responses include their request (#65)", {
+    req <- request("https://test.api/")
+    req$policies$example <- "example policy"
+    a <- req %>% req_perform()
+    expect_identical(
+      httr2::resp_request(a),
+      req
+    )
+    expect_identical(
+      httr2::resp_request(a)$policies$example,
+      "example policy"
+    )
+  })
 })
 
 test_that("build_mock_url file path construction with character URL", {

@@ -16,6 +16,7 @@
 #' @return The value of `expr` if there are no expectation failures
 #' @importFrom testthat expect_null expect_match
 #' @importFrom rlang is_string
+#' @importFrom httr2 with_mocked_response
 #' @examplesIf FALSE
 #'
 #' library(httr2)
@@ -85,12 +86,4 @@ expect_request_header <- function(
   }
 
   with_mocked_responses(header_mocker, expr)
-}
-
-with_mocked_responses <- function(mock, code) {
-  if (httr2_1.0.0) {
-    utils::getFromNamespace("with_mocked_responses", "httr2")(mock, code)
-  } else {
-    utils::getFromNamespace("with_mock", "httr2")(mock, code)
-  }
 }

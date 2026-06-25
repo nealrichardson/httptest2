@@ -20,7 +20,7 @@ BugReports: https://github.com/nealrichardson/httptest2/issues
 License: MIT + file LICENSE
 Imports:
     digest,
-    httr2 (>= 0.2.0),
+    httr2 (>= 1.0.0),
     jsonlite,
     rlang,
     stats,

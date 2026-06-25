@@ -224,11 +224,11 @@ with_mock_api({
     req$policies$example <- "example policy"
     a <- req %>% req_perform()
     expect_identical(
-      httr2::resp_request(a),
+      a$request,
       req
     )
     expect_identical(
-      httr2::resp_request(a)$policies$example,
+      a$request$policies$example,
       "example policy"
     )
   })

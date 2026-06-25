@@ -16,6 +16,7 @@
 #' @return The value of `expr` if there are no expectation failures
 #' @importFrom testthat expect_null expect_match
 #' @importFrom rlang is_string
+#' @importFrom httr2 with_mocked_response
 #' @examplesIf FALSE
 #'
 #' library(httr2)
@@ -84,5 +85,5 @@ expect_request_header <- function(
     }
   }
 
-  httr2::with_mocked_responses(header_mocker, expr)
+  with_mocked_responses(header_mocker, expr)
 }

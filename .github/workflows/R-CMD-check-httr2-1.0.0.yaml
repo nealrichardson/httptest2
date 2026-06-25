@@ -10,8 +10,6 @@ jobs:
   R-CMD-check-httr2-1.0.0:
     runs-on: ${{ matrix.config.os }}
 
-    name: R-CMD-check-httr2-1.0.0
-
     strategy:
       fail-fast: false
       matrix:

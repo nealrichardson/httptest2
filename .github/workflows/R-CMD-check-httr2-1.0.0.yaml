@@ -4,10 +4,10 @@ on:
     branches: main
   pull_request:
 
-name: R-CMD-check-httr2-1
+name: httr2 1 R-CMD-check
 
 jobs:
-  R-CMD-check-httr2-1:
+  httr2-1-check:
     runs-on: ${{ matrix.config.os }}
 
     strategy:

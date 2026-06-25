@@ -1,6 +1,7 @@
 # httptest2 (development version)
 
 * Reloaded mocked response objects now include the request that caused them to be loaded as `$request` (#65, @jonthegeek)
+* httptest2 now requires httr2 v1.0.0 or higher (@jonthegeek)
 
 # httptest2 1.2.2
 
